@@ -22,12 +22,17 @@ function OAuth2Redirect() {
 
             if (accessToken) {
                 try {
+                    // 먼저 토큰을 localStorage에 저장
+                    localStorage.setItem('accessToken', accessToken);
+
+                    // 그 다음 사용자 정보 가져오기
                     const userData = await authService.getCurrentUser();
                     login(accessToken, userData);
                     navigate('/');
                 } catch (error) {
                     console.error('Failed to get user info:', error);
                     alert('사용자 정보를 가져오는데 실패했습니다');
+                    localStorage.removeItem('accessToken');
                     navigate('/login');
                 }
             } else {

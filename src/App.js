@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import OAuth2Redirect from './pages/OAuth2Redirect';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
+import ImageTest from './pages/ImageTest';
 
 function App() {
     return (
@@ -27,6 +28,14 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Profile />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/image-test"
+                        element={
+                            <PrivateRoute>
+                                <ImageTest />
                             </PrivateRoute>
                         }
                     />

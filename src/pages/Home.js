@@ -39,6 +39,9 @@ function Home() {
                     <button className="btn profile-btn" onClick={handleProfile}>
                         프로필 보기
                     </button>
+                    <button className="btn test-btn" onClick={() => navigate('/image-test')}>
+                        이미지 생성 테스트
+                    </button>
                     <button className="btn logout-btn" onClick={handleLogout}>
                         로그아웃
                     </button>
