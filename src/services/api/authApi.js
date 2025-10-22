@@ -1,6 +1,6 @@
-import axiosInstance from './axios';
+import axiosInstance from '../utils/axiosInstance';
 
-export const authService = {
+export const authApi = {
     refreshToken: async () => {
         const response = await axiosInstance.post('/api/auth/refresh');
         return response.data;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { authService } from '../api/authService';
+import { authApi } from '../services/api/authApi';
 import './Home.css';
 
 function Home() {
@@ -10,7 +10,7 @@ function Home() {
 
     const handleLogout = async () => {
         try {
-            await authService.logout();
+            await authApi.logout();
             logout();
             navigate('/login');
         } catch (error) {

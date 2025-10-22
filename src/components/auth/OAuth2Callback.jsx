@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { authService } from '../api/authService';
+import { useAuth } from '../../context/AuthContext';
+import { authApi } from '../../services/api/authApi';
 
-function OAuth2Redirect() {
+function OAuth2Callback() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { login } = useAuth();
@@ -26,7 +26,7 @@ function OAuth2Redirect() {
                     localStorage.setItem('accessToken', accessToken);
 
                     // 그 다음 사용자 정보 가져오기
-                    const userData = await authService.getCurrentUser();
+                    const userData = await authApi.getCurrentUser();
                     login(accessToken, userData);
                     navigate('/');
                 } catch (error) {
@@ -56,4 +56,4 @@ function OAuth2Redirect() {
     );
 }
 
-export default OAuth2Redirect;
+export default OAuth2Callback;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { authService } from '../api/authService';
+import { authApi } from '../services/api/authApi';
 import './Profile.css';
 
 function Profile() {
@@ -15,7 +15,7 @@ function Profile() {
 
     const handleWithdraw = async () => {
         try {
-            await authService.withdraw();
+            await authApi.withdraw();
             logout();
             alert('회원 탈퇴가 완료되었습니다');
             navigate('/login');
