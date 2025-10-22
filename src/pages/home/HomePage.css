@@ -1,0 +1,85 @@
+.homepage-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fefeff 0%, #f8fbff 100%);
+  font-family: "Noto Sans KR", sans-serif;
+  overflow-x: hidden;
+}
+
+/* 헤더 */
+.homepage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 30px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(14px);
+  border-bottom: 2px solid #ffd166;
+  box-shadow: 0 4px 12px rgba(255, 209, 102, 0.25);
+  animation: fadeDown 0.8s ease;
+}
+
+@keyframes fadeDown {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* 로고 */
+.logo {
+  font-size: 38px;
+  font-weight: 800;
+  font-family: "Poppins", "Noto Sans KR", sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  letter-spacing: 1px;
+  cursor: default;
+  transition: transform 0.3s ease;
+}
+.logo:hover {
+  transform: scale(1.05);
+}
+.logo span {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.logo .green { color: #2fa36b; }
+.logo .coral { color: #ff9b7a; }
+.logo .sky { color: #87ceeb; }
+.logo .yellow { color: #ffd166; }
+
+.logo:hover span {
+  transform: translateY(-4px);
+}
+
+/* 네비게이션 */
+.nav-menu button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2fa36b;
+  margin: 0 16px;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.nav-menu button:hover {
+  color: #ff9b7a;
+  transform: translateY(-2px);
+}
+
+/* 메인 섹션 */
+.hero-section {
+  position: relative;
+  height: 85vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f8faff 0%, #fff5f1 100%);
+}

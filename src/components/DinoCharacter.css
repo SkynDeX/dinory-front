@@ -1,0 +1,45 @@
+.dino-wrapper {
+  position: absolute;
+  bottom: 40px;
+  right: 30px;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-direction: row-reverse;
+  z-index: 10;
+}
+
+.dino-lottie {
+  width: 150px;
+  height: 150px;
+  animation: floaty 3s ease-in-out infinite;
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.speech-bubble {
+  background: white;
+  border-radius: 16px;
+  padding: 14px 18px;
+  max-width: 220px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  border: 2px solid #ffd166;
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 14px;
+  color: #333;
+  position: relative;
+}
+
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  right: -14px;
+  bottom: 20px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent transparent transparent white;
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.15));
+}

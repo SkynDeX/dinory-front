@@ -3,6 +3,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import PrivateRoute from '../components/auth/PrivateRoute';
 import Login from '../components/auth/Login';
 import OAuth2Callback from '../components/auth/OAuth2Callback';
+import Intro from '../pages/intro/Intro';
+import HomePage from '../pages/home/HomePage';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
 import ImageTest from '../pages/ImageTest';
@@ -11,12 +13,15 @@ function AppRoutes() {
     return (
         <Routes>
             {/* Public Routes */}
+            <Route path="/intro" element={<Intro />} />
+            <Route path="/main" element={<HomePage />} />
+
             <Route path="/login" element={<Login />} />
             <Route path="/oauth2/redirect" element={<OAuth2Callback />} />
 
             {/* Private Routes */}
             <Route
-                path="/"
+                path="/home"
                 element={
                     <PrivateRoute>
                         <Home />
@@ -40,8 +45,11 @@ function AppRoutes() {
                 }
             />
 
+            {/* 기본 경로를 인트로로 변경시킴!!! */}
+            <Route path="/" element={<Navigate to="/intro" replace />} />
+
             {/* Catch all - redirect to home */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/intro" replace />} />
         </Routes>
     );
 }
