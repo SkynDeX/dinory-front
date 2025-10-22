@@ -1,0 +1,83 @@
+/* 전체 배경 */
+.hatch-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.25), rgba(0,0,0,0.85));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  animation: overlayFadeIn 0.8s ease forwards;
+}
+
+/* fade-out 시 */
+.hatch-overlay.fade-out {
+  animation: overlayFadeOut 1s ease forwards;
+}
+
+/* 중앙 콘텐츠 */
+.hatch-content {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.4);
+  animation: scaleIn 0.8s ease;
+}
+
+/* 알 영상 */
+.hatch-video {
+  width: 80vw;
+  max-width: 900px;
+  border-radius: 20px;
+  object-fit: cover;
+  filter: brightness(1.1);
+}
+
+/* Lottie Dino */
+.dino-appear {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #fefaf3, #fff9f0);
+  padding: 40px 20px;
+  border-radius: 20px;
+}
+
+.dino-lottie {
+  width: 280px;
+  height: 280px;
+}
+
+/* 텍스트 */
+.hatch-text {
+  margin-top: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #2fa36b;
+  font-family: "Pretendard", sans-serif;
+}
+
+/* 애니메이션 효과 */
+@keyframes overlayFadeIn {
+  from { opacity: 0; background: rgba(0,0,0,0.6); }
+  to { opacity: 1; background: rgba(0,0,0,0.85); }
+}
+
+@keyframes overlayFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; transform: scale(0.95); }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 1.2s ease forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

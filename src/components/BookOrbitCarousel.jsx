@@ -1,15 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import "./BookOrbitCarousel.css";
 import DinoCharacter from "./DinoCharacter";
+import RewardProgress from "./RewardProgress";
+import { RewardContext } from "./RewardContext";
 
 // 일단 예시로 달아둔 도서 데이터
 const books = [
   { id: 1, title: "달 위의 곰돌이", 
-           image: "/assets/intro/01.png", 
+           image: "/assets/intro/01.png",
            desc: "달 위에서 꿈꾸는 귀여운 곰돌이 이야기" },
 
   { id: 2, title: "바다의 인어", 
@@ -47,6 +49,9 @@ const THEME_COLORS = ["#2fa36b", "#ff9b7a", "#87ceeb", "#ffd166"];
 function BookOrbitCarousel() {
   const containerRef = useRef(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const { addStar } = useContext(RewardContext);
+  const rotationRef = useRef(0);
+  const targetRotation = useRef(0);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -129,11 +134,18 @@ function BookOrbitCarousel() {
 
     // 회전하는 캐러셀 애니메이션
     let rotation = 0;
-    const targetRotation = { value: 0 };
+    const step = (Math.PI * 2) / books.length;
 
     const animate = () => {
       requestAnimationFrame(animate);
-      rotation += (targetRotation.value - rotation) * 0.05;
+      rotation += (targetRotation.current - rotation) * 0.1;
+
+      // 가장 가까운 각도에서 스냅되게끔
+      if (Math.abs(targetRotation.current - rotation) < 0.001) {
+        const snapped = Math.round(rotation / step) * step;
+        rotation = snapped;
+        targetRotation.current = snapped;
+      }
 
       meshes.forEach((mesh, i) => {
         const angle = (i / books.length) * Math.PI * 2 + rotation;
@@ -157,11 +169,38 @@ function BookOrbitCarousel() {
       if (wheelLocked) return;
       wheelLocked = true;
       e.deltaY > 0
-        ? (targetRotation.value -= (Math.PI * 2) / books.length)
-        : (targetRotation.value += (Math.PI * 2) / books.length);
+        ? (targetRotation.current -= (Math.PI * 2) / books.length)
+        : (targetRotation.current += (Math.PI * 2) / books.length);
       setTimeout(() => (wheelLocked = false), 800);
     };
     container.addEventListener("wheel", onWheel, { passive: true });
+
+    // 마우스 드래그로 회전 제어 추가
+    let isDragging = false;
+    let prevX = 0;
+    const onMouseDown = (e) => {
+      isDragging = true;
+      prevX = e.clientX;
+    };
+    const onMouseMove = (e) => {
+      if (!isDragging) return;
+      const deltaX = e.clientX - prevX;
+      prevX = e.clientX;
+      targetRotation.current += deltaX * 0.002;
+    };
+    const onMouseUp = () => {
+      isDragging = false;
+    
+
+    // 드래그 끝날때 가장 가까운 각도에서 스냅되게끔
+    const step = (Math.PI * 2) / books.length;
+    const snapped = Math.round(targetRotation.current / step) * step;
+    targetRotation.current = snapped;
+    };
+
+    container.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
 
     // 화면 크기 변경 대응
     const onResize = () => {
@@ -175,27 +214,58 @@ function BookOrbitCarousel() {
     // 정리
     return () => {
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+      container.removeEventListener("mousedown", onMouseDown);
       container.removeEventListener("wheel", onWheel);
       while (container.firstChild) container.removeChild(container.firstChild);
       renderer.dispose();
     };
   }, []);
 
+  // 좌우 버튼 클릭 핸들러 추가
+  const handlePrev = () => {
+    targetRotation.current += (Math.PI * 2) / books.length;
+  };
+
+  const handleNext = () => {
+    targetRotation.current -= (Math.PI * 2) / books.length;
+  };
+
   // UI 렌더
   return (
     <div className="carousel-wrapper">
       <div ref={containerRef} className="three-container" />
 
-      <div className="carousel-controls">
-        <div className="carousel-title">{books[selectedIndex].title}</div>
-        <div className="carousel-index">
-          {selectedIndex + 1} / {books.length}
-        </div>
-      </div>
-
-      <DinoCharacter book={books[selectedIndex]} />
+      {/* 보상 진행도 (div로 감싸줌) */}
+      <div className="reward-progress-wrapper">
+      <RewardProgress />
     </div>
-  );
+
+    <div className="carousel-controls">
+      <div className="carousel-title">{books[selectedIndex].title}</div>
+      <div className="carousel-index">
+        {selectedIndex + 1} / {books.length}
+      </div>
+    </div>
+
+    {/* 테스트용 별 얻기 버튼!! */}
+    <button className="temp-reward-btn" onClick={addStar}>
+      별 1개 얻기 (테스트용)
+    </button>
+
+    {/* 좌우 네비게이션 버튼 */}
+    <button className="nav-btn prev-btn" onClick={handlePrev}>
+      &#10094;
+    </button>
+    <button className="nav-btn next-btn" onClick={handleNext}>
+      &#10095;
+    </button>
+
+    <DinoCharacter book={books[selectedIndex]} />
+  </div>
+);
+
 };
 
 export default BookOrbitCarousel;
