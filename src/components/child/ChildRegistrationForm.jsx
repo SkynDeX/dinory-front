@@ -1,58 +1,125 @@
 import react, { useState } from "react";
 
 // 재사용 가능한 폼 컴포넌트
-function ChildRegistrationForm() {
+function ChildRegistrationForm({
+    onSubmit,   // 등록 완료 핸들러
+    onCancel,   // 나중에 하기 핸들러
+    initialData,    // 수정 모드용 초기 데이터
+    mode = "register"
+}) {
 
     const options = [
-        {emoji: "", label: "낯가림"},
-        {emoji: "", label: "형제 갈등"},
-        {emoji: "", label: "분리불안"},
-        {emoji: "", label: "수면 문제"},
-        {emoji: "", label: "식사 거부"},
-        {emoji: "", label: "공격성"},
-        {emoji: "", label: "친구 관계"},
-        {emoji: "", label: "학교 적응"},
-        {emoji: "", label: "감정 표현"},
-        {emoji: "", label: "집중력"},
-        {emoji: "", label: "두려움"},
-        {emoji: "", label: "자신감 부족"},
+        { emoji: "😳", label: "낯가림" },
+        { emoji: "🧍‍♂️🧍‍♀️", label: "형제 갈등" },
+        { emoji: "🥺", label: "분리불안" },
+        { emoji: "😴", label: "수면 문제" },
+        { emoji: "🍽️🚫", label: "식사 거부" },
+        { emoji: "💢", label: "공격성" },
+        { emoji: "👭", label: "친구 관계" },
+        { emoji: "🏫", label: "학교 적응" },
+        { emoji: "🎭", label: "감정 표현" },
+        { emoji: "🎯", label: "집중력" },
+        { emoji: "😨", label: "두려움" },
+        { emoji: "😔", label: "자신감 부족" },
     ];
 
-    const [selected, setSelected] = useState([]);
+    // 폼 데이터 상태
+    const [formData, setFormData] = useState({
+        name: initialData?.name || "",
+        birthDate: initialData?.birthData || "",
+        gender: initialData?.gender || "",
+        concerns: initialData?.concerns || []
+    });
+
     const [showInput, setShowInput] = useState(false);
     const [etcText, setEtcText] = useState("");
 
-    const interestSelect = (label) => {
-        setSelected((prev) => {
-            prev.includes(label) 
-                ? prev.filter((item) => item !== label) 
-                : [...prev, label]
-        });
+    // 입력 필드 변경 핸들러
+    const handleInputChange = (field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
+    // 우려사항 선택/해제
+    const selectConcern = (label) => {
+        setFormData(prev => ({
+            ...prev,
+            concerns: prev.concerns.includes(label)
+            ? prev.concerns.filter((item) => item !== label)
+            : [...prev.concerns, label]
+        }));
     };
 
     const handleEtcClick = () => setShowInput(true);
 
     const handleEtcSubmit = () => {
         if(etcText.trim() !== "") {
-            setSelected((prev) => [...prev, etcText.trim()]);
+            setFormData((prev) => ({
+                ...prev,
+                concerns: [...prev.concerns, etcText.trim()]
+            }));
             setEtcText("");
             setShowInput(false);
         }
-    }
+    };
+
+    // 폼 제출
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        // 유효성 검사
+        if (!formData.name.trim()) {
+            alert("아이 이름을 입력해주세요");
+            return;
+        }
+
+        if (!formData.birthDate) {
+            alert("생년월일을 선택해주세요");
+            return;
+        }
+
+        if (!formData.gender) {
+            alert("성별을 입력해주세요");
+            return;
+        }
+
+        // 부모 컴포넌트로 데이터 전달
+        onSubmit?.(formData);
+    };
+
+    // 나중에 하기
+    const handleSkip = () => {
+        onCancel?.();
+    };
 
 
     return(
         <div>
             <div className="child_register_form">
-                <form>
+                <form onSubmit={handleSubmit}>
                     <h1>아이 이름</h1>
-                    <input type="text" placeholder="예: 명호"/>
+                    <input 
+                        type="text" 
+                        placeholder="예: 명호"
+                        value={formData.name}
+                        onChange={(e) => handleInputChange("name", e.target.value)}
+                    />
 
                     <h1>생년월일</h1>
-                    <input type="date" placeholder="날짜를 선택하세요"/>
+                    <input 
+                        type="date" 
+                        placeholder="날짜를 선택하세요"
+                        value={formData.birthDate}
+                        onChange={(e) => handleInputChange("birthDate", e.target.value)}
+                    />
 
                     <h1>성별</h1>
-                    <select>
+                    <select
+                        value={formData.gender}
+                        onChange={(e) => handleInputChange("gender", e.target.value)}
+                    >
                         <option value="">성별을 선택하세요</option>
                         <option value="male">남자</option>
                         <option value="female">여자</option>
@@ -64,8 +131,9 @@ function ChildRegistrationForm() {
                         {options.map((item) => (
                             <div
                                 key={item.label}
-                                className={`card${selected.includes(item.label)? "active" : ""}`}
-                                onClick={() => interestSelect(item.label)}>
+                                className={`card${formData.includes(item.label)? "active" : ""}`}
+                                onClick={() => selectConcern(item.label)}
+                            >
                                 <span className="emoji">{item.emoji}</span>
                                 <p>{item.label}</p>
                             </div>
@@ -92,11 +160,17 @@ function ChildRegistrationForm() {
                         )}
                     </div>
                     <div className="button_area">
-                        <button type="button" className="skip_btn">나중에 하기</button>
-                        <button type="submit" className="submit_btn">등록 완료</button>
+                        <button type="button" className="skip_btn" onClick={handleSkip}>
+                            {mode === "edit" ? "취소" : "나중에 하기"}
+                        </button>
+                        <button type="submit" className="submit_btn">
+                            {mode === "edit" ? "수정 완료" : "등록 완료"}
+                        </button>
                     </div>    
                 </form>
             </div>
         </div>
     );
 }
+
+export default ChildRegistrationForm;

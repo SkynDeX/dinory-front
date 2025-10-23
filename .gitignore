@@ -26,3 +26,7 @@ yarn-error.log*
 # IDE
 .vscode/
 .idea/
+
+# 참고용
+*.md
+*.tsx
