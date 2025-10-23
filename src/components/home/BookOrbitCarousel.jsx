@@ -4,14 +4,14 @@ import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPa
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import "./BookOrbitCarousel.css";
-import DinoCharacter from "./DinoCharacter";
+import DinoCharacter from "../dino/DinoCharacter";
 import RewardProgress from "./RewardProgress";
-import { RewardContext } from "./RewardContext";
+import { RewardContext } from "../../context/RewardContext";
 
-// 일단 예시로 달아둔 도서 데이터
+// 예시 도서 데이터
 const books = [
   { id: 1, title: "달 위의 곰돌이", 
-           image: "/assets/intro/01.png",
+           image: "/assets/intro/01.png", 
            desc: "달 위에서 꿈꾸는 귀여운 곰돌이 이야기" },
 
   { id: 2, title: "바다의 인어", 
@@ -37,33 +37,31 @@ const books = [
   { id: 7, title: "별빛 토끼", 
            image: "/assets/intro/07.png", 
            desc: "별빛을 따라 떠나는 토끼의 여행" },
-
+           
   { id: 8, title: "하늘의 펭귄", 
            image: "/assets/intro/08.png", 
            desc: "하늘을 나는 펭귄의 모험" },
 ];
 
-// 테마 색상
 const THEME_COLORS = ["#2fa36b", "#ff9b7a", "#87ceeb", "#ffd166"];
 
 function BookOrbitCarousel() {
   const containerRef = useRef(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { addStar } = useContext(RewardContext);
-  const rotationRef = useRef(0);
   const targetRotation = useRef(0);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    // 기존에 있는 캔버스를 초기화
+    // 기존 캔버스 초기화
     while (container.firstChild) container.removeChild(container.firstChild);
 
-    // 3D 장면 생성
+    // Scene
     const scene = new THREE.Scene();
 
-    // 배경 그라데이션 설정
+    // 배경 그라데이션
     const gradientCanvas = document.createElement("canvas");
     gradientCanvas.width = 32;
     gradientCanvas.height = 32;
@@ -77,7 +75,7 @@ function BookOrbitCarousel() {
     ctx.fillRect(0, 0, 32, 32);
     scene.background = new THREE.CanvasTexture(gradientCanvas);
 
-    // 카메라 설정
+    // 카메라
     const camera = new THREE.PerspectiveCamera(
       50,
       container.clientWidth / container.clientHeight,
@@ -86,19 +84,19 @@ function BookOrbitCarousel() {
     );
     camera.position.set(0, 0.5, 13);
 
-    // 렌더 설정
+    // 렌더러
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    // 조명 추가
+    // 조명
     const ambient = new THREE.AmbientLight(0xffffff, 1.4);
     const light = new THREE.DirectionalLight(0xffffff, 1.8);
     light.position.set(5, 10, 10);
     scene.add(ambient, light);
 
-    // 블룸 효과 설정
+    // 블룸 효과
     const composer = new EffectComposer(renderer);
     const renderPass = new RenderPass(scene, camera);
     const bloomPass = new UnrealBloomPass(
@@ -110,7 +108,7 @@ function BookOrbitCarousel() {
     composer.addPass(renderPass);
     composer.addPass(bloomPass);
 
-    // 책 모델 생성하기
+    // 책 모델
     const radius = 7;
     const loader = new THREE.TextureLoader();
     const bookGeom = new THREE.BoxGeometry(2.0, 2.6, 0.12);
@@ -132,7 +130,7 @@ function BookOrbitCarousel() {
       meshes.push(mesh);
     });
 
-    // 회전하는 캐러셀 애니메이션
+    // 회전 애니메이션
     let rotation = 0;
     const step = (Math.PI * 2) / books.length;
 
@@ -140,7 +138,7 @@ function BookOrbitCarousel() {
       requestAnimationFrame(animate);
       rotation += (targetRotation.current - rotation) * 0.1;
 
-      // 가장 가까운 각도에서 스냅되게끔
+      // 스냅
       if (Math.abs(targetRotation.current - rotation) < 0.001) {
         const snapped = Math.round(rotation / step) * step;
         rotation = snapped;
@@ -163,7 +161,35 @@ function BookOrbitCarousel() {
     };
     animate();
 
-    // 마우스 휠로 회전 제어하기
+    // 드래그 제어
+    let isDragging = false;
+    let prevX = 0;
+
+    const onMouseDown = (e) => {
+      isDragging = true;
+      prevX = e.clientX;
+    };
+
+    const onMouseMove = (e) => {
+      if (!isDragging) return;
+      const deltaX = e.clientX - prevX;
+      prevX = e.clientX;
+      targetRotation.current += deltaX * 0.002; 
+    };
+
+    const onMouseUp = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      // 스냅 (가까운 각도로 정렬)
+      const snapped = Math.round(targetRotation.current / step) * step;
+      targetRotation.current = snapped;
+    };
+
+    container.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
+    // 마우스 휠 제어
     let wheelLocked = false;
     const onWheel = (e) => {
       if (wheelLocked) return;
@@ -175,34 +201,7 @@ function BookOrbitCarousel() {
     };
     container.addEventListener("wheel", onWheel, { passive: true });
 
-    // 마우스 드래그로 회전 제어 추가
-    let isDragging = false;
-    let prevX = 0;
-    const onMouseDown = (e) => {
-      isDragging = true;
-      prevX = e.clientX;
-    };
-    const onMouseMove = (e) => {
-      if (!isDragging) return;
-      const deltaX = e.clientX - prevX;
-      prevX = e.clientX;
-      targetRotation.current += deltaX * 0.002;
-    };
-    const onMouseUp = () => {
-      isDragging = false;
-    
-
-    // 드래그 끝날때 가장 가까운 각도에서 스냅되게끔
-    const step = (Math.PI * 2) / books.length;
-    const snapped = Math.round(targetRotation.current / step) * step;
-    targetRotation.current = snapped;
-    };
-
-    container.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-
-    // 화면 크기 변경 대응
+    // 리사이즈 대응
     const onResize = () => {
       camera.aspect = container.clientWidth / container.clientHeight;
       camera.updateProjectionMatrix();
@@ -211,7 +210,7 @@ function BookOrbitCarousel() {
     };
     window.addEventListener("resize", onResize);
 
-    // 정리
+    // cleanup
     return () => {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("mousemove", onMouseMove);
@@ -223,49 +222,50 @@ function BookOrbitCarousel() {
     };
   }, []);
 
-  // 좌우 버튼 클릭 핸들러 추가
+  // 버튼 제어
   const handlePrev = () => {
     targetRotation.current += (Math.PI * 2) / books.length;
   };
-
   const handleNext = () => {
     targetRotation.current -= (Math.PI * 2) / books.length;
   };
 
-  // UI 렌더
   return (
     <div className="carousel-wrapper">
       <div ref={containerRef} className="three-container" />
 
-      {/* 보상 진행도 (div로 감싸줌) */}
-      <div className="reward-progress-wrapper">
-      <RewardProgress />
-    </div>
-
-    <div className="carousel-controls">
-      <div className="carousel-title">{books[selectedIndex].title}</div>
-      <div className="carousel-index">
-        {selectedIndex + 1} / {books.length}
+      {/* 왼쪽 상단 로고 */}
+      <div className="carousel-logo">
+        <h1 className="logo">
+          <span className="green">Din</span>
+          <span className="coral">o</span>
+          <span className="sky">r</span>
+          <span className="yellow">y</span>
+        </h1>
       </div>
+
+      {/* 보상 진행도 */}
+      <div className="reward-progress-wrapper">
+        <RewardProgress />
+      </div>
+
+      {/* 하단 제목/번호 */}
+      <div className="carousel-controls">
+        <div className="carousel-title">{books[selectedIndex].title}</div>
+        <div className="carousel-index">
+          {selectedIndex + 1} / {books.length}
+        </div>
+      </div>
+
+      {/* 테스트용 버튼 & 네비 */}
+      <button className="temp-reward-btn" onClick={addStar}>별 테스트</button>
+      <button className="nav-btn prev-btn" onClick={handlePrev}>&#10094;</button>
+      <button className="nav-btn next-btn" onClick={handleNext}>&#10095;</button>
+
+      {/* 오른쪽 하단 로티 캐릭터 */}
+      <DinoCharacter book={books[selectedIndex]} />
     </div>
-
-    {/* 테스트용 별 얻기 버튼!! */}
-    <button className="temp-reward-btn" onClick={addStar}>
-      별 1개 얻기 (테스트용)
-    </button>
-
-    {/* 좌우 네비게이션 버튼 */}
-    <button className="nav-btn prev-btn" onClick={handlePrev}>
-      &#10094;
-    </button>
-    <button className="nav-btn next-btn" onClick={handleNext}>
-      &#10095;
-    </button>
-
-    <DinoCharacter book={books[selectedIndex]} />
-  </div>
-);
-
-};
+  );
+}
 
 export default BookOrbitCarousel;

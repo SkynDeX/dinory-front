@@ -1,0 +1,162 @@
+.dino-wrapper {
+  position: absolute;
+  bottom: 40px;
+  right: 30px;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-direction: row-reverse;
+  z-index: 9999;
+}
+
+/* 공룡 본체 감싸는 */
+.dino-container {
+  width: 150px;
+  height: 150px;
+  cursor: pointer;
+  animation: floaty 3s ease-in-out infinite;
+  transition: transform 0.25s ease;
+}
+
+.dino-container:hover {
+  transform: scale(1.08);
+}
+
+.dino-lottie {
+  width: 150px;
+  height: 150px;
+}
+
+/* 둥실둥실 떠 있는 기본 애니메이션 */
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* 클릭 시 점프 */
+.jump {
+  animation: jump 0.6s ease-out;
+}
+
+@keyframes jump {
+  0% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-35px) scale(1.05); }
+  60% { transform: translateY(0) scale(0.95); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* 공통 말풍선 스타일 */
+.speech-bubble {
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 18px;
+  max-width: 230px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  border: 2px solid #ffd166;
+  font-family: "Noto Sans KR", sans-serif;
+  font-size: 14px;
+  color: #333;
+  position: relative;
+  left: 15px;
+  bottom: 55px;
+  animation: fadeIn 0.3s ease;
+}
+
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  right: -14px;
+  bottom: 20px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent transparent transparent white;
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.15));
+}
+
+/* 평소 말풍선 */
+.idle-bubble {
+  opacity: 0.9;
+  background: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  font-size: 13px;
+  color: #2fa36b;
+  border-color: #a2f5c6;
+}
+
+/* 살짝 흔들리며 반짝이는 효과 */
+.bouncey {
+  animation: pulse 3.5s ease-in-out infinite, glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-3px) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(0px) rotate(2deg);
+  }
+  75% {
+    transform: translateY(-2px) rotate(1deg);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 209, 102, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(255, 209, 102, 0.6);
+  }
+}
+
+/* 클릭 시 메뉴 말풍선 */
+.menu-bubble {
+  text-align: center;
+}
+
+.menu-bubble .menu-title {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, #2fa36b, #87ceeb, #ffd166, #ff9b7a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.3);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.menu-bubble button {
+  display: block;
+  background: none;
+  border: none;
+  color: #2fa36b;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 6px 0;
+  transition: color 0.2s ease;
+}
+
+.menu-bubble button:hover {
+  color: #ff9b7a;
+}
+
+/* 등장 애니메이션 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

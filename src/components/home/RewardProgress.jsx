@@ -1,12 +1,13 @@
 import React, { useContext, useState, useEffect } from "react";
-import { RewardContext } from "../components/RewardContext.jsx";
+import { RewardContext } from "../../context/RewardContext.jsx";
+import { FaStar } from "react-icons/fa";
+import { GiDinosaurEgg } from "react-icons/gi";
 import "./RewardProgress.css";
 
 function RewardProgress() {
   const { stars, eggs } = useContext(RewardContext);
   const [shine, setShine] = useState(false);
 
-  // 별 개수가 변할 때 반짝이는 효과 실행
   useEffect(() => {
     if (stars > 0) {
       setShine(true);
@@ -17,7 +18,14 @@ function RewardProgress() {
 
   return (
     <div className={`reward-bar ${shine ? "shine" : ""}`}>
-      <div className="reward-info">⭐ {stars} / 5 | 🥚 {eggs}</div>
+      <div className="reward-info">
+        <span className="icon-star">
+          <FaStar /> {stars} / 5
+        </span>
+        <span className="icon-egg">
+          <GiDinosaurEgg /> {eggs}
+        </span>
+      </div>
       <div className="bar-container">
         <div
           className="bar-fill"
