@@ -10,6 +10,7 @@ import Profile from "../pages/Profile";
 import ImageTest from "../pages/ImageTest";
 import LoadingScreen from "../components/common/LoadingScreen"; 
 import ChildRegistration from "../components/child/ChildRegistration.jsx";
+import ParentDashboard from "../components/parent/ParentDashboard.jsx";
 
 const MyDinos = lazy(() => import("../components/dino/MyDinos.jsx"));
 
@@ -65,6 +66,16 @@ function AppRoutes() {
           element={
             <PrivateRoute>
               <ChildRegistration />
+            </PrivateRoute>
+          }
+          />
+
+        {/* 부모 대시보드 */}
+        <Route
+          path="/parent/dashboard"
+          element={
+            <PrivateRoute>
+              <ParentDashboard />
             </PrivateRoute>
           }
           />

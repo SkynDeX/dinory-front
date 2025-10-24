@@ -35,7 +35,8 @@ function DinoCharacter() {
         <div className="speech-bubble menu-bubble">
           <p className="menu-title">뭐 할까?</p>
           <button onClick={() => navigate("/my-dinos")}>내 공룡 친구들</button>
-          <buttion onClick={() => navigate("/child/registration")}>자녀 등록</buttion>
+          <button onClick={() => navigate("/child/registration")}>자녀 등록</button>
+          <button onClick={() => navigate("/parent/dashboard")}>대시보드</button>
           <button disabled>추천좀요</button>
           <button disabled>화이팅</button>
         </div>

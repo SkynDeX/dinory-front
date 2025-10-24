@@ -1,0 +1,119 @@
+/* 부모 대시보드 래퍼 */
+.parent_dashboard_wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f8fdfb 0%, #fff5f1 100%);
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+/* 사이드바 */
+.dashboard_sidebar {
+  width: 280px;
+  background: white;
+  border-right: 2px solid #e0e0e0;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* 로고 */
+.sidebar_header .logo {
+  font-size: 28px;
+  font-weight: 800;
+  display: flex;
+  gap: 2px;
+  cursor: default;
+}
+
+.logo .green { color: #2fa36b; }
+.logo .coral { color: #ff9b7a; }
+.logo .sky { color: #87ceeb; }
+.logo .yellow { color: #ffd166; }
+
+/* 자녀 선택 영역 */
+.sidebar_child_selector {
+  width: 100%;
+}
+
+/* 네비게이션 */
+.sidebar_nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav_item {
+  width: 100%;
+  padding: 14px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #666;
+}
+
+.nav_item:hover {
+  background: rgba(47, 163, 107, 0.08);
+  color: #2fa36b;
+}
+
+.nav_item.active {
+  background: linear-gradient(90deg, #2fa36b, #87ceeb);
+  color: white;
+  box-shadow: 0 4px 12px rgba(47, 163, 107, 0.25);
+}
+
+/* 메인 콘텐츠 */
+.dashboard_content {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+/* 각 탭 래퍼 기본 스타일 */
+.overview_wrapper,
+.growth_report_wrapper,
+.story_history_wrapper,
+.settings_wrapper {
+  animation: fadeIn 0.4s ease;
+}
+
+/* 아이 페이지로 버튼 */
+.child_page_btn {
+  width: 100%;
+  padding: 14px 16px;
+  background: white;
+  border: 2px solid #2fa36b;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #2fa36b;
+  margin-top: auto;  /* 하단에 배치 */
+}
+
+.child_page_btn:hover {
+  background: #2fa36b;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(47, 163, 107, 0.3);
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
