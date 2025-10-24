@@ -1,4 +1,6 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
+import ReactDOM from "react-dom";
+import axios from "axios";
 import EggHatchModal from "../components/dino/EggHatchModal";
 
 export const RewardContext = createContext();
@@ -6,13 +8,11 @@ export const RewardContext = createContext();
 export const RewardProvider = ({ children }) => {
   const [stars, setStars] = useState(0);
   const [eggs, setEggs] = useState(0);
-  const [dinos, setDinos] = useState([]); // 내가 가진 공룡 목록
-
-  // 현재 부화 상태
+  const [dinos, setDinos] = useState([]);
   const [isHatching, setIsHatching] = useState(false);
   const [currentHatch, setCurrentHatch] = useState(null);
+  const token = localStorage.getItem("accessToken");
 
-  // 전체 공룡 리스트
   const dinoList = [
     { name: "벨로시랩터", colorType: "red" },
     { name: "디플로쿠스", colorType: "diplo" },
@@ -26,61 +26,107 @@ export const RewardProvider = ({ children }) => {
     { name: "파키케팔로사우루스", colorType: "pachycephalosaurus" },
   ];
 
-  // 별 얻기
-  const addStar = () => {
-    setStars((prev) => {
-      const newStars = prev + 1;
-      if (newStars >= 5) {
-        addEgg();
-        return 0;
+  /* 초기 리워드 데이터 로드 */
+  useEffect(() => {
+    if (!token) return;
+    const fetchData = async () => {
+      try {
+        const rewardRes = await axios.get("/api/reward/my", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setStars(rewardRes.data.stars);
+        setEggs(rewardRes.data.eggs);
+
+        const dinoRes = await axios.get("/api/dino/my", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const mappedDinos = (dinoRes.data || []).map((d) => ({
+          name: d.name || d.dinoName || d.dino_name || "이름 없는 공룡",
+          colorType: d.colorType || d.color_type || "red",
+        }));
+        setDinos(mappedDinos);
+      } catch (err) {
+        console.error("리워드 불러오기 실패:", err);
       }
-      return newStars;
-    });
-  };
+    };
+    fetchData();
+  }, [token]);
 
-  // 알 얻기
-  const addEgg = () => {
-    setEggs((prev) => {
-      const newEggs = prev + 1;
-      // 알이 3개 이상이면 자동 부화
-      if (newEggs >= 3) {
-        hatchEgg();
-        return 0;
-      }
-      return newEggs;
-    });
-  };
+  /* 별 추가 */
+  const addStar = async () => {
+    try {
+      const res = await axios.post(
+        "/api/reward/star",
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const newStars = res.data.stars;
+      const newEggs = res.data.eggs;
 
-  // 랜덤 공룡 생성
-  // 이미 얻은건 생성 안되게끔
-  const getRandomDino = () => {
-    // 아직 얻지 않은 공룡만 필터링해서
-    const remaining = dinoList.filter(
-      (d) => !dinos.some((owned) => owned.name === d.name)
-    );
+      setStars(newStars);
+      setEggs(newEggs);
 
-    // 다 모았을 경우에는 예외 처리
-    if (remaining.length === 0) {
-      alert("모든 공룡을 다 모았어요!");
-      return null;
+      if (newStars === 0 && newEggs > eggs) {
+        await hatchEgg();  
     }
-
-    // 남은 공룡중에서 하나를 랜덤으로 나오게끔
-    const random = Math.floor(Math.random() * remaining.length);
-    return remaining[random];
+    
+    } catch (err) {
+      console.error("별 추가 실패:", err);
+    }
   };
 
-  // 부화 로직
-  const hatchEgg = () => {
-    const newDino = getRandomDino();
-    if (!newDino) return; // null이면 중단
-
-    setDinos((prev) => [...prev, newDino]);
-    setCurrentHatch(newDino);
-    setIsHatching(true);
+  /* 알 생성 */
+  const addEgg = async () => {
+    try {
+      const res = await axios.post(
+        "/api/reward/egg",
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const newStars = res.data.stars ?? stars;
+      const newEggs = res.data.eggs ?? eggs;
+      setStars(newStars);
+      setEggs(newEggs);
+      if (newEggs >= 1) await hatchEgg();
+    } catch (err) {
+      console.error("알 추가 실패:", err);
+    }
   };
 
-  // 부화 모달 닫기
+  /* 부화 로직 (성능 개선 버전) */
+  const hatchEgg = async () => {
+    try {
+      const remaining = dinoList.filter(
+        (d) => !dinos.some((owned) => owned.name === d.name)
+      );
+      if (remaining.length === 0) {
+        alert("모든 공룡을 다 모았어요!");
+        return;
+      }
+      const random = Math.floor(Math.random() * remaining.length);
+      const newDino = remaining[random];
+
+      const res = await axios.post(
+        "/api/dino/hatch",
+        null,
+        {
+          params: { name: newDino.name, colorType: newDino.colorType },
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setDinos((prev) => [...prev, res.data]);
+      setTimeout(() => {
+        setCurrentHatch(newDino);
+        setIsHatching(true);
+      }, 500); // 렌더 프레임 안정화
+    } catch (err) {
+      console.error("공룡 부화 실패:", err);
+    }
+  };
+
+  /* 모달 닫기 */
   const handleCloseModal = () => {
     setIsHatching(false);
     setCurrentHatch(null);
@@ -88,23 +134,21 @@ export const RewardProvider = ({ children }) => {
 
   return (
     <RewardContext.Provider
-      value={{
-        stars,
-        eggs,
-        dinos,
-        addStar,
-      }}
+      value={{ stars, eggs, dinos, addStar, addEgg, isHatching, currentHatch }}
     >
       {children}
 
-      {/* 부화 모달 */}
-      {isHatching && currentHatch && (
-        <EggHatchModal
-          color={currentHatch.colorType}
-          name={currentHatch.name}
-          onClose={handleCloseModal}
-        />
-      )}
+      {isHatching && currentHatch &&
+        ReactDOM.createPortal(
+          <EggHatchModal
+            key={currentHatch.name}
+            color={currentHatch.colorType}
+            name={currentHatch.name}
+            onClose={handleCloseModal}
+          />,
+          document.body
+        )
+      }
     </RewardContext.Provider>
   );
 };

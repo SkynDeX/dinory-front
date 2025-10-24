@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
 import { RewardContext } from "../../context/RewardContext";
 import { Player } from "@lottiefiles/react-lottie-player";
+import { useNavigate } from "react-router-dom";
 import "./MyDinos.css";
 
-// 공룡 Lottie 파일 import
 import redTRex from "../../assets/lottie/red-t-rex.json";
 import shortDiplodocus from "../../assets/lottie/short-diplodocus.json";
 import pteranodon from "../../assets/lottie/pteranodon.json";
@@ -14,7 +14,6 @@ import stegosaurus from "../../assets/lottie/stegosaurus.json";
 import spinosaurus from "../../assets/lottie/spinosaurus.json";
 import trex from "../../assets/lottie/t-rex.json";
 import pachycephalosaurus from "../../assets/lottie/pachycephalosaurus.json";
-import { useNavigate } from "react-router-dom";
 
 // 공룡 로티 매핑
 const dinoMap = {
@@ -30,7 +29,7 @@ const dinoMap = {
   pachycephalosaurus,
 };
 
-// 공룡 설명 예시
+// 공룡 설명 모달용
 const dinoDescriptions = {
   red: "빠르고 용감한 벨로시랩터! 불같은 성격이지만 친구를 잘 챙겨요.",
   diplo: "목이 길어 멀리 있는 나뭇잎도 먹을 수 있는 디플로쿠스예요.",
@@ -63,24 +62,17 @@ function MyDinos() {
               className="dino-card"
               onClick={() => setSelectedDino(dino)}
             >
-              <Player
-                autoplay
-                loop
-                src={dinoMap[dino.colorType]}
-                className="dino-lottie"
-              />
+              <Player autoplay loop src={dinoMap[dino.colorType]} className="dino-lottie" />
               <div className="dino-name">{dino.name}</div>
             </div>
           ))}
         </div>
       )}
 
-      {/* 홈으로 가기 버튼! */}
       <button className="home-btn" onClick={() => navigate("/main")}>
         홈으로 돌아가기
       </button>
 
-      {/* 공룡 도감 모달 */}
       {selectedDino && (
         <div
           className="dino-modal-overlay"

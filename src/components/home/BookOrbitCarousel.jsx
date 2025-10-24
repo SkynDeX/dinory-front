@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState, useMemo } from "react";
 import * as THREE from "three";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
@@ -7,6 +7,7 @@ import "./BookOrbitCarousel.css";
 import DinoCharacter from "../dino/DinoCharacter";
 import RewardProgress from "./RewardProgress";
 import { RewardContext } from "../../context/RewardContext";
+import BookInfoModal from "../dino/BookInfoModal"; 
 
 // 예시 도서 데이터
 const books = [
@@ -50,18 +51,24 @@ function BookOrbitCarousel() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { addStar } = useContext(RewardContext);
   const targetRotation = useRef(0);
+  const dragDistanceRef = useRef(0);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
+
+  const textures = useMemo(() => {
+    const loader = new THREE.TextureLoader();
+    return books.map((book) => loader.load(process.env.PUBLIC_URL + book.image));
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-
-    // 기존 캔버스 초기화
     while (container.firstChild) container.removeChild(container.firstChild);
 
-    // Scene
     const scene = new THREE.Scene();
 
-    // 배경 그라데이션
+    // 배경
     const gradientCanvas = document.createElement("canvas");
     gradientCanvas.width = 32;
     gradientCanvas.height = 32;
@@ -75,7 +82,6 @@ function BookOrbitCarousel() {
     ctx.fillRect(0, 0, 32, 32);
     scene.background = new THREE.CanvasTexture(gradientCanvas);
 
-    // 카메라
     const camera = new THREE.PerspectiveCamera(
       50,
       container.clientWidth / container.clientHeight,
@@ -84,25 +90,22 @@ function BookOrbitCarousel() {
     );
     camera.position.set(0, 0.5, 13);
 
-    // 렌더러
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    // 조명
-    const ambient = new THREE.AmbientLight(0xffffff, 1.4);
-    const light = new THREE.DirectionalLight(0xffffff, 1.8);
+    const ambient = new THREE.AmbientLight(0xffffff, 1.2);
+    const light = new THREE.DirectionalLight(0xffffff, 1.5);
     light.position.set(5, 10, 10);
     scene.add(ambient, light);
 
-    // 블룸 효과
     const composer = new EffectComposer(renderer);
     const renderPass = new RenderPass(scene, camera);
     const bloomPass = new UnrealBloomPass(
       new THREE.Vector2(container.clientWidth, container.clientHeight),
-      0.6,
-      0.4,
+      0.15,
+      0.1,
       0.85
     );
     composer.addPass(renderPass);
@@ -110,77 +113,60 @@ function BookOrbitCarousel() {
 
     // 책 모델
     const radius = 7;
-    const loader = new THREE.TextureLoader();
-    const bookGeom = new THREE.BoxGeometry(2.0, 2.6, 0.12);
+    const geom = new THREE.BoxGeometry(2.0, 2.6, 0.25);
     const meshes = [];
-
     books.forEach((book, i) => {
-      const tex = loader.load(process.env.PUBLIC_URL + book.image);
       const mat = new THREE.MeshStandardMaterial({
-        map: tex,
+        map: textures[i],
         emissive: new THREE.Color(THEME_COLORS[i % 4]),
         emissiveIntensity: 0.25,
-        roughness: 0.25,
-        metalness: 0.15,
       });
-      const mesh = new THREE.Mesh(bookGeom, mat);
-      mesh.userData = { index: i };
+      const mesh = new THREE.Mesh(geom, mat);
+      mesh.userData = { index: i, title: book.title };
       mesh.position.y = 0.2;
       scene.add(mesh);
       meshes.push(mesh);
     });
 
-    // 회전 애니메이션
     let rotation = 0;
     const step = (Math.PI * 2) / books.length;
 
     const animate = () => {
       requestAnimationFrame(animate);
-      rotation += (targetRotation.current - rotation) * 0.1;
-
-      // 스냅
-      if (Math.abs(targetRotation.current - rotation) < 0.001) {
-        const snapped = Math.round(rotation / step) * step;
-        rotation = snapped;
-        targetRotation.current = snapped;
-      }
-
+      rotation += (targetRotation.current - rotation) * 0.08;
       meshes.forEach((mesh, i) => {
         const angle = (i / books.length) * Math.PI * 2 + rotation;
         mesh.position.set(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
         mesh.lookAt(camera.position);
-
         const dist = Math.abs(angle % (Math.PI * 2) - Math.PI);
         const glow = 1 - Math.min(1, dist / Math.PI);
-        mesh.scale.setScalar(1 + glow * 0.5);
-
+        mesh.scale.setScalar(1 + glow * 0.45);
         if (glow > 0.9) setSelectedIndex(i);
       });
-
       composer.render();
     };
     animate();
 
-    // 드래그 제어
     let isDragging = false;
     let prevX = 0;
-
     const onMouseDown = (e) => {
       isDragging = true;
       prevX = e.clientX;
+      dragDistanceRef.current = 0;
     };
-
     const onMouseMove = (e) => {
       if (!isDragging) return;
       const deltaX = e.clientX - prevX;
+      dragDistanceRef.current += Math.abs(deltaX);
+      if (dragDistanceRef.current > 5)
+        targetRotation.current += deltaX * 0.002;
       prevX = e.clientX;
-      targetRotation.current += deltaX * 0.002; 
     };
 
     const onMouseUp = () => {
       if (!isDragging) return;
       isDragging = false;
-      // 스냅 (가까운 각도로 정렬)
+      if (dragDistanceRef.current < 5) return;
       const snapped = Math.round(targetRotation.current / step) * step;
       targetRotation.current = snapped;
     };
@@ -189,19 +175,12 @@ function BookOrbitCarousel() {
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseup", onMouseUp);
 
-    // 마우스 휠 제어
-    let wheelLocked = false;
     const onWheel = (e) => {
-      if (wheelLocked) return;
-      wheelLocked = true;
-      e.deltaY > 0
-        ? (targetRotation.current -= (Math.PI * 2) / books.length)
-        : (targetRotation.current += (Math.PI * 2) / books.length);
-      setTimeout(() => (wheelLocked = false), 800);
+      e.preventDefault();
+      targetRotation.current += e.deltaY > 0 ? -step : step;
     };
-    container.addEventListener("wheel", onWheel, { passive: true });
+    container.addEventListener("wheel", onWheel, { passive: false });
 
-    // 리사이즈 대응
     const onResize = () => {
       camera.aspect = container.clientWidth / container.clientHeight;
       camera.updateProjectionMatrix();
@@ -210,19 +189,27 @@ function BookOrbitCarousel() {
     };
     window.addEventListener("resize", onResize);
 
-    // cleanup
     return () => {
+      container.removeEventListener("wheel", onWheel);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
       container.removeEventListener("mousedown", onMouseDown);
-      container.removeEventListener("wheel", onWheel);
       while (container.firstChild) container.removeChild(container.firstChild);
       renderer.dispose();
     };
-  }, []);
+  }, [textures]);
 
-  // 버튼 제어
+  const handleReadBook = async () => {
+    try {
+      await addStar();
+      setSelectedBook(books[selectedIndex]);
+      setIsModalOpen(true);
+    } catch (err) {
+      console.error("별 추가 실패:", err);
+    }
+  };
+
   const handlePrev = () => {
     targetRotation.current += (Math.PI * 2) / books.length;
   };
@@ -234,7 +221,6 @@ function BookOrbitCarousel() {
     <div className="carousel-wrapper">
       <div ref={containerRef} className="three-container" />
 
-      {/* 왼쪽 상단 로고 */}
       <div className="carousel-logo">
         <h1 className="logo">
           <span className="green">Din</span>
@@ -244,28 +230,37 @@ function BookOrbitCarousel() {
         </h1>
       </div>
 
-      {/* 보상 진행도 */}
       <div className="reward-progress-wrapper">
         <RewardProgress />
       </div>
 
-      {/* 하단 제목/번호 */}
       <div className="carousel-controls">
         <div className="carousel-title">{books[selectedIndex].title}</div>
         <div className="carousel-index">
           {selectedIndex + 1} / {books.length}
         </div>
+
+        <button className="book-read-btn" onClick={handleReadBook}>
+          책 읽기
+        </button>
       </div>
 
-      {/* 테스트용 버튼 & 네비 */}
-      <button className="temp-reward-btn" onClick={addStar}>별 테스트</button>
-      <button className="nav-btn prev-btn" onClick={handlePrev}>&#10094;</button>
-      <button className="nav-btn next-btn" onClick={handleNext}>&#10095;</button>
+      <button className="nav-btn prev-btn" onClick={handlePrev}>
+        &#10094;
+      </button>
+      <button className="nav-btn next-btn" onClick={handleNext}>
+        &#10095;
+      </button>
 
-      {/* 오른쪽 하단 로티 캐릭터 */}
       <DinoCharacter book={books[selectedIndex]} />
+
+      {/* 모달 표시 */}
+      {isModalOpen && selectedBook && (
+        <BookInfoModal book={selectedBook} onClose={() => setIsModalOpen(false)} />
+      )}
     </div>
   );
 }
+
 
 export default BookOrbitCarousel;
