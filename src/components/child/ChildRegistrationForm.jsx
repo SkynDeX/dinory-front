@@ -1,4 +1,5 @@
-import react, { useState } from "react";
+import react, { useEffect, useState, useRef } from "react";
+import './ChildRegistrationForm.css';
 
 // 재사용 가능한 폼 컴포넌트
 function ChildRegistrationForm({
@@ -33,6 +34,7 @@ function ChildRegistrationForm({
 
     const [showInput, setShowInput] = useState(false);
     const [etcText, setEtcText] = useState("");
+    const inputCardRef = useRef(null);
 
     // 입력 필드 변경 핸들러
     const handleInputChange = (field, value) => {
@@ -60,10 +62,35 @@ function ChildRegistrationForm({
                 ...prev,
                 concerns: [...prev.concerns, etcText.trim()]
             }));
-            setEtcText("");
+            setEtcText(""); // 입력 내용 초기화
             setShowInput(false);
         }
     };
+
+    // 바깥 클릭 감지
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (inputCardRef.current && !inputCardRef.current.contains(event.target)) {
+                setShowInput(false);
+                setEtcText("");
+            }
+        };
+
+        if (showInput) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showInput]);
+
+
+    // 기존 우려사항에 기타로 등록된 항목 필터링
+    const customConcerns = formData.concerns.filter(
+        concern => !options.find(opt => opt.label === concern)  
+    );
+
 
     // 폼 제출
     const handleSubmit = (e) => {
@@ -99,7 +126,7 @@ function ChildRegistrationForm({
         <div>
             <div className="child_register_form">
                 <form onSubmit={handleSubmit}>
-                    <h1>아이 이름</h1>
+                    <h3>아이 이름</h3>
                     <input 
                         type="text" 
                         placeholder="예: 명호"
@@ -107,7 +134,7 @@ function ChildRegistrationForm({
                         onChange={(e) => handleInputChange("name", e.target.value)}
                     />
 
-                    <h1>생년월일</h1>
+                    <h3>생년월일</h3>
                     <input 
                         type="date" 
                         placeholder="날짜를 선택하세요"
@@ -115,7 +142,7 @@ function ChildRegistrationForm({
                         onChange={(e) => handleInputChange("birthDate", e.target.value)}
                     />
 
-                    <h1>성별</h1>
+                    <h3>성별</h3>
                     <select
                         value={formData.gender}
                         onChange={(e) => handleInputChange("gender", e.target.value)}
@@ -125,13 +152,13 @@ function ChildRegistrationForm({
                         <option value="female">여자</option>
                     </select>
 
-                    <h1>특별히 신경 쓰이는 부분 (선택)</h1>
+                    <h3>특별히 신경 쓰이는 부분 (선택)</h3>
                     <p>아이의 정서 발달에 도움이 되는 맞춤 동화를 제공해요 (여러 개 선택 가능)</p>
                     <div className="child_register_card_grid">
                         {options.map((item) => (
                             <div
                                 key={item.label}
-                                className={`card${formData.includes(item.label)? "active" : ""}`}
+                                className={`card ${formData.concerns.includes(item.label) ? "active" : ""}`}
                                 onClick={() => selectConcern(item.label)}
                             >
                                 <span className="emoji">{item.emoji}</span>
@@ -139,8 +166,20 @@ function ChildRegistrationForm({
                             </div>
                         ))}
 
+                        {/* 직접 입력으로 추가된 우려사항 카드 표시 */}
+                        {customConcerns.map((concern) => (
+                            <div
+                                key={concern}
+                                className="card active"
+                                onClick={() => selectConcern(concern)}
+                            >
+                                <span className="emoji">✏️</span>
+                                <p>{concern}</p>
+                            </div>
+                        ))}
+
                         {showInput ? (
-                            <div className="card_input_card">
+                            <div className="card_input_card" ref={inputCardRef}>
                                 <input 
                                     type="text"
                                     placeholder="직접 입력"

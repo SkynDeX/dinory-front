@@ -9,6 +9,7 @@ import Home from "../pages/Home";
 import Profile from "../pages/Profile";
 import ImageTest from "../pages/ImageTest";
 import LoadingScreen from "../components/common/LoadingScreen"; 
+import ChildRegistration from "../components/child/ChildRegistration.jsx";
 
 const MyDinos = lazy(() => import("../components/dino/MyDinos.jsx"));
 
@@ -57,6 +58,16 @@ function AppRoutes() {
             </PrivateRoute>
           }
         />
+
+        {/* 자녀 등록 */}
+        <Route
+          path="/child/registration"
+          element={
+            <PrivateRoute>
+              <ChildRegistration />
+            </PrivateRoute>
+          }
+          />
 
         {/* 기본 경로 */}
         <Route path="/" element={<Navigate to="/intro" replace />} />

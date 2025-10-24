@@ -2,6 +2,8 @@ import react from "react";
 import ChildRegistrationForm from "./ChildRegistrationForm";
 import { useNavigate } from "react-router-dom";
 import { registerChild } from "../../services/api/childApi";
+import './ChildRegistration.css';
+import baby from '../../assets/baby.png'
 
 // 자녀 등록 랜딩 페이지
 function ChildRegistration() {
@@ -14,12 +16,13 @@ function ChildRegistration() {
             const response = await registerChild({
                 name: formData.name,
                 birthDate: formData.birthDate,
-                genter: formData.gender,
+                gender: formData.gender,
                 concerns: formData.concerns
             });
 
             console.log('자녀 등록 성공:', response);
             alert(`${formData.name} 등록이 완료되었습니다!`);
+            navigate('/parent/dashboard'); // 등록 후 대시보드로 이동
         } catch (e) {
             console.error('등록 실패:', e);
             alert('등록에 실패했습니다. 다시 시도해주세요.');
@@ -33,15 +36,20 @@ function ChildRegistration() {
     };
     
     return(
-        <div>
-            <h3>내 아이 등록하기</h3>
-            <p>아이의 정보를 입력하면 더 맞춤화된 동화를 제공할 수 있어요</p>
+        <div className="child_registration_wrapper">
+            <div className="registration_header">
+                <img src={baby} alt="baby" width={100} height={100} />
+                <h3>내 아이 등록하기</h3>
+                <p>아이의 정보를 입력하면 더 맞춤화된 동화를 제공할 수 있어요</p>
+            </div>
 
-            <ChildRegistrationForm 
-                onSubmit={handleRegister}
-                onCancel={handleSkip}
-                moade="register"
-            />
+            <div className="registration_form_container">
+                <ChildRegistrationForm 
+                    onSubmit={handleRegister}
+                    onCancel={handleSkip}
+                    mode="register"
+                />
+            </div>   
         </div>
     );
 }
