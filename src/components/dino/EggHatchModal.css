@@ -29,8 +29,18 @@
   width: 80vw;
   max-width: 900px;
   border-radius: 20px;
-  object-fit: cover;
-  filter: brightness(1.1);
+  object-fit: contain;  /* cover → contain 변경 (리샘플링 감소) */
+  
+  /* ✅ GPU 가속 명시 */
+  transform: translateZ(0);
+  will-change: transform;
+  
+  /* ✅ filter 제거 또는 경량화 */
+  /* filter: brightness(1.1); */  /* 주석 처리 */
+  
+  /* ✅ 하드웨어 가속 활성화 */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Lottie Dino */

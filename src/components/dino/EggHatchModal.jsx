@@ -46,7 +46,7 @@ function EggHatchModal({ color, name, onClose }) {
             src={eggVideo}
             autoPlay
             playsInline
-            muted
+            muted={true}
             className="hatch-video"
             onEnded={handleVideoEnd}
           />
