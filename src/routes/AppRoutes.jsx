@@ -11,6 +11,9 @@ import ImageTest from "../pages/ImageTest";
 import LoadingScreen from "../components/common/LoadingScreen"; 
 import ChildRegistration from "../components/child/ChildRegistration.jsx";
 import ParentDashboard from "../components/parent/ParentDashboard.jsx";
+import ChildSelectPage from "../components/child/ChildSelectPage.jsx";
+import EmotionCheckIn from "../components/child/EmotionCheckIn.jsx";
+import InterestSelection from "../components/child/InterestSelection.jsx";
 
 const MyDinos = lazy(() => import("../components/dino/MyDinos.jsx"));
 
@@ -56,6 +59,36 @@ function AppRoutes() {
           element={
             <PrivateRoute>
               <MyDinos />
+            </PrivateRoute>
+          }
+        />
+
+        {/* 자녀 선택 */}
+        <Route
+          path="/child/select"
+          element={
+            <PrivateRoute>
+              <ChildSelectPage />
+            </PrivateRoute>
+          }
+        />
+
+        {/* 자녀 감정 선택 */}
+        <Route
+          path="/child/emotion"
+          element={
+            <PrivateRoute>
+              <EmotionCheckIn />
+            </PrivateRoute>
+          }
+        />
+
+        {/* 자녀 관심사 선택 */}
+        <Route
+          path="/child/interest"
+          element={
+            <PrivateRoute>
+              <InterestSelection />
             </PrivateRoute>
           }
         />

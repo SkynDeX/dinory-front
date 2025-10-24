@@ -28,7 +28,7 @@ function OAuth2Callback() {
                     // 그 다음 사용자 정보 가져오기
                     const userData = await authApi.getCurrentUser();
                     login(accessToken, userData);
-                    navigate('/');
+                    navigate('/child/select');
                 } catch (error) {
                     console.error('Failed to get user info:', error);
                     alert('사용자 정보를 가져오는데 실패했습니다');

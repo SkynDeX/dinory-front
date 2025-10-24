@@ -10,7 +10,7 @@ export const registerChild = async (childData) => {
             childData,
             {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                 }
             }
         );
@@ -29,7 +29,7 @@ export const getChildren = async () => {
             `${API_BASE_URL}/parent/children`,
             {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                 }
             }
         );
@@ -48,7 +48,7 @@ export const getChildDetail = async (childId) => {
             `${API_BASE_URL}/parent/child/${childId}`,
             {
                 haeders: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                 }                    
             }
         );
@@ -68,7 +68,7 @@ export const updateChild = async (childId, childData) => {
             childData,
             {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                 }
             }
         );
@@ -87,7 +87,7 @@ export const deleteChild = async (childId) => {
         `${API_BASE_URL}/parent/child/${childId}`,
         {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             }
         }
     );
