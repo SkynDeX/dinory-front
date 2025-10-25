@@ -1,0 +1,14 @@
+.story_reading_wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #fff5e6 0%, #ffe6f0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #666;
+    padding: 4rem;
+}

@@ -10,6 +10,8 @@ export const AuthProvider = ({ children }) => {
         const token = localStorage.getItem('accessToken');
         if (token) {
             setLoading(false);
+            // 토큰있으면 사용자로 인정
+            setUser({authenticated: true })
         } else {
             setLoading(false);
         }

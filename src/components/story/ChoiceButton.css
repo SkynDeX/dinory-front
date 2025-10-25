@@ -1,0 +1,54 @@
+.choice_button {
+    width: 100%;
+    padding: 1.5rem;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.choice_button:hover {
+    border-color: #ffd166;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.choice_button:active {
+    transform: translateY(-2px);
+}
+
+.choice_content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.choice_text {
+    font-size: 1.1rem;
+    color: #333;
+    line-height: 1.5;
+}
+
+.choice_meta {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ability_badge {
+    padding: 0.4rem 1rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .choice_button {
+        padding: 1.2rem;
+    }
+
+    .choice_text {
+        font-size: 1rem;
+    }
+}

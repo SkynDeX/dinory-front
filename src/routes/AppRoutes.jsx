@@ -14,6 +14,8 @@ import ParentDashboard from "../components/parent/ParentDashboard.jsx";
 import ChildSelectPage from "../components/child/ChildSelectPage.jsx";
 import EmotionCheckIn from "../components/child/EmotionCheckIn.jsx";
 import InterestSelection from "../components/child/InterestSelection.jsx";
+import StoryList from "../components/story/StoryList.jsx";
+import StoryReading from "../components/story/StoryReading.jsx";
 
 const MyDinos = lazy(() => import("../components/dino/MyDinos.jsx"));
 
@@ -111,6 +113,25 @@ function AppRoutes() {
               <ParentDashboard />
             </PrivateRoute>
           }
+          />
+
+          {/* 동화 목록 */}
+          <Route 
+            path="/story/list"
+            element={
+              <PrivateRoute>
+                <StoryList />
+              </PrivateRoute>
+            }
+          />
+          {/* 동화 읽기 */}
+          <Route 
+            path="/story/:storyId"
+            element={
+              <PrivateRoute>
+                <StoryReading />
+              </PrivateRoute>
+            }
           />
 
         {/* 기본 경로 */}

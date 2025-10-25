@@ -1,0 +1,128 @@
+.story_completion_wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff5e6 0%, #ffe6f0 100%);
+    padding: 2rem;
+}
+
+.completion_content {
+    max-width: 600px;
+    text-align: center;
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.completion_icon {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.completion_content h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.completion_message {
+    font-size: 1.2rem;
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+
+.completion_celebration {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.star {
+    font-size: 2.5rem;
+    animation: twinkle 1.5s infinite;
+}
+
+.star:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.star:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+@keyframes twinkle {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.2);
+    }
+}
+
+.home_button {
+    padding: 1rem 3rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #ffd166 0%, #ff9b7a 100%);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 155, 122, 0.3);
+}
+
+.home_button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 155, 122, 0.4);
+}
+
+.home_button:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .completion_content {
+        padding: 2rem 1.5rem;
+    }
+
+    .completion_icon {
+        font-size: 4rem;
+    }
+
+    .completion_content h2 {
+        font-size: 1.5rem;
+    }
+
+    .completion_message {
+        font-size: 1rem;
+    }
+}
