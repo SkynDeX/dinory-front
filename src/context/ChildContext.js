@@ -31,9 +31,14 @@ export function ChildProvider({ children }) {
         }
     };
 
-    // 초기 로드
+    // 초기 로드 (토큰이 있을 때만 실행)
     useEffect(() => {
-        fetchChildren();
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+            fetchChildren();
+        } else {
+            setLoading(false);
+        }
     }, []);
 
     // 자녀 추가

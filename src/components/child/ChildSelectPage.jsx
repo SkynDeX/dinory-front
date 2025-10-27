@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useChild } from "../../context/ChildContext";
 import LoadingScreen from "../common/LoadingScreen";
@@ -9,7 +9,12 @@ import "./ChildSelectPage.css";
 function ChildSelectPage() {
 
     const navigate = useNavigate();
-    const { childrenList, loading, setSelectedChild } = useChild();
+    const { childrenList, loading, setSelectedChild, fetchChildren } = useChild();
+
+    // 페이지 진입 시 자녀 목록 다시 불러오기
+    useEffect(() => {
+        fetchChildren();
+    }, []);
 
     const handleSelectChild = (child) => {
         // Context에 선택된 자녀 저장
