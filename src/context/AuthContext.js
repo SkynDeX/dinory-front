@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { authApi } from '../services/api/authApi';
 
 const AuthContext = createContext(null);
 
@@ -7,14 +8,26 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem('accessToken');
-        if (token) {
+        const initAuth = async () => {
+            const token = localStorage.getItem('accessToken');
+
+            if (token) {
+                try {
+                    // 백엔드에 토큰 유효성 검증 및 사용자 정보 조회
+                    const userData = await authApi.getCurrentUser();
+                    setUser(userData);
+                } catch (error) {
+                    console.error('Token validation failed:', error);
+                    // 토큰이 만료되었거나 유효하지 않음
+                    localStorage.removeItem('accessToken');
+                    setUser(null);
+                }
+            }
+
             setLoading(false);
-            // 토큰있으면 사용자로 인정
-            setUser({authenticated: true })
-        } else {
-            setLoading(false);
-        }
+        };
+
+        initAuth();
     }, []);
 
     const login = (accessToken, userData) => {
