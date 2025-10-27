@@ -40,7 +40,7 @@ function InterestSelection() {
 
         // 선택된 관심사 배열로 저장 (id만 추출)
         const interestIds = selectedInterests.map(interest => interest.id);
-        localStorage.setItem("selectedInterests", JSON.stringify(interestIds));
+        sessionStorage.setItem("selectedInterests", JSON.stringify(interestIds));
         
         // 아이 홈으로 이동
         navigate("/main");

@@ -21,7 +21,7 @@ function EmotionCheckIn() {
         setSelectedEmotion(emotion);
 
         // 선택된 감정 저장
-        localStorage.setItem("selectedEmotion", JSON.stringify(emotion));
+        sessionStorage.setItem("selectedEmotion", JSON.stringify(emotion));
 
         // 1초 후 관심사 선택 페이지로 이동
         setTimeout(() => {

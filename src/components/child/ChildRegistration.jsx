@@ -14,23 +14,16 @@ function ChildRegistration() {
     // 등록 완료 핸들러
     const handleRegister = async (formData) => {
         try {
-            // 🔥 임시: 더미 응답 (백엔드 구현 전까지)
-            console.log('자녀 등록 데이터:', formData);
-            alert(`${formData.name} 등록이 완료되었습니다!`);
-            navigate('/child/select');
-            
-            /* 백엔드 준비되면 아래 주석 해제
             const response = await registerChild({
                 name: formData.name,
                 birthDate: formData.birthDate,
                 gender: formData.gender,
-                concerns: formData.concerns
+                concerns: formData.concerns,
             });
             console.log('자녀 등록 성공:', response);
             alert(`${formData.name} 등록이 완료되었습니다!`);
             await fetchChildren();
             navigate('/child/select');
-            */
         } catch (e) {
             console.error('등록 실패:', e);
             alert('등록에 실패했습니다. 다시 시도해주세요.');

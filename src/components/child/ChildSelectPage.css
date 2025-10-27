@@ -20,12 +20,37 @@
   background: linear-gradient(90deg, #2fa36b, #87ceeb, #ffd166);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-bottom: 12px;
 }
 
 .select_header p {
   font-size: 18px;
   color: #666;
+}
+
+/* 자녀 등록 버튼 */
+.register_child_btn {
+  background: linear-gradient(135deg, #2fa36b 0%, #1e8a5a 100%);
+  color: white;
+  border: none;
+  padding: 16px 40px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(47, 163, 107, 0.3);
+  margin-top: 30px;
+}
+
+.register_child_btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(47, 163, 107, 0.4);
+}
+
+.register_child_btn:active {
+  transform: translateY(-1px);
 }
 
 /* 자녀 카드 그리드 */
@@ -76,7 +101,7 @@
 }
 
 /* 이름 */
-.child_card_name {
+.child_card h3 {
   font-size: 24px;
   font-weight: 800;
   color: #333;
@@ -92,8 +117,21 @@
 
 /* 반응형 */
 @media (max-width: 768px) {
+  .select_header h2 {
+    font-size: 28px;
+  }
+
+  .select_header p {
+    font-size: 16px;
+  }
+
   .child_card_grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
+  }
+
+  .register_child_btn {
+    font-size: 16px;
+    padding: 14px 32px;
   }
 }

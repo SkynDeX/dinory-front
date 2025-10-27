@@ -23,7 +23,7 @@ function ParentDashboard() {
     }
 
     return(
-        <div className="parent-dashboard_wrapper">
+        <div className="parent_dashboard_wrapper">
             {/* 사이드바 */}
             <aside className="dashboard_sidebar">
                 <div className="sidebar_header">

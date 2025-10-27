@@ -27,7 +27,7 @@ function ChildRegistrationForm({
     // 폼 데이터 상태
     const [formData, setFormData] = useState({
         name: initialData?.name || "",
-        birthDate: initialData?.birthData || "",
+        birthDate: initialData?.birthDate || "",
         gender: initialData?.gender || "",
         concerns: initialData?.concerns || []
     });

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { authApi } from '../../services/api/authApi';
+import { getChildren } from '../../services/api/childApi';
 
 function OAuth2Callback() {
     const navigate = useNavigate();
@@ -28,7 +29,17 @@ function OAuth2Callback() {
                     // 그 다음 사용자 정보 가져오기
                     const userData = await authApi.getCurrentUser();
                     login(accessToken, userData);
-                    navigate('/child/select');
+                    
+                    // 자녀 목록 조회
+                    const childrenResponse = await getChildren();
+                    const children = childrenResponse.data || childrenResponse;
+
+                    // 자녀가 있으면 선택 페이지, 없으면 등록 페이지로 이동
+                    if (Array.isArray(children) && children.length > 0) {
+                        navigate('/child/select');
+                    } else {
+                        navigate('/child/registration');
+                    }
                 } catch (error) {
                     console.error('Failed to get user info:', error);
                     alert('사용자 정보를 가져오는데 실패했습니다');

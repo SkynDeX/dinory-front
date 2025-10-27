@@ -1,60 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { getChildren } from "../../services/api/childApi";
+import { useChild } from "../../context/ChildContext";
 import LoadingScreen from "../common/LoadingScreen";
 import DinoCharacter from "../dino/DinoCharacter";
+import "./ChildSelectPage.css";
 
 
 function ChildSelectPage() {
 
     const navigate = useNavigate();
-    const [children, setChildren] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        fetchChildren();
-    }, []);
-
-    const fetchChildren = async () => {
-        try {
-            // 🔥 임시 더미 데이터 (백엔드 구현 전까지)
-            const dummyData = [
-                {
-                    id: 1,
-                    name: "서연",
-                    birthDate: "2018-03-15",
-                    gender: "female",
-                    avatar: "👧"
-                },
-                {
-                    id: 2,
-                    name: "명호",
-                    birthDate: "2019-06-20",
-                    gender: "male",
-                    avatar: "👦"
-                }
-            ];
-            setChildren(dummyData);
-            setLoading(false);
-        
-            /* 백엔드 준비되면 아래 주석 해제
-            const response = await getChildren();
-            const data = response.data || response;
-            setChildren(Array.isArray(data) ? data : []);
-            */
-            
-        } catch (e) {
-            console.error("자녀 목록 조회 실패:", e);
-            setChildren([]);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { childrenList, loading, setSelectedChild } = useChild();
 
     const handleSelectChild = (child) => {
-        localStorage.setItem("selectedChildForSession", JSON.stringify(child));
+        // context에 선택된 자녀 저장
+        setSelectedChild(child);
+        // sessionstorage에도 저장(세션용)
+        sessionStorage.setItem("selectedChildForSession", JSON.stringify(child));
         navigate("/child/emotion");
-    }
+    };
+
 
     // 나이 계산
     const calculateAge = (birthDate) => {
@@ -73,6 +37,25 @@ function ChildSelectPage() {
     return <LoadingScreen />;
     }
 
+    // 자녀가 없는 경우 등록 페이지로 유도
+    if (childrenList.length === 0) {
+        return (
+            <div className="child_select_page">
+                <div className="select_header">
+                    <h2>등록된 자녀가 없어요</h2>
+                    <p>먼저 자녀를 등록해주세요!</p>
+                </div>
+                <button
+                    className="register_child_btn"
+                    onClick={() => navigate("/child/registration")}
+                >
+                    자녀 등록하러 가기
+                </button>
+                <DinoCharacter />
+            </div>
+        );
+    }
+
     return(
         <div className="child_select_page">
             <div className="select_header">
@@ -81,7 +64,7 @@ function ChildSelectPage() {
             </div>
 
             <div className="child_card_grid">
-                {children.map((child) => (
+                {childrenList.map((child) => (
                     <div
                         key={child.id}
                         className="child_card"
