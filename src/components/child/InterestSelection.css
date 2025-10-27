@@ -72,16 +72,24 @@
 
 /* 선택된 카드 */
 .interest_card_active {
+  background: rgba(47, 163, 107, 0.05);
+  border: 3px solid #e0e0e0;
+  border-radius: 20px;
+  padding: 30px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  position: relative;
   transform: translateY(-8px) scale(1.05);
   box-shadow: 0 8px 25px rgba(47, 163, 107, 0.3);
-  background: rgba(47, 163, 107, 0.05);
 }
 
 /* 이모지 */
 .interest_emoji {
   font-size: 60px;
   display: block;
-  margin-bottom: 12px;
+  margin: 0 auto 12px auto;
   animation: float 3s ease-in-out infinite;
 }
 

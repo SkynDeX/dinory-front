@@ -1,4 +1,4 @@
-import react, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getChildren } from "../../services/api/childApi";
 
 // 자녀 선택 드롭다운(대시보드용)

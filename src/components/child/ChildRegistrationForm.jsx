@@ -1,4 +1,4 @@
-import react, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import './ChildRegistrationForm.css';
 
 // 재사용 가능한 폼 컴포넌트

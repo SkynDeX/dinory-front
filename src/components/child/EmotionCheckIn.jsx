@@ -40,7 +40,7 @@ function EmotionCheckIn() {
                 {emotions.map((emotion) => (
                     <div
                         key={emotion.id}
-                        className={`emotion_card${selectedEmotion?.id === emotion.id ? "_active" : ""}`}
+                        className={`emotion_card${selectedEmotion?.id === emotion.id ? " emotion_card_active" : ""}`}
                         onClick={() => handleSelectEmotion(emotion)}
                         style={{
                             borderColor: selectedEmotion?.id === emotion.id ? emotion.color : "#e0e0e0",

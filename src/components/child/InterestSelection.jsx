@@ -1,4 +1,4 @@
-import react, { useState } from "react";
+import React, { useState } from "react";
 import "./InterestSelection.css";
 import { useNavigate } from "react-router-dom";
 import DinoCharacter from "../dino/DinoCharacter";
@@ -65,11 +65,11 @@ function InterestSelection() {
                 {interests.map((interest) =>(
                     <div
                         key={interest.id}
-                        className={`interest_card${isSelected(interest.id) ? "_active" : ""}`}
+                        className={`interest_card${isSelected(interest.id) ? " interest_card_active" : ""}`}
                         onClick={() => handleSelectInterest(interest)}
                         style={{
                             borderColor: isSelected(interest.id) ? interest.color : "#e0e0e0",
-                        }}    
+                        }}
                     >
                         <span className="interest_emoji">{interest.emoji}</span>
                         <p className="interest_label">{interest.label}</p>
