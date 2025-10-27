@@ -1,4 +1,4 @@
-import react, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import './ChildRegistrationForm.css';
 
 // 재사용 가능한 폼 컴포넌트
@@ -27,7 +27,7 @@ function ChildRegistrationForm({
     // 폼 데이터 상태
     const [formData, setFormData] = useState({
         name: initialData?.name || "",
-        birthDate: initialData?.birthData || "",
+        birthDate: initialData?.birthDate || "",
         gender: initialData?.gender || "",
         concerns: initialData?.concerns || []
     });

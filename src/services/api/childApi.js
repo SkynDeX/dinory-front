@@ -1,72 +1,59 @@
 import axiosInstance from '../utils/axiosInstance';
 
-// 자녀 등록
-export const registerChild = async (childData) => {
+const prefersNotFound = (e) =>
+  e && e.response && (e.response.status === 404 || e.response.status === 405);
+
+const withFallback = async (attempts) => {
+  let lastErr;
+  for (const fn of attempts) {
     try {
-        const response = await axiosInstance.post(
-            '/api/parent/child/register',
-            childData
-        );
-        return response.data;
+      const res = await fn();
+      return res.data;
     } catch (e) {
-        console.error('자녀 등록 실패:', e);
-        throw e;
+      lastErr = e;
+      if (prefersNotFound(e)) continue; // 다음 시도
+      throw e; // 다른 에러는 즉시 반환
     }
+  }
+  throw lastErr;
 };
 
+// 자녀 등록
+export const registerChild = async (childData) => {
+  return withFallback([
+    () => axiosInstance.post('/api/parent/child/register', childData),
+    () => axiosInstance.post('/api/children', childData),
+  ]);
+};
 
 // 자녀 목록 조회
 export const getChildren = async () => {
-    try {
-        const response = await axiosInstance.get(
-            '/api/parent/children'
-        );
-        return response.data;
-    } catch (e) {
-        console.error('자녀 목록 조회 실패:', e);
-        throw e;
-    }
-}
-
+  return withFallback([
+    () => axiosInstance.get('/api/parent/children'),
+    () => axiosInstance.get('/api/children'),
+  ]);
+};
 
 // 자녀 상세 조회
 export const getChildDetail = async (childId) => {
-    try {
-        const response = await axiosInstance.get(
-            `/api/parent/child/${childId}`
-        );
-        return response.data;
-    } catch (e) {
-        console.error('자녀 상세 조회 실패:', e);
-        throw e;
-    }
+  return withFallback([
+    () => axiosInstance.get(`/api/parent/child/${childId}`),
+    () => axiosInstance.get(`/api/children/${childId}`),
+  ]);
 };
-
 
 // 자녀 수정
 export const updateChild = async (childId, childData) => {
-    try {
-        const response = await axiosInstance.put(
-            `/api/parent/child/${childId}`,
-            childData
-        );
-        return response.data;
-    } catch (e) {
-        console.error('자녀 수정 실패:', e);
-        throw e;
-    }
+  return withFallback([
+    () => axiosInstance.put(`/api/parent/child/${childId}`, childData),
+    () => axiosInstance.put(`/api/children/${childId}`, childData),
+  ]);
 };
-
 
 // 자녀 삭제
 export const deleteChild = async (childId) => {
-  try {
-    const response = await axiosInstance.delete(
-        `/api/parent/child/${childId}`
-    );
-    return response.data;
-    } catch (e) {
-        console.error('자녀 삭제 실패:', e);
-        throw e;
-    }
+  return withFallback([
+    () => axiosInstance.delete(`/api/parent/child/${childId}`),
+    () => axiosInstance.delete(`/api/children/${childId}`),
+  ]);
 };

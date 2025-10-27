@@ -1,0 +1,27 @@
+.child_selector_button {
+  background: linear-gradient(135deg, #2fa36b 0%, #1e8a5a 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(47, 163, 107, 0.3);
+  margin-top: 30px;
+}
+
+.child_selector_itemactive {
+    transform: translateY(-1px);
+}
+
+.child_selector_list li {
+    list-style: none;
+    border: #dadada;
+}
+
+.child_selector_list li:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(47, 163, 107, 0.4);
+}

@@ -1,4 +1,4 @@
-import react, { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChildSelector from "../child/ChildSelector";
 import Overview from "./Overview";
@@ -23,7 +23,7 @@ function ParentDashboard() {
     }
 
     return(
-        <div className="parent-dashboard_wrapper">
+        <div className="parent_dashboard_wrapper">
             {/* 사이드바 */}
             <aside className="dashboard_sidebar">
                 <div className="sidebar_header">
