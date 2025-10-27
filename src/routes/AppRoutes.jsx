@@ -16,6 +16,7 @@ import EmotionCheckIn from "../components/child/EmotionCheckIn.jsx";
 import InterestSelection from "../components/child/InterestSelection.jsx";
 import StoryList from "../components/story/StoryList.jsx";
 import StoryReading from "../components/story/StoryReading.jsx";
+import StoryFlowTest from "../pages/StoryFlowTest.jsx";
 
 const MyDinos = lazy(() => import("../components/dino/MyDinos.jsx"));
 
@@ -125,13 +126,19 @@ function AppRoutes() {
             }
           />
           {/* 동화 읽기 */}
-          <Route 
+          <Route
             path="/story/:storyId"
             element={
               <PrivateRoute>
                 <StoryReading />
               </PrivateRoute>
             }
+          />
+
+          {/* 테스트 페이지 */}
+          <Route
+            path="/test-story"
+            element={<StoryFlowTest />}
           />
 
         {/* 기본 경로 */}

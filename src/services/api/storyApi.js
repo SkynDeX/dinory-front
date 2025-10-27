@@ -72,7 +72,7 @@ export const saveChoice = async (completionId, choiceData) => {
 };
 
 // 동화 완료
-export const completeStory = async (completionId, completeData) => { 
+export const completeStory = async (completionId, completeData) => {
     try {
         const response = await axios.post(
             `${API_BASE_URL}/story/completion/${completionId}/complete`,
@@ -88,6 +88,26 @@ export const completeStory = async (completionId, completeData) => {
 
     } catch (e) {
         console.error('동화 완료 실패: ', e);
+        throw e;
+    }
+};
+
+// 동화 완료 요약 조회
+export const getStoryCompletionSummary = async (completionId) => {
+    try {
+        const response = await axios.get(
+            `${API_BASE_URL}/story/completion/${completionId}/summary`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                }
+            }
+        );
+
+        return response.data;
+
+    } catch (e) {
+        console.error('동화 완료 요약 조회 실패: ', e);
         throw e;
     }
 };
