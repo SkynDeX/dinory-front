@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import "./InterestSelection.css";
 import { useNavigate } from "react-router-dom";
+import { useChild } from "../../context/ChildContext";
 import DinoCharacter from "../dino/DinoCharacter";
 
 // 아이가 오늘의 관심사를 선택하는 랜딩 페이지
 function InterestSelection() {
     const [selectedInterests, setSelectedInterests] = useState([]);
     const navigate = useNavigate();
+    const { setSelectedInterests: setContextInterests } = useChild();
 
     const interests = [
         { id: "dinosaur", emoji: "🦕", label: "공룡", color: "#2fa36b" },
@@ -34,16 +36,13 @@ function InterestSelection() {
     // 다음 버튼 클릭
     const handleNext = () => {
         if (selectedInterests.length === 0) {
-        alert("관심사를 최소 1개 이상 선택해주세요!");
-        return;
+            alert("관심사를 최소 1개 이상 선택해주세요!");
+            return;
         }
 
-        // 선택된 관심사 배열로 저장 (id만 추출)
-        const interestIds = selectedInterests.map(interest => interest.id);
-        sessionStorage.setItem("selectedInterests", JSON.stringify(interestIds));
-        
-        // 아이 홈으로 이동
-        navigate("/main");
+        // Context에 저장 (label 배열로)
+        const interestLabels = selectedInterests.map(interest => interest.label);
+        setContextInterests(interestLabels);
 
         // 동화 목록으로 이동
         navigate("/story/list");

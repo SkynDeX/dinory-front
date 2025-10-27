@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import "./EmotionCheckIn.css";
 import { useNavigate } from "react-router-dom";
+import { useChild } from "../../context/ChildContext";
 import DinoCharacter from "../dino/DinoCharacter";
 
 // 아이가 오늘의 감정 선택하는 랜딩 페이지
 function EmotionCheckIn() {
     const [selectedEmotion, setSelectedEmotion] = useState(null);
     const navigate = useNavigate();
+    const { setSelectedEmotion: setContextEmotion } = useChild();
 
     const emotions = [
         {id: "happy", emoji: "😊", label: "기뻐요", color: "#ffd166"},
@@ -19,9 +21,8 @@ function EmotionCheckIn() {
 
     const handleSelectEmotion = (emotion) => {
         setSelectedEmotion(emotion);
-
-        // 선택된 감정 저장
-        sessionStorage.setItem("selectedEmotion", JSON.stringify(emotion));
+        // Context에 저장
+        setContextEmotion(emotion);
 
         // 1초 후 관심사 선택 페이지로 이동
         setTimeout(() => {

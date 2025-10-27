@@ -12,10 +12,8 @@ function ChildSelectPage() {
     const { childrenList, loading, setSelectedChild } = useChild();
 
     const handleSelectChild = (child) => {
-        // context에 선택된 자녀 저장
+        // Context에 선택된 자녀 저장
         setSelectedChild(child);
-        // sessionstorage에도 저장(세션용)
-        sessionStorage.setItem("selectedChildForSession", JSON.stringify(child));
         navigate("/child/emotion");
     };
 

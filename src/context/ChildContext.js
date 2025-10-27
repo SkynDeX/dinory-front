@@ -8,6 +8,8 @@ const ChildContext = createContext();
 export function ChildProvider({ children }) {
     const [childrenList, setChildrenList] = useState([]);
     const [selectedChild, setSelectedChild] = useState(null);
+    const [selectedEmotion, setSelectedEmotion] = useState(null);
+    const [selectedInterests, setSelectedInterests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -19,11 +21,6 @@ export function ChildProvider({ children }) {
             const response = await getChildren();
             const data = response.data || response;
             setChildrenList(Array.isArray(data) ? data : []);
-
-            // 첫 번째 자녀 자동 선택
-            if (data.length > 0 && !selectedChild) {
-                setSelectedChild(data[0]);
-            }
 
         } catch (e) {
             console.error("자녀 목록 조회 실패:", e);
@@ -82,10 +79,21 @@ export function ChildProvider({ children }) {
         }
     };
 
+    // 세션 데이터 초기화 (동화 생성 API 성공 후 호출)
+    const clearSession = () => {
+        setSelectedEmotion(null);
+        setSelectedInterests([]);
+    };
+
     const value = {
         childrenList,
         selectedChild,
         setSelectedChild,
+        selectedEmotion,
+        setSelectedEmotion,
+        selectedInterests,
+        setSelectedInterests,
+        clearSession,
         loading,
         error,
         fetchChildren,
