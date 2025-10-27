@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getChildren } from "../../services/api/childApi";
+import "./ChildSelector.css";
 
 // 자녀 선택 드롭다운(대시보드용)
 function ChildSelector({onSelectChild, selectedChildId}) {
@@ -16,7 +17,7 @@ function ChildSelector({onSelectChild, selectedChildId}) {
                 setLoading(true);
                 const response = await getChildren();
                 const childrenData = response.data || response;
-                setChildren(childrenData);
+                setChildren(Array.isArray(childrenData) ? childrenData : []);
 
                 // 첫 번째 자녀 자동 선택 (seletcedChildId가 없을 경우)
                 if (!selectedChildId && childrenData.length > 0) {
@@ -29,7 +30,9 @@ function ChildSelector({onSelectChild, selectedChildId}) {
                 setLoading(false);
             }
         };
-    }, []);
+
+        fetchChildren();
+    }, [selectedChildId, onSelectChild]);
 
     // 자녀 선택 핸들러
     const handleSelectChild = (child) => {
@@ -46,7 +49,7 @@ function ChildSelector({onSelectChild, selectedChildId}) {
         let age = today.getFullYear() - birth.getFullYear();
         const monthDiff = today.getMonth() - birth.getMonth();
 
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDay() < birth.getDate())) {
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
             age--;
         }
 
@@ -54,7 +57,7 @@ function ChildSelector({onSelectChild, selectedChildId}) {
     };
 
     // 선택된 자녀 찾기
-    const selectedChild = children.find(child => child.id === selectedChild);
+    const currentChild = Array.isArray(children) ? children.find(child => child.id === selectedChildId) : null;
 
     // 로딩 중
     if (loading) {
@@ -98,25 +101,25 @@ function ChildSelector({onSelectChild, selectedChildId}) {
                 type="button"
             >
                 <div className="selector_current">
-                    {selectedChild ? (
+                    {currentChild ? (
                         <>
                             <span className="child_avatar_small">
-                                {selectedChild.avatar || (selectedChild.gender === 'male' ? "남아" : "여아")}
+                                {currentChild.avatar || (currentChild.gender === 'male' ? "👦" : "👧")}
                             </span>
                             <span className="child_name">
-                                {selectedChild.name}
+                                {currentChild.name}
                             </span>
                             <span className="child_age">
-                                ({calculateAge(selectedChild.birthDate)}세)
+                                &nbsp;({calculateAge(currentChild.birthDate)}세)
                             </span>
                         </>
                     ) : (
                         <span>자녀를 선택하세요</span>
                     )}
-                </div>
-                <span className="selector_arrow">
-                    {isOpen ? '▲' : '▼'}
+                    <span className="selector_arrow">
+                    {isOpen ? ' ▲' :  ' ▼'}
                 </span>
+                </div>
             </button>
 
             {/* 드롭다운 메뉴 */}
@@ -132,21 +135,14 @@ function ChildSelector({onSelectChild, selectedChildId}) {
                                 <div className="child_item_content">
                                     {/* 아바타 */}
                                     <span className="child_avatar_small">
-                                        {child.avatar || (child.gender === 'male' ? '남아' : '여아')}
+                                        {child.avatar || (child.gender === 'male' ? '👦' : '👧')}
                                     </span>
 
                                     {/* 정보 */}
-                                    <div className="child_item_info">
                                         <span className="child_name">{child.name}</span>
                                         <span className="child_age">
-                                            {calculateAge(child.birthDate)}세
-                                        </span>
-                                    </div>
-
-                                    {/* 선택 표시 */}
-                                    {selectedChild === child.id && (
-                                        <span className="child_check">✓</span>
-                                    )}
+                                            &nbsp;({calculateAge(child.birthDate)}세)
+                                        </span>  
                                 </div>
                             </li>
                         ))}

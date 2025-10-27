@@ -122,7 +122,7 @@ function ChildManagement() {
                     <div className="child_info">
                         <h3 className="child_item_name">{child.name}</h3>
                         <p className="child_item_age">
-                            {child.age}세 · {child.gender === "male" ? "남아" : "여아"}
+                            {calculateAge(child.birthDate)}세 · {child.gender === "male" ? "남아" : "여아"}
                         </p>
                     </div>
                     </div>
@@ -224,7 +224,7 @@ function ChildManagement() {
                     <div>
                     <h3 className="detail_name">{selectedChild.name}</h3>
                     <p className="detail_info">
-                        {selectedChild.age}세 · {selectedChild.gender === "male" ? "남아" : "여아"}
+                        {calculateAge(selectedChild.birthDate)}세 · {selectedChild.gender === "male" ? "남아" : "여아"}
                     </p>
                     <p className="detail_birth">생년월일: {selectedChild.birthDate}</p>
                     </div>
