@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./StoryList.css";
 import { useNavigate } from "react-router-dom";
-import { getRecommendedStories } from "../../services/api/storyApi";
+import { getRecommendedStories } from '../../services/api/storyApi';
 import StoryCard from "./StoryCard";
 import DinoCharacter from "../dino/DinoCharacter";
 

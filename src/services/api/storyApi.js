@@ -1,113 +1,40 @@
-import axios from 'axios';
-
-const API_BASE_URL = process.env.REACT_API_BASE_URL || 'http://localhost:8090/api';
+// src/services/api/storyApi.js
+import axiosInstance from '../utils/axiosInstance';
 
 // 동화 추천
 export const getRecommendedStories = async (emotion, interests, childId, limit = 5) => {
-    try {
-        const response = await axios.post(
-            `${API_BASE_URL}/story/recommended`,
-            null,
-            {
-                params: {
-                    emotion,
-                    interests,
-                    childId,
-                    limit
-                },
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            }
-        );
-
-        return response.data;
-
-    } catch(e) {
-        console.error('동화 추천 실패: ', e);
-        throw e;
-    }
+  const res = await axiosInstance.post('/api/story/recommended', null, {
+    params: { emotion, interests, childId, limit },
+  });
+  return res.data;
 };
 
-// 동화 생성
-export const generateStory = async (storyId, requestData) => { 
-    try {
-        const response = await axios.post(
-            `${API_BASE_URL}/story/${storyId}/generate`,
-            requestData,
-            {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            }
-        );
-
-        return response.data;
-
-    } catch (e) {
-        console.error('동화 생성 실패: ', e);
-        throw e;
-    }
+// 동화 생성(첫 장면)
+export const generateStory = async (storyId, requestData) => {
+  const res = await axiosInstance.post(`/api/story/${encodeURIComponent(storyId)}/generate`, requestData);
+  return res.data;
 };
 
-// 선택지 저장
-export const saveChoice = async (completionId, choiceData) => { 
-    try {
-        const response = await axios.post(
-            `${API_BASE_URL}/story/completion/${completionId}/choice`,
-            choiceData,
-            {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            }
-        );
+// 선택 저장(호환용, 백엔드에 choice 엔드포인트가 존재)
+export const saveChoice = async (completionId, choiceData) => {
+  const res = await axiosInstance.post(`/api/story/completion/${completionId}/choice`, choiceData);
+  return res.data;
+};
 
-        return response.data;
-
-    } catch (e) {
-        console.error('선택지 저장 실패: ', e);
-        throw e;
-    }
+// 선택 → 다음 장면
+export const getNextScene = async (completionId, choiceData) => {
+  const res = await axiosInstance.post(`/api/story/completion/${completionId}/next-scene`, choiceData);
+  return res.data;
 };
 
 // 동화 완료
 export const completeStory = async (completionId, completeData) => {
-    try {
-        const response = await axios.post(
-            `${API_BASE_URL}/story/completion/${completionId}/complete`,
-            completeData,
-            {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            }
-        );
-
-        return response.data;
-
-    } catch (e) {
-        console.error('동화 완료 실패: ', e);
-        throw e;
-    }
+  const res = await axiosInstance.post(`/api/story/completion/${completionId}/complete`, completeData);
+  return res.data;
 };
 
-// 동화 완료 요약 조회
+// 완료 요약
 export const getStoryCompletionSummary = async (completionId) => {
-    try {
-        const response = await axios.get(
-            `${API_BASE_URL}/story/completion/${completionId}/summary`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            }
-        );
-
-        return response.data;
-
-    } catch (e) {
-        console.error('동화 완료 요약 조회 실패: ', e);
-        throw e;
-    }
+  const res = await axiosInstance.get(`/api/story/completion/${completionId}/summary`);
+  return res.data;
 };

@@ -1,18 +1,11 @@
-import axios from 'axios';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8090/api';
+import axiosInstance from '../utils/axiosInstance';
 
 // 자녀 등록
 export const registerChild = async (childData) => {
     try {
-        const response = await axios.post(
-            `${API_BASE_URL}/parent/child/register`,
-            childData,
-            {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            }
+        const response = await axiosInstance.post(
+            '/api/parent/child/register',
+            childData
         );
         return response.data;
     } catch (e) {
@@ -25,13 +18,8 @@ export const registerChild = async (childData) => {
 // 자녀 목록 조회
 export const getChildren = async () => {
     try {
-        const response = await axios.get(
-            `${API_BASE_URL}/parent/children`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            }
+        const response = await axiosInstance.get(
+            '/api/parent/children'
         );
         return response.data;
     } catch (e) {
@@ -44,13 +32,8 @@ export const getChildren = async () => {
 // 자녀 상세 조회
 export const getChildDetail = async (childId) => {
     try {
-        const response = await axios.get(
-            `${API_BASE_URL}/parent/child/${childId}`,
-            {
-                haeders: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }                    
-            }
+        const response = await axiosInstance.get(
+            `/api/parent/child/${childId}`
         );
         return response.data;
     } catch (e) {
@@ -63,14 +46,9 @@ export const getChildDetail = async (childId) => {
 // 자녀 수정
 export const updateChild = async (childId, childData) => {
     try {
-        const response = await axios.put(
-            `${API_BASE_URL}/parent/child/${childId}`,
-            childData,
-            {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            }
+        const response = await axiosInstance.put(
+            `/api/parent/child/${childId}`,
+            childData
         );
         return response.data;
     } catch (e) {
@@ -83,13 +61,8 @@ export const updateChild = async (childId, childData) => {
 // 자녀 삭제
 export const deleteChild = async (childId) => {
   try {
-    const response = await axios.delete(
-        `${API_BASE_URL}/parent/child/${childId}`,
-        {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            }
-        }
+    const response = await axiosInstance.delete(
+        `/api/parent/child/${childId}`
     );
     return response.data;
     } catch (e) {

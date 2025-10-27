@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./StoryReading.css";
 import { useParams, useNavigate } from "react-router-dom";
-import { generateStory, saveChoice, completeStory } from "../../services/api/storyApi";
+import { generateStory, getNextScene, completeStory } from "../../services/api/storyApi";
 import SceneView from "../../components/story/SceneView";
 import StoryCompletion from "../../components/story/StoryCompletion";
+
+const MAX_SCENES = 8;  // 최대 8장면
 
 function StoryReading() {
 
@@ -11,11 +13,13 @@ function StoryReading() {
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(true);
-    const [storyData, setStoryData] = useState(null);
-    const [currentSceneIndex, setCurrentSceneIndex] = useState(0);
+    const [loadingNextScene, setLoadingNextScene] = useState(false);
+    const [currentScene, setCurrentScene] = useState(null);
+    const [currentSceneNumber, setCurrentSceneNumber] = useState(0);
     const [completionId, setCompletionId] = useState(null);
     const [isCompleted, setIsCompleted] = useState(false);
     const [startTime, setStartTime] = useState(null);
+    const [storyContext, setStoryContext] = useState("");  // 스토리 맥락
 
     useEffect(() => {
         initializeStory();
@@ -38,50 +42,73 @@ function StoryReading() {
                 interests: interests
             };
 
-            console.log("동화 생성 요청: ", requestData);
+            console.log("🔥 첫 번째 씬 생성 요청: ", requestData);
 
-            // AI 서버로 동화 생성 요청
+            // 첫 번째 씬 생성
             const response = await generateStory(storyId, requestData);
 
-            console.log("동화 생성 완료: ", response);
+            console.log("✅ 첫 번째 씬 생성 완료: ", response);
 
-            setStoryData(response);
             setCompletionId(response.completionId);
-            setCurrentSceneIndex(0);
+            setCurrentScene(response.scene);
+            setCurrentSceneNumber(response.scene.sceneNumber);
+            setStoryContext(response.scene.content);  // 스토리 맥락 저장
             setLoading(false);
+
         } catch (error) {
-            console.error("동화 생성 실패: ", error);
-            alert("동화를 불러오는데 실패!");
+            console.error("❌ 동화 생성 실패: ", error);
+            alert("동화를 불러오는데 실패했습니다!");
             navigate(-1);
         }
     };
 
-    const handleChoiceSelect  = async (choice) => {
+    const handleChoiceSelect = async (choice) => {
         try {
-            const currentScene = storyData.scenes[currentSceneIndex];
+            console.log("🎯 선택됨:", choice);
 
-            // 선택지 저장
+            // 선택지 데이터 준비
             const choiceData = {
                 sceneNumber: currentScene.sceneNumber,
-                choiceId: choice.choiceId,
+                choiceId: choice.choiceId ?? choice.id,
                 abilityType: choice.abilityType,
-                abilityPoints: choice.abilityPoints
+                abilityPoints: choice.abilityPoints ?? choice.abilityScore ?? 0
             };
-
-            console.log("선택지 저장: ", choiceData);
-
-            await saveChoice(completionId, choiceData);
-
-            //  다음 씬 이동
-            if(currentSceneIndex < storyData.scenes.length -1) {
-                setCurrentSceneIndex(currentSceneIndex + 1);
-            } else {
-                //  마지막이면 완료처리
-                handleStoryComplete();
+            
+            // 8장면 도달 또는 마지막 씬이면 완료 처리
+            if (currentSceneNumber >= MAX_SCENES || currentScene.isEnding) {
+                console.log("📚 동화 마지막 씬 - 완료 처리");
+                await handleStoryComplete();
+                return;
             }
+
+            // 다음 씬 로딩 시작
+            setLoadingNextScene(true);
+
+            // 다음 씬 요청
+            console.log("📡 다음 씬 요청 중...");
+            const nextSceneResponse = await getNextScene(completionId, choiceData);
+
+            console.log("✅ 다음 씬 받음:", nextSceneResponse);
+
+            // 스토리 맥락 업데이트 (이전 장면들의 내용 누적)
+            setStoryContext(prevContext =>
+                prevContext + "\n\n" + nextSceneResponse.scene.content
+            );
+
+            // 새로운 씬 설정
+            setCurrentScene(nextSceneResponse.scene);
+            setCurrentSceneNumber(nextSceneResponse.scene.sceneNumber);
+            setLoadingNextScene(false);
+
+            // 마지막 씬인지 체크
+            if (nextSceneResponse.isEnding || nextSceneResponse.scene.sceneNumber >= MAX_SCENES) {
+                console.log("🏁 마지막 씬 도달");
+            }
+
         } catch(error) {
-            console.error("선택지 저장 실패: ", error);
-            alert("선택을 저장하는데 실패!");
+            console.error("❌ 다음 씬 요청 실패: ", error);
+            alert("다음 장면을 불러오는데 실패했습니다!");
+            setLoadingNextScene(false);
         }
     };
 
@@ -90,13 +117,13 @@ function StoryReading() {
             const endTime = Date.now();
             const totalTime = Math.floor((endTime - startTime) / 1000); // 초 단위
 
-            console.log("동화 완료 처리:", { totalTime });
+            console.log("🎉 동화 완료 처리:", { totalTime });
 
             await completeStory(completionId, { totalTime });
 
             setIsCompleted(true);
         } catch (error) {
-            console.error("동화 완료 처리 실패:", error);
+            console.error("❌ 동화 완료 처리 실패:", error);
             alert("동화 완료 처리에 실패했습니다.");
         }
     };
@@ -108,7 +135,20 @@ function StoryReading() {
     if(loading) {
         return (
             <div className="story_reading_wrapper">
-                <div className="loading">동화를 준비하는 중...</div>
+                <div className="loading">첫 번째 장면을 준비하는 중...</div>
+            </div>
+        )
+    }
+
+    if (loadingNextScene) {
+        return (
+            <div className="story_reading_wrapper">
+                <div className="loading">
+                    <div className="loading-spinner"></div>
+                    <p>AI가 당신의 선택에 맞는</p>
+                    <p>다음 장면을 만들고 있어요...</p>
+                    <p className="loading-hint">(5-10초 소요)</p>
+                </div>
             </div>
         )
     }
@@ -116,7 +156,7 @@ function StoryReading() {
     if (isCompleted) {
         return (
             <StoryCompletion
-                storyTitle={storyData.scenes[0]?.content}
+                storyTitle={storyContext.substring(0, 50) + "..."}
                 onGoHome={handleGoHome}
             />
         );
@@ -124,10 +164,10 @@ function StoryReading() {
 
     return (
         <div className="story_reading_wrapper">
-            {storyData && storyData.scenes && (
+            {currentScene && (
                 <SceneView
-                    scene={storyData.scenes[currentSceneIndex]}
-                    totalScenes={storyData.totalScenes}
+                    scene={currentScene}
+                    totalScenes={MAX_SCENES}
                     onChoiceSelect={handleChoiceSelect}
                 />
             )}
