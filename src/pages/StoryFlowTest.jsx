@@ -16,9 +16,10 @@ const StoryFlowTest = () => {
     storyId: 'new_sibling',
     childId: 1,
     childName: '지우',
-    emotion: '화남',
+    emotion: '',  // 사용자가 선택하도록 빈 값
     interests: ['가족']
   });
+  const [selectedEmotion, setSelectedEmotion] = useState('');
   const [authToken, setAuthToken] = useState(localStorage.getItem('accessToken') || '');
   const [completionId, setCompletionId] = useState(null);
   const [scenes, setScenes] = useState([]);
@@ -36,14 +37,16 @@ const StoryFlowTest = () => {
 
   const handleGenerateStory = async () => {
     if (!authToken) { addLog('❌ 토큰이 없습니다. 로그인 필요', 'error'); return; }
+    if (!selectedEmotion) { addLog('❌ 오늘 기분을 선택해주세요', 'error'); return; }
+
     try {
       setIsLoading(true);
-      addLog('📖 동화 생성 시작...', 'info');
+      addLog(`📖 동화 생성 시작... (기분: ${selectedEmotion})`, 'info');
 
       const res = await generateStory(testData.storyId, {
         childId: testData.childId,
         childName: testData.childName,
-        emotion: testData.emotion,
+        emotion: selectedEmotion,  // 선택한 감정 사용
         interests: testData.interests
       });
 
@@ -68,13 +71,15 @@ const StoryFlowTest = () => {
   };
 
   const handleChoose = async (choice) => {
-    if (!completionId || !currentScene) return;
+    if (!completionId || !currentScene || isLoading) return; // 로딩 중이면 중복 클릭 방지
+
     try {
       setIsLoading(true);
 
       const payload = {
         sceneNumber: currentScene.sceneNumber,
         choiceId: choice.id ?? choice.choiceId,
+        choiceText: choice.label || choice.text,
         abilityType: choice.abilityType,
         abilityPoints: choice.abilityPoints ?? choice.abilityScore ?? 0
       };
@@ -83,8 +88,8 @@ const StoryFlowTest = () => {
       try {
         await saveChoice(completionId, payload);
         addLog(`💾 선택 저장: Scene ${payload.sceneNumber} - ${payload.abilityType} +${payload.abilityPoints}`, 'info');
-      } catch {
-        addLog('⚠️ 선택 저장 실패. 다음 씬 생성은 계속', 'error');
+      } catch (err) {
+        addLog(`⚠️ 선택 저장 실패: ${err.message}`, 'error');
       }
 
       const next = await getNextScene(completionId, payload);
@@ -222,6 +227,32 @@ const StoryFlowTest = () => {
           </div>
 
           <div className="control-section">
+            <h2>😊 오늘 기분은 어때요?</h2>
+            <div className="emotion-selector">
+              {['기뻐요', '슬퍼요', '화나요', '무서워요', '신나요', '피곤해요'].map((emotion) => (
+                <button
+                  key={emotion}
+                  onClick={() => setSelectedEmotion(emotion)}
+                  className={`emotion-btn ${selectedEmotion === emotion ? 'selected' : ''}`}
+                  disabled={step !== 'init'}
+                  style={{
+                    backgroundColor: selectedEmotion === emotion ? '#667eea' : '#f3f4f6',
+                    color: selectedEmotion === emotion ? 'white' : '#374151',
+                    border: selectedEmotion === emotion ? '2px solid #5a67d8' : '1px solid #d1d5db',
+                    padding: '10px 16px',
+                    margin: '4px',
+                    borderRadius: '8px',
+                    cursor: step === 'init' ? 'pointer' : 'not-allowed',
+                    fontWeight: selectedEmotion === emotion ? 'bold' : 'normal'
+                  }}
+                >
+                  {emotion}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="control-section">
             <h2>🎬 진행</h2>
             <button
               onClick={handleGenerateStory}
@@ -283,6 +314,7 @@ const StoryFlowTest = () => {
                         onClick={() => handleChoose(ch)}
                         className="choice-btn"
                         title={`${ch.abilityType} +${score}`}
+                        disabled={isLoading}
                       >
                         {ch.label || ch.text}
                       </button>
