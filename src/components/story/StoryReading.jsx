@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { generateStory, getNextScene, completeStory } from "../../services/api/storyApi";
 import SceneView from "../../components/story/SceneView";
 import StoryCompletion from "../../components/story/StoryCompletion";
+import { useChild } from "../../context/ChildContext";
 
 const MAX_SCENES = 8;  // 최대 8장면
 
@@ -20,6 +21,7 @@ function StoryReading() {
     const [isCompleted, setIsCompleted] = useState(false);
     const [startTime, setStartTime] = useState(null);
     const [storyContext, setStoryContext] = useState("");  // 스토리 맥락
+    const { selectedChild, selectedEmotion, selectedInterests } = useChild();
 
     useEffect(() => {
         initializeStory();
@@ -30,16 +32,11 @@ function StoryReading() {
             setLoading(true);
             setStartTime(Date.now());
 
-            // localStorage 정보 가져오기
-            const emotionData = JSON.parse(localStorage.getItem("selectedEmotion"));
-            const interests = JSON.parse(localStorage.getItem("selectedInterests"));
-            const childData = JSON.parse(localStorage.getItem("selectedChildForSession"));
-
             const requestData = {
-                childId: childData?.id,
-                childName: childData?.name,
-                emotion: emotionData?.id,
-                interests: interests
+                childId: selectedChild?.id,
+                childName: selectedChild?.name,
+                emotion: selectedEmotion?.id,
+                interests: selectedInterests
             };
 
             console.log("🔥 첫 번째 씬 생성 요청: ", requestData);
@@ -67,11 +64,19 @@ function StoryReading() {
             console.log("🎯 선택됨:", choice);
 
             // 선택지 데이터 준비
+            // const choiceData = {
+            //     sceneNumber: currentScene.sceneNumber,
+            //     choiceId: choice.choiceId ?? choice.id,
+            //     abilityType: choice.abilityType,
+            //     abilityPoints: choice.abilityPoints ?? choice.abilityScore ?? 0
+            // };
+            // [2025-10-28 김광현] 선택지 때문에 수정
             const choiceData = {
                 sceneNumber: currentScene.sceneNumber,
                 choiceId: choice.choiceId ?? choice.id,
                 abilityType: choice.abilityType,
-                abilityPoints: choice.abilityPoints ?? choice.abilityScore ?? 0
+                abilityPoints: choice.abilityPoints ?? choice.abilityScore ?? 0,
+                choiceText: choice.choiceText || choice.label || ""
             };
             
             // 8장면 도달 또는 마지막 씬이면 완료 처리

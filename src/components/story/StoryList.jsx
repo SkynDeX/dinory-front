@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { getRecommendedStories } from '../../services/api/storyApi';
 import StoryCard from "./StoryCard";
 import DinoCharacter from "../dino/DinoCharacter";
+import { useChild } from "../../context/ChildContext";
 
 function StoryList() {
     const [stories, setStories] = useState([]);
     const [loding, setLoading] = useState(true);
     const navigate = useNavigate();
+    const { selectedChild, selectedEmotion, selectedInterests } = useChild();
 
     useEffect(() => {
         fetchRecommendations();
@@ -16,19 +18,15 @@ function StoryList() {
 
     const fetchRecommendations = async () => {
         try {
-            // 감정/관심사 가져오기
-            const emtionData = JSON.parse(localStorage.getItem("selectedEmotion"));
-            const interests = JSON.parse(localStorage.getItem("selectedInterests"));
-            const childData = JSON.parse(localStorage.getItem("selectedChild"));
-            
-            const emotion = emtionData?.id;
-            const childId = childData?.id;
+            // 감정/관심사 가져오기          
+            const emotion = selectedEmotion?.id;
+            const childId = selectedChild?.id;
 
-            console.log("동화 추천 요청: ", {emotion, interests, childId});
+            console.log("동화 추천 요청: ", {emotion, interests:selectedInterests, childId});
 
             const recommendedStories = await getRecommendedStories(
                 emotion,
-                interests,
+                selectedInterests,
                 childId,
                 5
             );

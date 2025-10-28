@@ -19,8 +19,10 @@ function ChoiceButton({choice, onSelect}) {
         <button 
             className="choice_button"
             onClick={()=> onSelect(choice)}>
+                {/* {console.log('Choice 전체:', JSON.stringify(choice, null, 2))} */}
+                {console.log('Choice:', choice.choiceText, 'abilityScore:', choice.abilityScore, 'abilityPoints:', choice.abilityPoints)}
                 <div className="choice_content">
-                    <span className="choice_text">{choice.choiceText}</span>
+                    <span className="choice_text">{choice.choiceText || choice.label || choice.text}</span>
                     <div className="choice_meta">
                         <span 
                             className="ability_badge"
@@ -28,7 +30,7 @@ function ChoiceButton({choice, onSelect}) {
                                 backgroundColor: getAbilityColor(choice.abilityType),
                                 color: "white"
                             }}>
-                                {choice.abilityType} + {choice.abilityScore}
+                                {choice.abilityType} + {choice.abilityScore ?? choice.abilityPoints ?? 0}
                             </span>
                     </div>
                 </div>
