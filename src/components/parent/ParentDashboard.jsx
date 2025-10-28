@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useChild } from "../../context/ChildContext";
 import ChildSelector from "../child/ChildSelector";
 import Overview from "./Overview";
 import GrowthReport from "./GrowthReport";
@@ -11,11 +12,19 @@ import "./ParentDashboard.css";
 function ParentDashboard() {
 
     const [activeTab, setActiveTab] = useState("overview");
-    const [selectedChild, setSelectedChild] = useState(null);
+    const [dashboardSelectedChild, setDashboardSelectedChild] = useState(null);
+    const { selectedChild: contextSelectedChild } = useChild();
     const navigate = useNavigate();
 
+    // 메인 페이지에서 선택한 자녀가 있으면 초기값으로 설정 (한 번만)
+    useEffect(() => {
+        if (contextSelectedChild && !dashboardSelectedChild) {
+            setDashboardSelectedChild(contextSelectedChild);
+        }
+    }, [contextSelectedChild, dashboardSelectedChild]);
+
     const handleSelectChild = (child) => {
-        setSelectedChild(child);
+        setDashboardSelectedChild(child);
     }
 
     const handleGoToChildPage = () => {
@@ -37,9 +46,9 @@ function ParentDashboard() {
 
                 {/* 자녀 선택 */}
                 <div className="sidebar_child_selector">
-                    <ChildSelector 
+                    <ChildSelector
                         onSelectChild={handleSelectChild}
-                        selectedChildId={selectedChild?.id}
+                        selectedChildId={dashboardSelectedChild?.id}
                     />
                 </div>
 
@@ -87,11 +96,11 @@ function ParentDashboard() {
 
             {/* 메인 콘텐츠 */}
             <main className="dashboard_content">
-                {activeTab === "overview" && <Overview childId={selectedChild?.id} />}
-                {activeTab === "growth" && <GrowthReport childId={selectedChild?.id} />}
-                {activeTab === "history" && <StoryHistory childId={selectedChild?.id} />}
-                {activeTab === "children" && <ChildManagement childId={selectedChild?.id} />}
-                {activeTab === "settings" && <Settings childId={selectedChild?.id} />}
+                {activeTab === "overview" && <Overview childId={dashboardSelectedChild?.id} />}
+                {activeTab === "growth" && <GrowthReport childId={dashboardSelectedChild?.id} />}
+                {activeTab === "history" && <StoryHistory childId={dashboardSelectedChild?.id} />}
+                {activeTab === "children" && <ChildManagement childId={dashboardSelectedChild?.id} />}
+                {activeTab === "settings" && <Settings childId={dashboardSelectedChild?.id} />}
             </main>
         </div>
     );

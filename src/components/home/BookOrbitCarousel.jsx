@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useRef, useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import * as THREE from "three";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { MdSwapHoriz } from "react-icons/md";
 import "./BookOrbitCarousel.css";
 import DinoCharacter from "../dino/DinoCharacter";
 import RewardProgress from "./RewardProgress";
 import { RewardContext } from "../../context/RewardContext";
+import { useChild } from "../../context/ChildContext";
 import BookInfoModal from "../dino/BookInfoModal"; 
 
 // 예시 도서 데이터
@@ -47,14 +50,21 @@ const books = [
 const THEME_COLORS = ["#2fa36b", "#ff9b7a", "#87ceeb", "#ffd166"];
 
 function BookOrbitCarousel() {
+  const navigate = useNavigate();
   const containerRef = useRef(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { addStar } = useContext(RewardContext);
+  const { selectedChild } = useChild();
   const targetRotation = useRef(0);
   const dragDistanceRef = useRef(0);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
+
+  // 자녀 변경 핸들러
+  const handleChangeChild = () => {
+    navigate('/child/select');
+  };
 
   const textures = useMemo(() => {
     const loader = new THREE.TextureLoader();
@@ -230,8 +240,19 @@ function BookOrbitCarousel() {
         </h1>
       </div>
 
-      <div className="reward-progress-wrapper">
-        <RewardProgress />
+      {/* 우측 상단: 자녀 정보 + 보상 진행도 */}
+      <div className="top-right-section">
+        {selectedChild && (
+          <div className="selected-child-info" onClick={handleChangeChild}>
+            <span className="child-avatar">{selectedChild.avatar || (selectedChild.gender === 'male' ? '👦' : '👧')}</span>
+            <span className="child-name-display">{selectedChild.name}</span>
+            <MdSwapHoriz className="change-icon" />
+          </div>
+        )}
+
+        <div className="reward-progress-wrapper">
+          <RewardProgress />
+        </div>
       </div>
 
       <div className="carousel-controls">

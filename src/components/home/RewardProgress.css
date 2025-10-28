@@ -1,8 +1,4 @@
 .reward-bar {
-  position: fixed;
-  top: 24px;         
-  right: 36px;         
-  z-index: 999;        
   width: 220px;
   text-align: center;
   color: #fff;

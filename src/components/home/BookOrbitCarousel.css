@@ -162,15 +162,75 @@ canvas {
   background: rgba(255, 255, 255, 0.4);
 }
 
+/* 우측 상단 영역 */
+.top-right-section {
+  position: absolute;
+  top: 30px;
+  right: 60px;
+  z-index: 50;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+  animation: fadeDown 0.8s ease forwards;
+}
+
+/* 선택된 자녀 정보 */
+.selected-child-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 8px 14px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.selected-child-info:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.02);
+}
+
+.child-avatar {
+  font-size: 22px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.2);
+}
+
+.child-name-display {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.change-icon {
+  font-size: 20px;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+  color: white;
+}
+
+.selected-child-info:hover .change-icon {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
 /* 보상 진행도 */
 .reward-progress-wrapper {
-  position: absolute;
-  top: 30px;       
-  right: 60px;      
-  z-index: 50;
   width: 240px;
-  text-align: right; 
-  transform: none;   
+  text-align: right;
 }
 
 
