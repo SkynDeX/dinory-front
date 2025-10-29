@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useChild } from "../../context/ChildContext"; // ChildContext
 import ChildRegistrationForm from "./ChildRegistrationForm";
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import "./ChildManagement.css";
 
 // 자녀 관리
@@ -128,13 +129,13 @@ function ChildManagement() {
                     </div>
                     <div className="card_actions">
                     <button className="action_btn" onClick={() => openDetailModal(child)}>
-                        👁️
+                        <FaEye />
                     </button>
                     <button className="action_btn" onClick={() => openEditModal(child)}>
-                        ✏️
+                        <FaEdit />
                     </button>
                     <button className="action_btn_delete" onClick={() => handleDeleteChild(child.id)}>
-                        🗑️
+                        <FaTrash />
                     </button>
                     </div>
                 </div>
