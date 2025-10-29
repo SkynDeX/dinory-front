@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useParams, useLocation } from "react-router-dom";
 import PrivateRoute from "../components/auth/PrivateRoute";
 import Login from "../components/auth/Login";
 import OAuth2Callback from "../components/auth/OAuth2Callback";
@@ -17,8 +17,25 @@ import InterestSelection from "../components/child/InterestSelection.jsx";
 import StoryList from "../components/story/StoryList.jsx";
 import StoryReading from "../components/story/StoryReading.jsx";
 import StoryFlowTest from "../pages/StoryFlowTest.jsx";
+import ChatInterface from "../components/chat/ChatInterface.jsx";
 
 const MyDinos = lazy(() => import("../components/dino/MyDinos.jsx"));
+
+// [2025-10-29 김광현] 채팅 페이지 컴포넌트
+function ChatPage() {
+  const {sessionId} = useParams();
+  const location = useLocation();
+  const {fromStroy, completionId} = location.state || {};
+
+  return (
+    <div className="chat-page">
+      <ChatInterface 
+        initialSessionId={sessionId ? parseInt(sessionId) : null}
+        childId={null}
+      />
+    </div>
+  )
+}
 
 function AppRoutes() {
   return (
@@ -135,6 +152,16 @@ function AppRoutes() {
             }
           />
 
+          {/* [2025-10-29 김광현] 동화 완료 후 채팅 */}
+          <Route 
+            path="/chat/:sessionId"
+            element={
+              <PrivateRoute>
+                <ChatPage />
+              </PrivateRoute>
+            }
+          />
+          
           {/* 테스트 페이지 */}
           <Route
             path="/test-story"

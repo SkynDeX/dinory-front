@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { chatApi } from '../../services/api/chatApi';
 import './ChatInterface.css';
 
-const ChatInterface = ({ childId, onComplete }) => {
+const ChatInterface = ({ childId, initialSessionId, onComplete }) => {  // [2025-10-29 김광현] initialSessionId 추가
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -21,6 +21,13 @@ const ChatInterface = ({ childId, onComplete }) => {
 
   // 세션 초기화
   useEffect(() => {
+
+    // [2025-10-29 김광현] sessionId가 있으면 기존 세션 로드
+    if(initialSessionId) {
+      loadExistingSession(initialSessionId);
+      return;
+    }
+
     if (!childId) return;
     let cancelled = false;
 
@@ -54,7 +61,34 @@ const ChatInterface = ({ childId, onComplete }) => {
     })();
 
     return () => { cancelled = true; };
-  }, [childId]);
+  }, [childId, initialSessionId]); // [2025-10-29 김광현] initialSessionId 추가
+  
+  // [2025-10-29 김광현] 기존 세션 로드 함수 추가
+  const loadExistingSession = async (sessionIdToLoad) => {
+    try {
+      console.log("기존 채팅 세션 로드: ", sessionIdToLoad);
+      const res = await chatApi.getChatSession(sessionIdToLoad);
+
+      setSessionId(sessionIdToLoad);
+
+      if(Array.isArray(res.messages) && res.message.length > 0) {
+        setMessages(res.message.map(m => ({
+          sender: m.sender === "AI" ? 'assistant' : 'user',
+          content: m.message ?? m.content ?? '',
+          createdAt: m.createdAt ?? new Date().toISOString(),
+        })));
+
+        console.log("세션 로드 완료: ", res);
+      }
+    } catch (error) {
+      console.error("세션 로드 실패:", error);
+      setMessages([{
+        sender: 'assistant',
+        content: '세션을 불러오는데 실패!',
+        createdAt: new Date().toISOString(),
+      }]);
+    }
+  }
 
   // 음성 인식 설정
   useEffect(() => {

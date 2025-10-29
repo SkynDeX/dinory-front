@@ -70,6 +70,13 @@ axiosInstance.interceptors.response.use(
                 localStorage.setItem('accessToken', newAccessToken);
                 console.log('✅ 토큰 갱신 성공');
 
+                // [2025-10-29 김광현] 추가
+                 // 동화 생성 요청은 재시도하지 않음 (중복 생성 방지)
+                if (originalRequest.url && originalRequest.url.includes('/story/') && originalRequest.url.includes('/generate')) {
+                    console.log('⚠️ 동화 생성 요청은 토큰 갱신 후 재시도 안함 - 사용자가 다시 시도해야 함');
+                    return Promise.reject(new Error('토큰이 만료되었습니다. 동화를 다시 선택해주세요.'));
+                }
+
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                 return axiosInstance(originalRequest);
             } catch (refreshError) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./StoryReading.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { generateStory, getNextScene, completeStory } from "../../services/api/storyApi";
@@ -22,42 +22,69 @@ function StoryReading() {
     const [startTime, setStartTime] = useState(null);
     const [storyContext, setStoryContext] = useState("");  // 스토리 맥락
     const { selectedChild, selectedEmotion, selectedInterests } = useChild();
+    const isInitializingRef = useRef(false);
 
     useEffect(() => {
-        initializeStory();
+        let cancelled = false;
+
+        const init = async () => {
+            // 이미 초기화 중이거나 취소되었으면 실행하지 않음
+            if (isInitializingRef.current || cancelled) {
+                console.log("⚠️ 이미 초기화 중이거나 취소됨");
+                return;
+            }
+
+            isInitializingRef.current = true;
+
+            try {
+                setLoading(true);
+                setStartTime(Date.now());
+
+                const requestData = {
+                    childId: selectedChild?.id,
+                    childName: selectedChild?.name,
+                    emotion: selectedEmotion?.id,
+                    interests: selectedInterests
+                };
+
+                console.log("🔥 첫 번째 씬 생성 요청: ", requestData);
+
+                // 첫 번째 씬 생성
+                const response = await generateStory(storyId, requestData);
+
+                console.log("✅ 첫 번째 씬 생성 완료: ", response);
+
+                setCompletionId(response.completionId);
+                setCurrentScene(response.scene);
+                setCurrentSceneNumber(response.scene.sceneNumber);
+                setStoryContext(response.scene.content);
+                setLoading(false);
+                isInitializingRef.current = false;
+
+            } catch (error) {
+                console.error("❌ 동화 생성 실패: ", error);
+                setLoading(false);
+                isInitializingRef.current = false;
+
+                // 토큰 만료 에러는 조용히 처리 (이미 토큰 갱신됨)
+                if (error.message && error.message.includes('토큰이 만료')) {
+                    console.log("ℹ️ 토큰이 갱신되었습니다. 동화를 다시 선택해주세요.");
+                    return;
+                }
+
+                alert("동화를 불러오는데 실패했습니다!");
+                navigate(-1);
+            }
+        };
+
+        init();
+
+        // // Cleanup: 컴포넌트 언마운트 시 플래그 설정
+        // return () => {
+        //     cancelled = true;
+        //     isInitializingRef.current = false;
+        // };
     }, [storyId]);
-
-    const initializeStory = async () => {
-        try {
-            setLoading(true);
-            setStartTime(Date.now());
-
-            const requestData = {
-                childId: selectedChild?.id,
-                childName: selectedChild?.name,
-                emotion: selectedEmotion?.id,
-                interests: selectedInterests
-            };
-
-            console.log("🔥 첫 번째 씬 생성 요청: ", requestData);
-
-            // 첫 번째 씬 생성
-            const response = await generateStory(storyId, requestData);
-
-            console.log("✅ 첫 번째 씬 생성 완료: ", response);
-
-            setCompletionId(response.completionId);
-            setCurrentScene(response.scene);
-            setCurrentSceneNumber(response.scene.sceneNumber);
-            setStoryContext(response.scene.content);  // 스토리 맥락 저장
-            setLoading(false);
-
-        } catch (error) {
-            console.error("❌ 동화 생성 실패: ", error);
-            alert("동화를 불러오는데 실패했습니다!");
-            navigate(-1);
-        }
-    };
 
     const handleChoiceSelect = async (choice) => {
         try {
@@ -162,6 +189,7 @@ function StoryReading() {
         return (
             <StoryCompletion
                 storyTitle={storyContext.substring(0, 50) + "..."}
+                completionId={completionId}
                 onGoHome={handleGoHome}
             />
         );

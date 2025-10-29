@@ -54,9 +54,6 @@ function StoryList() {
     };
 
     const handleStorySelect = (story) => {
-        // 선택한 동화 정보저장
-        localStorage.setItem("selectedStory", JSON.stringify(story));
-
         // 동화 읽기 페이지로 이동
         navigate(`/story/${story.storyId}`);
     };
