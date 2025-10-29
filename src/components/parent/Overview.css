@@ -1,0 +1,224 @@
+.overview_wrapper {
+    padding: 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* 헤더 */
+.overview_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.overview_title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+}
+
+.period_filters {
+    display: flex;
+    gap: 8px;
+    background: white;
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.period_btn {
+    padding: 8px 20px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.period_btn:hover {
+    background: rgba(47, 163, 107, 0.1);
+    color: #2fa36b;
+}
+
+.period_btn.active {
+    background: #2fa36b;
+    color: white;
+}
+
+/* 차트 그리드 */
+.charts_grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.chart_card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.chart_card:hover {
+    border-color: #2fa36b;
+    box-shadow: 0 4px 16px rgba(47, 163, 107, 0.1);
+}
+
+.chart_title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.chart_container {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 관심사 태그 클라우드 */
+.interests_cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    padding: 20px;
+}
+
+.interest_bubble {
+    display: inline-block;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #2fa36b 0%, #87ceeb 100%);
+    color: white;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.interest_bubble:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(47, 163, 107, 0.3);
+}
+
+/* 최근 동화 섹션 */
+.recent_stories_section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 2px solid #e0e0e0;
+}
+
+.section_title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.recent_stories_list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.recent_story_item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s ease;
+}
+
+.recent_story_item:hover {
+    background: #f0f7f4;
+    border-color: #2fa36b;
+    transform: translateX(4px);
+}
+
+.recent_stories_section .story_emotion {
+    font-size: 32px;
+}
+
+.story_info {
+    flex: 1;
+}
+
+.story_title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.story_date {
+    font-size: 14px;
+    color: #666;
+}
+
+/* 빈 상태 & 로딩 */
+.empty_state,
+.loading_state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    color: #666;
+}
+
+.empty_state h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.empty_state p {
+    color: #999;
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+    .charts_grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .overview_wrapper {
+        padding: 16px;
+    }
+    
+    .overview_header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+    
+    .period_filters {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .chart_container {
+        height: 250px;
+    }
+}

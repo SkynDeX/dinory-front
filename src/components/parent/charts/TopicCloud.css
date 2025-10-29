@@ -1,0 +1,25 @@
+.topic_cloud_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    padding: 20px;
+}
+
+.topic_bubble {
+    display: inline-block;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #2fa36b 0%, #87ceeb 100%);
+    color: #fff;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.topic_bubble:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(47, 163, 107, 0.3);
+}
