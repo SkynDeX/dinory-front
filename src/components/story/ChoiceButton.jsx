@@ -23,7 +23,7 @@ function ChoiceButton({choice, onSelect}) {
                 {console.log('Choice:', choice.choiceText, 'abilityScore:', choice.abilityScore, 'abilityPoints:', choice.abilityPoints)}
                 <div className="choice_content">
                     <span className="choice_text">{choice.choiceText || choice.label || choice.text}</span>
-                    <div className="choice_meta">
+                    {/* <div className="choice_meta">
                         <span 
                             className="ability_badge"
                             style={{
@@ -32,7 +32,7 @@ function ChoiceButton({choice, onSelect}) {
                             }}>
                                 {choice.abilityType} + {choice.abilityScore ?? choice.abilityPoints ?? 0}
                             </span>
-                    </div>
+                    </div> */}
                 </div>
         </button>
     )

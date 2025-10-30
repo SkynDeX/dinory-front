@@ -109,39 +109,63 @@
     transform: translateY(0);
 }
 
-/* 버튼 컨테이너 */
+/* ============================================
+   버튼 스타일 개선
+   ============================================ */
+
 .completion_buttons {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     width: 100%;
     max-width: 400px;
     margin-left: auto;
     margin-right: auto;
 }
 
-/* 채팅 시작 버튼 (Primary) */
+/* Primary 버튼 (디노와 대화하기) */
 .chat_button.primary {
-    padding: 1rem 3rem;
+    position: relative;
+    padding: 1.2rem 2rem;
     font-size: 1.2rem;
-    font-weight: bold;
+    font-weight: 700;
     color: white;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
-    border-radius: 50px;
+    border-radius: 16px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    overflow: hidden;
+}
+
+.chat_button.primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.chat_button.primary:hover::before {
+    left: 100%;
 }
 
 .chat_button.primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(102, 126, 234, 0.5);
 }
 
 .chat_button.primary:active {
-    transform: translateY(0);
+    transform: translateY(-1px);
 }
 
 .chat_button.primary:disabled {
@@ -150,50 +174,240 @@
     transform: none;
 }
 
-/* 홈 버튼 (Secondary) */
+.button_icon {
+    font-size: 1.4rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.button_arrow {
+    font-size: 1.3rem;
+    transition: transform 0.3s ease;
+}
+
+.chat_button.primary:hover .button_arrow {
+    transform: translateX(5px);
+}
+
+/* Secondary 버튼 (홈으로 돌아가기) */
 .home_button.secondary {
-    padding: 0.9rem 2.5rem;
-    font-size: 1.1rem;
+    padding: 1rem 2rem;
+    font-size: 1.05rem;
     font-weight: 600;
     color: #667eea;
     background: white;
     border: 2px solid #667eea;
-    border-radius: 50px;
+    border-radius: 16px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
 }
 
 .home_button.secondary:hover {
-    background: #f0f4ff;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e8ebff 100%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.25);
 }
 
 .home_button.secondary:active {
     transform: translateY(0);
 }
 
-.home_button.secondary:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
-
+/* 반응형 디자인 */
 @media (max-width: 768px) {
-    .completion_content {
-        padding: 2rem 1.5rem;
+    .ability_summary_title {
+        font-size: 1.3rem;
     }
 
-    .completion_icon {
-        font-size: 4rem;
+    .ability_scores {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 0.8rem;
     }
 
-    .completion_content h2 {
-        font-size: 1.5rem;
+    .ability_item {
+        padding: 1.2rem 0.8rem;
     }
 
-    .completion_message {
+    .ability_icon {
+        font-size: 2rem;
+    }
+
+    .ability_value {
+        font-size: 1.6rem;
+    }
+
+    .chat_button.primary {
+        font-size: 1.1rem;
+        padding: 1.1rem 1.5rem;
+    }
+
+    .home_button.secondary {
         font-size: 1rem;
+        padding: 0.9rem 1.5rem;
     }
 }
+
+/* ============================================
+   능력치 요약 영역 - 개선된 디자인
+   ============================================ */
+
+.ability_summary {
+    margin: 2rem 0;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+}
+
+.ability_summary_title {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.5rem;
+    text-align: center;
+    color: #333;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.title_icon {
+    font-size: 1.8rem;
+    animation: twinkle 2s infinite;
+}
+
+.ability_scores {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
+.ability_item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1.5rem 1rem;
+    background: white;
+    border-radius: 16px;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.ability_item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, currentColor, transparent);
+    opacity: 0.6;
+}
+
+/* 능력치별 색상 */
+.ability_item.courage {
+    color: #ff6b6b;
+}
+
+.ability_item.empathy {
+    color: #ff89c0;
+}
+
+.ability_item.creativity {
+    color: #a78bfa;
+}
+
+.ability_item.responsibility {
+    color: #fbbf24;
+}
+
+.ability_item.friendship {
+    color: #60d394;
+}
+
+.ability_item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    border-color: currentColor;
+}
+
+.ability_icon {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+.ability_name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #666;
+    letter-spacing: 0.5px;
+}
+
+.ability_value {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, currentColor 0%, currentColor 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 능력치 프로그레스 바 */
+.ability_bar {
+    width: 100%;
+    height: 6px;
+    background: #f0f0f0;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 0.3rem;
+}
+
+.ability_bar_fill {
+    height: 100%;
+    background: currentColor;
+    border-radius: 3px;
+    transition: width 1s ease-out;
+    animation: fillBar 1s ease-out;
+}
+
+@keyframes fillBar {
+    from {
+        width: 0%;
+    }
+}
+
+/* 0점 능력치 스타일 */
+/* .ability_item.zero {
+    opacity: 0.5;
+    filter: grayscale(0.5);
+    border-style: dashed;
+}
+
+.ability_item.zero .ability_icon {
+    filter: grayscale(1);
+    opacity: 0.6;
+}
+
+.ability_item.zero .ability_value {
+    color: #999;
+}
+
+.ability_item.zero:hover {
+    transform: translateY(-2px);
+    opacity: 0.7;
+} */
