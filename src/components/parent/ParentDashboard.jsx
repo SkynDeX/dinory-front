@@ -96,7 +96,7 @@ function ParentDashboard() {
 
             {/* 메인 콘텐츠 */}
             <main className="dashboard_content">
-                {activeTab === "overview" && <Overview childId={dashboardSelectedChild?.id} />}
+                {activeTab === "overview" && <Overview dashboardSelectedChild={dashboardSelectedChild} />}
                 {activeTab === "growth" && <GrowthReport childId={dashboardSelectedChild?.id} />}
                 {activeTab === "history" && <StoryHistory childId={dashboardSelectedChild?.id} />}
                 {activeTab === "children" && <ChildManagement childId={dashboardSelectedChild?.id} />}

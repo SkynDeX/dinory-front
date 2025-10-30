@@ -242,6 +242,8 @@
   flex: 1;
   padding: 40px;
   overflow-y: auto;
+  position: relative;
+  z-index: 1;
 }
 
 /* 각 탭 래퍼 기본 스타일 */
