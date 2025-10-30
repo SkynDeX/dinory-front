@@ -143,17 +143,16 @@
 }
 
 .custom_choice_submit {
-    padding: 1rem 2rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    padding: 12px 25px;
+    background: white;
+    color: #333;
     border: none;
-    border-radius: 16px;
+    border-radius: 10px;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.95rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
     white-space: nowrap;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .custom_choice_submit:hover {

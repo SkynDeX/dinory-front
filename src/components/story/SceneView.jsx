@@ -36,6 +36,36 @@ function SceneView({ scene, totalScenes, onChoiceSelect }) {
                         />
                     ))}
                 </div>
+
+                {/* 입력창 */}
+                <div className="custom_choice_section">
+                    <p className="custom_choice_title">나만의 선택을 입력해보세요!</p>
+                    <form
+                        className="custom_choice_form" 
+                        onSubmit={(e) => {
+                        e.preventDefault();
+                        const input = e.target.elements.customText;
+                        if (input.value.trim()) {
+                            onChoiceSelect({
+                                isCustom: true,
+                                choiceText: input.value.trim(),
+                                choiceId: `custom_${Date.now()}`
+                            });
+                            input.value = '';
+                        }
+                    }}>
+                        <input
+                            type="text"
+                            name="customText"
+                            placeholder="예: 친구에게 도움을 요청한다."
+                            className="custom_choice_input"
+                            maxLength={100}
+                        ></input>
+                        <button type="submit" className="custom_choice_submit">
+                            선택하기
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     );

@@ -45,3 +45,13 @@ export const getStoryCompletionSummary = async (completionId) => {
     const res = await axiosInstance.get(`/api/story/completion/${completionId}/summary`);
     return res.data;
 };
+
+// 커스텀 선택지
+export const analyzeCustomChoice = async (completionId, sceneNumber, text) => {
+    const res = await axiosInstance.post(`/api/story/analyze-custom-choice`, {
+        completionId,
+        sceneNumber,
+        text
+    });
+    return res.data;
+};

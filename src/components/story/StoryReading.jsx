@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./StoryReading.css";
 import { useParams, useNavigate } from "react-router-dom";
-import { generateStory, getNextScene, completeStory } from "../../services/api/storyApi";
+import { generateStory, getNextScene, completeStory, analyzeCustomChoice  } from "../../services/api/storyApi";
 import SceneView from "../../components/story/SceneView";
 import StoryCompletion from "../../components/story/StoryCompletion";
 import { useChild } from "../../context/ChildContext";
@@ -88,12 +88,48 @@ function StoryReading() {
         try {
             console.log("🎯 선택됨:", choice);
 
+            // 커스텀(글쓰기) 경우 먼저 분석함
+            let finalChoice = choice;
+
+            if(choice.isCustom) {
+                console.log("커스텀 선택지 분석중: ", choice.choiceText);
+
+                try {
+                    // api 호출
+                    const analysisResult = await analyzeCustomChoice(
+                        completionId,
+                        currentScene.sceneNumber,
+                        choice.choiceText
+                    );
+
+                    console.log("분석 결과 : ", analysisResult);
+
+                    // 분석 결과로 chocie 재구성
+                    finalChoice = {
+                        choiceId: choice.choiceId,
+                        choiceText: choice.choiceText,
+                        abilityType: analysisResult.abilityType,
+                        abilityPoints: analysisResult.abilityPoints
+                    };
+
+                    // 사용자에게 피드백 표시
+                    if(analysisResult.feadback) {
+                        console.log("피드백: ", analysisResult.feadback);
+                    }
+
+                } catch (error) {
+                    console.error("선택지 분석 실패: ", error);
+                    alert("선택지 분석에 실패했습니다.");
+                    return;
+                }
+            }
+
             const choiceData = {
                 sceneNumber: currentScene.sceneNumber,
-                choiceId: choice.choiceId ?? choice.id,
-                abilityType: choice.abilityType,
-                abilityPoints: choice.abilityPoints ?? choice.abilityScore ?? 0,
-                choiceText: choice.choiceText || choice.label || ""
+                choiceId: finalChoice.choiceId ?? finalChoice.id,
+                abilityType: finalChoice.abilityType,
+                abilityPoints: finalChoice.abilityPoints ?? finalChoice.abilityScore ?? 0,
+                choiceText: finalChoice.choiceText || finalChoice.label || ""
             };
 
             if (currentSceneNumber >= MAX_SCENES || currentScene.isEnding) {
