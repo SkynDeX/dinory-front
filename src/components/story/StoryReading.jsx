@@ -33,7 +33,7 @@ function StoryReading() {
                 const requestData = {
                     childId: selectedChild?.id,
                     childName: selectedChild?.name,
-                    emotion: selectedEmotion?.id,
+                    emotion: selectedEmotion?.label,    // [2025-10-30 김광현] id -> label로 변경
                     interests: selectedInterests
                 };
 
