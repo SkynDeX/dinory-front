@@ -17,7 +17,7 @@ function SceneView({ scene, totalScenes, onChoiceSelect }) {
             </div>
 
             {/* 이미지 영역 */}
-            <ImageDisplay imagePrompt={scene.imagePrompt}/>
+            <ImageDisplay imagePrompt={scene.imagePrompt} imageUrl={scene.imageUrl}/>
 
             {/* 스토리 내용 */}
             <div className="scene_content">

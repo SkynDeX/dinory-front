@@ -46,7 +46,14 @@ function StoryReading() {
                 // 컴포넌트가 아직 마운트되어 있을 때만 state 업데이트
                 if (isMounted) {
                     setCompletionId(response.completionId);
-                    setCurrentScene(response.scene);
+
+                    // imageUrl을 scene 객체에 추가
+                    const sceneWithImage = {
+                        ...response.scene,
+                        imageUrl: response.imageUrl
+                    };
+
+                    setCurrentScene(sceneWithImage);
                     setCurrentSceneNumber(response.scene.sceneNumber);
                     setStoryContext(response.scene.content);
                     setLoading(false);
@@ -106,7 +113,13 @@ function StoryReading() {
                 prevContext + "\n\n" + nextSceneResponse.scene.content
             );
 
-            setCurrentScene(nextSceneResponse.scene);
+            // imageUrl을 scene 객체에 추가
+            const sceneWithImage = {
+                ...nextSceneResponse.scene,
+                imageUrl: nextSceneResponse.imageUrl
+            };
+
+            setCurrentScene(sceneWithImage);
             setCurrentSceneNumber(nextSceneResponse.scene.sceneNumber);
             setLoadingNextScene(false);
 
