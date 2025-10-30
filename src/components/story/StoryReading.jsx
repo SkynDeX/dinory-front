@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./StoryReading.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { generateStory, getNextScene, completeStory } from "../../services/api/storyApi";
@@ -6,10 +6,9 @@ import SceneView from "../../components/story/SceneView";
 import StoryCompletion from "../../components/story/StoryCompletion";
 import { useChild } from "../../context/ChildContext";
 
-const MAX_SCENES = 8;  // 최대 8장면
+const MAX_SCENES = 8;
 
 function StoryReading() {
-
     const {storyId} = useParams();
     const navigate = useNavigate();
 
@@ -20,22 +19,13 @@ function StoryReading() {
     const [completionId, setCompletionId] = useState(null);
     const [isCompleted, setIsCompleted] = useState(false);
     const [startTime, setStartTime] = useState(null);
-    const [storyContext, setStoryContext] = useState("");  // 스토리 맥락
+    const [storyContext, setStoryContext] = useState("");
     const { selectedChild, selectedEmotion, selectedInterests } = useChild();
-    const isInitializingRef = useRef(false);
 
     useEffect(() => {
-        let cancelled = false;
+        let isMounted = true;
 
         const init = async () => {
-            // 이미 초기화 중이거나 취소되었으면 실행하지 않음
-            if (isInitializingRef.current || cancelled) {
-                console.log("⚠️ 이미 초기화 중이거나 취소됨");
-                return;
-            }
-
-            isInitializingRef.current = true;
-
             try {
                 setLoading(true);
                 setStartTime(Date.now());
@@ -49,55 +39,48 @@ function StoryReading() {
 
                 console.log("🔥 첫 번째 씬 생성 요청: ", requestData);
 
-                // 첫 번째 씬 생성
                 const response = await generateStory(storyId, requestData);
 
                 console.log("✅ 첫 번째 씬 생성 완료: ", response);
 
-                setCompletionId(response.completionId);
-                setCurrentScene(response.scene);
-                setCurrentSceneNumber(response.scene.sceneNumber);
-                setStoryContext(response.scene.content);
-                setLoading(false);
-                isInitializingRef.current = false;
+                // 컴포넌트가 아직 마운트되어 있을 때만 state 업데이트
+                if (isMounted) {
+                    setCompletionId(response.completionId);
+                    setCurrentScene(response.scene);
+                    setCurrentSceneNumber(response.scene.sceneNumber);
+                    setStoryContext(response.scene.content);
+                    setLoading(false);
+                }
 
             } catch (error) {
                 console.error("❌ 동화 생성 실패: ", error);
-                setLoading(false);
-                isInitializingRef.current = false;
 
-                // 토큰 만료 에러는 조용히 처리 (이미 토큰 갱신됨)
-                if (error.message && error.message.includes('토큰이 만료')) {
-                    console.log("ℹ️ 토큰이 갱신되었습니다. 동화를 다시 선택해주세요.");
-                    return;
+                if (isMounted) {
+                    setLoading(false);
+
+                    if (error.message && error.message.includes('토큰이 만료')) {
+                        console.log("ℹ️ 토큰이 갱신되었습니다. 동화를 다시 선택해주세요.");
+                        return;
+                    }
+
+                    alert("동화를 불러오는데 실패했습니다!");
+                    navigate(-1);
                 }
-
-                alert("동화를 불러오는데 실패했습니다!");
-                navigate(-1);
             }
         };
 
         init();
 
-        // // Cleanup: 컴포넌트 언마운트 시 플래그 설정
-        // return () => {
-        //     cancelled = true;
-        //     isInitializingRef.current = false;
-        // };
+        return () => {
+            isMounted = false;
+            console.log('=== cleanup: isMounted = false ===');
+        };
     }, [storyId]);
 
     const handleChoiceSelect = async (choice) => {
         try {
             console.log("🎯 선택됨:", choice);
 
-            // 선택지 데이터 준비
-            // const choiceData = {
-            //     sceneNumber: currentScene.sceneNumber,
-            //     choiceId: choice.choiceId ?? choice.id,
-            //     abilityType: choice.abilityType,
-            //     abilityPoints: choice.abilityPoints ?? choice.abilityScore ?? 0
-            // };
-            // [2025-10-28 김광현] 선택지 때문에 수정
             const choiceData = {
                 sceneNumber: currentScene.sceneNumber,
                 choiceId: choice.choiceId ?? choice.id,
@@ -105,34 +88,28 @@ function StoryReading() {
                 abilityPoints: choice.abilityPoints ?? choice.abilityScore ?? 0,
                 choiceText: choice.choiceText || choice.label || ""
             };
-            
-            // 8장면 도달 또는 마지막 씬이면 완료 처리
+
             if (currentSceneNumber >= MAX_SCENES || currentScene.isEnding) {
                 console.log("📚 동화 마지막 씬 - 완료 처리");
                 await handleStoryComplete();
                 return;
             }
 
-            // 다음 씬 로딩 시작
             setLoadingNextScene(true);
 
-            // 다음 씬 요청
             console.log("📡 다음 씬 요청 중...");
             const nextSceneResponse = await getNextScene(completionId, choiceData);
 
             console.log("✅ 다음 씬 받음:", nextSceneResponse);
 
-            // 스토리 맥락 업데이트 (이전 장면들의 내용 누적)
             setStoryContext(prevContext =>
                 prevContext + "\n\n" + nextSceneResponse.scene.content
             );
 
-            // 새로운 씬 설정
             setCurrentScene(nextSceneResponse.scene);
             setCurrentSceneNumber(nextSceneResponse.scene.sceneNumber);
             setLoadingNextScene(false);
 
-            // 마지막 씬인지 체크
             if (nextSceneResponse.isEnding || nextSceneResponse.scene.sceneNumber >= MAX_SCENES) {
                 console.log("🏁 마지막 씬 도달");
             }
@@ -147,7 +124,7 @@ function StoryReading() {
     const handleStoryComplete = async () => {
         try {
             const endTime = Date.now();
-            const totalTime = Math.floor((endTime - startTime) / 1000); // 초 단위
+            const totalTime = Math.floor((endTime - startTime) / 1000);
 
             console.log("🎉 동화 완료 처리:", { totalTime });
 
