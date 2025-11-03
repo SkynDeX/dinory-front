@@ -8,7 +8,7 @@ import HomePage from "../pages/home/HomePage";
 import Home from "../pages/Home";
 import Profile from "../pages/Profile";
 import ImageTest from "../pages/ImageTest";
-import LoadingScreen from "../components/common/LoadingScreen"; 
+import LoadingScreen from "../components/common/LoadingScreen";
 import ChildRegistration from "../components/child/ChildRegistration.jsx";
 import ParentDashboard from "../components/parent/ParentDashboard.jsx";
 import ChildSelectPage from "../components/child/ChildSelectPage.jsx";
@@ -29,12 +29,26 @@ function ChatPage() {
 
   return (
     <div className="chat-page">
-      <ChatInterface 
+      <ChatInterface
         initialSessionId={sessionId ? parseInt(sessionId) : null}
         childId={null}
       />
     </div>
   )
+}
+
+// 동화 완료 후 채팅 페이지 컴포넌트 (능력치 요약이 채팅 안에 포함됨)
+function ChatPageFromStory() {
+  const { completionId } = useParams();
+
+  return (
+    <div className="chat-page">
+      <ChatInterface
+        completionId={completionId ? parseInt(completionId) : null}
+        childId={null}
+      />
+    </div>
+  );
 }
 
 function AppRoutes() {
@@ -152,8 +166,18 @@ function AppRoutes() {
             }
           />
 
-          {/* [2025-10-29 김광현] 동화 완료 후 채팅 */}
-          <Route 
+          {/* 동화 완료 후 채팅 (더 구체적인 경로가 먼저) */}
+          <Route
+            path="/chat/story/:completionId"
+            element={
+              <PrivateRoute>
+                <ChatPageFromStory />
+              </PrivateRoute>
+            }
+          />
+
+          {/* [2025-10-29 김광현] 일반 채팅 세션 */}
+          <Route
             path="/chat/:sessionId"
             element={
               <PrivateRoute>
@@ -161,7 +185,7 @@ function AppRoutes() {
               </PrivateRoute>
             }
           />
-          
+
           {/* 테스트 페이지 */}
           <Route
             path="/test-story"

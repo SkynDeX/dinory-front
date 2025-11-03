@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axiosInstance from '../services/utils/axiosInstance';
+import axiosInstance from '../services/api/axiosInstance';
 import './ImageTest.css';
 
 function ImageTest() {

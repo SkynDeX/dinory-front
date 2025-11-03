@@ -1,4 +1,4 @@
-import axiosInstance from '../utils/axiosInstance';
+import axiosInstance from './axiosInstance';
 
 // 대시보드
 export const getOverview = async (childId, period = "day") => {

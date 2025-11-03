@@ -256,6 +256,38 @@
     align-items: center;
 }
 
+.footer-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.recommend-button {
+    height: 5rem;
+    padding: 0 2.5rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 3rem;
+    background: linear-gradient(135deg, #ffd166 0%, #ff9b7a 100%);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 10px 30px rgba(255, 155, 122, 0.3);
+}
+
+.recommend-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(255, 155, 122, 0.4);
+}
+
+.recommend-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
 .complete-button {
     height: 5rem;
     padding: 0 3rem;
@@ -317,9 +349,16 @@
         font-size: 1.25rem;
     }
 
+    .footer-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .recommend-button,
     .complete-button {
         height: 4rem;
         padding: 0 2rem;
         font-size: 1.125rem;
+        width: 100%;
     }
 }

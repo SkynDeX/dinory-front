@@ -1,5 +1,5 @@
 // src/services/api/storyApi.js
-import axiosInstance from '../utils/axiosInstance';
+import axiosInstance from './axiosInstance';
 
 // 동화 추천
 export const getRecommendedStories = async (emotion, interests, childId, limit = 5) => {

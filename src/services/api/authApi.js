@@ -1,4 +1,4 @@
-import axiosInstance from '../utils/axiosInstance';
+import axiosInstance from './axiosInstance';
 
 export const authApi = {
     refreshToken: async () => {

@@ -1,0 +1,208 @@
+.ability-summary-message {
+  background: linear-gradient(135deg, #fff5e6 0%, #ffe6f0 100%);
+  border-radius: 20px;
+  padding: 1.5rem;
+  margin: 0.5rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ability-welcome {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dino-avatar {
+  font-size: 3rem;
+  animation: bounce 2s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.welcome-text {
+  flex: 1;
+}
+
+.welcome-text h3 {
+  font-size: 1.4rem;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+}
+
+.welcome-text p {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.ability-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.ability-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem 0.5rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.ability-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--ability-color);
+  opacity: 0.8;
+}
+
+.ability-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  border-color: var(--ability-color);
+}
+
+.ability-card-icon {
+  font-size: 2rem;
+  margin-bottom: 0.3rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.ability-card-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.3rem;
+}
+
+.ability-card-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--ability-color);
+  margin-bottom: 0.5rem;
+}
+
+.ability-card-bar {
+  width: 100%;
+  height: 5px;
+  background: #f0f0f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ability-card-bar-fill {
+  height: 100%;
+  background: var(--ability-color);
+  border-radius: 3px;
+  transition: width 1s ease-out;
+  animation: fillBar 1.5s ease-out;
+}
+
+@keyframes fillBar {
+  from {
+    width: 0%;
+  }
+}
+
+.ability-card.zero {
+  opacity: 0.6;
+}
+
+.ability-card.zero .ability-card-icon {
+  filter: grayscale(0.5);
+}
+
+.ability-footer {
+  text-align: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px dashed rgba(0, 0, 0, 0.1);
+}
+
+.ability-footer p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #667eea;
+  font-weight: 600;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .ability-summary-message {
+    padding: 1rem;
+  }
+
+  .dino-avatar {
+    font-size: 2.5rem;
+  }
+
+  .welcome-text h3 {
+    font-size: 1.2rem;
+  }
+
+  .welcome-text p {
+    font-size: 0.9rem;
+  }
+
+  .ability-cards {
+    grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
+    gap: 0.6rem;
+  }
+
+  .ability-card {
+    padding: 0.8rem 0.4rem;
+  }
+
+  .ability-card-icon {
+    font-size: 1.6rem;
+  }
+
+  .ability-card-value {
+    font-size: 1.3rem;
+  }
+
+  .ability-card-name {
+    font-size: 0.75rem;
+  }
+}

@@ -1,9 +1,12 @@
 // /src/components/ChatInterface/ChatInterface.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import { chatApi } from '../../services/api/chatApi';
+import { getStoryCompletionSummary, getRecommendedStories } from '../../services/api/storyApi';
+import AbilitySummaryMessage from './AbilitySummaryMessage';
+import StoryRecommendationMessage from './StoryRecommendationMessage';
 import './ChatInterface.css';
 
-const ChatInterface = ({ childId, initialSessionId, onComplete }) => {  // [2025-10-29 김광현] initialSessionId 추가
+const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) => {  // [2025-10-29 김광현] initialSessionId, completionId 추가
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -25,6 +28,12 @@ const ChatInterface = ({ childId, initialSessionId, onComplete }) => {  // [2025
     // [2025-10-29 김광현] sessionId가 있으면 기존 세션 로드
     if(initialSessionId) {
       loadExistingSession(initialSessionId);
+      return;
+    }
+
+    // completionId가 있으면 동화 기반 세션 생성
+    if(completionId) {
+      initChatSessionFromStory(completionId);
       return;
     }
 
@@ -61,7 +70,7 @@ const ChatInterface = ({ childId, initialSessionId, onComplete }) => {  // [2025
     })();
 
     return () => { cancelled = true; };
-  }, [childId, initialSessionId]); // [2025-10-29 김광현] initialSessionId 추가
+  }, [childId, initialSessionId, completionId]); // [2025-10-29 김광현] initialSessionId, completionId 추가
   
   // [2025-10-29 김광현] 기존 세션 로드 함수 추가
   const loadExistingSession = async (sessionIdToLoad) => {
@@ -71,8 +80,8 @@ const ChatInterface = ({ childId, initialSessionId, onComplete }) => {  // [2025
 
       setSessionId(sessionIdToLoad);
 
-      if(Array.isArray(res.messages) && res.message.length > 0) {
-        setMessages(res.message.map(m => ({
+      if(Array.isArray(res.messages) && res.messages.length > 0) {
+        setMessages(res.messages.map(m => ({
           sender: m.sender === "AI" ? 'assistant' : 'user',
           content: m.message ?? m.content ?? '',
           createdAt: m.createdAt ?? new Date().toISOString(),
@@ -85,6 +94,52 @@ const ChatInterface = ({ childId, initialSessionId, onComplete }) => {  // [2025
       setMessages([{
         sender: 'assistant',
         content: '세션을 불러오는데 실패!',
+        createdAt: new Date().toISOString(),
+      }]);
+    }
+  }
+
+  // 동화 완료 후 챗봇 세션 초기화
+  const initChatSessionFromStory = async (completionIdToUse) => {
+    try {
+      console.log("동화 기반 채팅 세션 시작: completionId=", completionIdToUse);
+
+      // 1. 동화 완료 요약 데이터 가져오기
+      const summary = await getStoryCompletionSummary(completionIdToUse);
+      console.log("동화 요약 데이터:", summary);
+
+      // 2. 챗봇 세션 초기화
+      const res = await chatApi.initChatSessionFromStory(completionIdToUse);
+      setSessionId(res.sessionId);
+
+      // 3. 능력치 요약 메시지 + AI 응답 추가
+      const messagesArray = [];
+
+      // 능력치 요약 카드 메시지
+      messagesArray.push({
+        sender: 'assistant',
+        type: 'ability-summary',
+        summary: summary,
+        childName: summary.childName || '친구',
+        createdAt: new Date().toISOString(),
+      });
+
+      // AI의 일반 응답 메시지 (있으면)
+      if (res.aiResponse && res.aiResponse.trim()) {
+        messagesArray.push({
+          sender: 'assistant',
+          content: res.aiResponse,
+          createdAt: new Date().toISOString(),
+        });
+      }
+
+      setMessages(messagesArray);
+      console.log("동화 기반 세션 생성 완료:", res);
+    } catch (error) {
+      console.error("동화 기반 세션 생성 실패:", error);
+      setMessages([{
+        sender: 'assistant',
+        content: '채팅 세션을 시작하는데 실패했습니다.',
         createdAt: new Date().toISOString(),
       }]);
     }
@@ -173,6 +228,38 @@ const ChatInterface = ({ childId, initialSessionId, onComplete }) => {  // [2025
     onComplete?.(messages);
   };
 
+  // 동화 추천 요청
+  const handleRequestRecommendation = async () => {
+    try {
+      console.log('[ChatInterface] 동화 추천 요청');
+      setIsTyping(true);
+
+      // 추천 API 호출 (emotion, interests, childId는 현재 세션 정보에서 가져올 수 있음)
+      const recommendations = await getRecommendedStories(null, null, childId, 3);
+
+      console.log('[ChatInterface] 추천 결과:', recommendations);
+
+      // 추천 메시지 추가
+      const recommendationMsg = {
+        sender: 'assistant',
+        type: 'story-recommendation',
+        recommendations: recommendations,
+        createdAt: new Date().toISOString(),
+      };
+
+      setMessages(prev => [...prev, recommendationMsg]);
+    } catch (error) {
+      console.error('[ChatInterface] 추천 요청 실패:', error);
+      setMessages(prev => [...prev, {
+        sender: 'assistant',
+        content: '추천 동화를 불러오는데 실패했습니다.',
+        createdAt: new Date().toISOString(),
+      }]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -190,14 +277,46 @@ const ChatInterface = ({ childId, initialSessionId, onComplete }) => {  // [2025
 
         <div className="chat-messages-container">
           <div className="chat-messages">
-            {messages.map((m, i) => (
-              <div
-                key={`${m.createdAt}-${i}`}
-                className={`message ${m.sender === 'user' ? 'message-user' : 'message-assistant'}`}
-              >
-                <div className="message-content"><p>{m.content}</p></div>
-              </div>
-            ))}
+            {messages.map((m, i) => {
+              // 능력치 요약 메시지인 경우
+              if (m.type === 'ability-summary') {
+                return (
+                  <div
+                    key={`${m.createdAt}-${i}`}
+                    className="message message-assistant message-special"
+                  >
+                    <AbilitySummaryMessage
+                      summary={m.summary}
+                      childName={m.childName}
+                    />
+                  </div>
+                );
+              }
+
+              // 동화 추천 메시지인 경우
+              if (m.type === 'story-recommendation') {
+                return (
+                  <div
+                    key={`${m.createdAt}-${i}`}
+                    className="message message-assistant message-special"
+                  >
+                    <StoryRecommendationMessage
+                      recommendations={m.recommendations}
+                    />
+                  </div>
+                );
+              }
+
+              // 일반 메시지
+              return (
+                <div
+                  key={`${m.createdAt}-${i}`}
+                  className={`message ${m.sender === 'user' ? 'message-user' : 'message-assistant'}`}
+                >
+                  <div className="message-content"><p>{m.content}</p></div>
+                </div>
+              );
+            })}
             {isTyping && (
               <div className="message message-assistant">
                 <div className="message-content typing-indicator">
@@ -243,9 +362,19 @@ const ChatInterface = ({ childId, initialSessionId, onComplete }) => {  // [2025
         </div>
 
         <div className="chat-footer">
-          <button onClick={handleComplete} className="complete-button" type="button">
-            대화 종료
-          </button>
+          <div className="footer-buttons">
+            <button
+              onClick={handleRequestRecommendation}
+              className="recommend-button"
+              type="button"
+              disabled={!sessionId}
+            >
+              📚 동화 추천받기
+            </button>
+            <button onClick={handleComplete} className="complete-button" type="button">
+              대화 종료
+            </button>
+          </div>
           <p className="chat-hint">Enter 전송 · Shift+Enter 줄바꿈</p>
         </div>
       </div>

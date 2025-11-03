@@ -1,4 +1,4 @@
-import axiosInstance from '../utils/axiosInstance';
+import axiosInstance from './axiosInstance';
 
 const prefersNotFound = (e) =>
   e && e.response && (e.response.status === 404 || e.response.status === 405);
