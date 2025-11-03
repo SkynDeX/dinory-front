@@ -34,17 +34,6 @@ const books = [
            image: "/assets/intro/05.png", 
            desc: "무지개를 달리는 유니콘의 이야기" },
 
-  { id: 6, title: "요정의 숲", 
-           image: "/assets/intro/06.png", 
-           desc: "요정들이 사는 신비한 숲속 이야기" },
-
-  { id: 7, title: "별빛 토끼", 
-           image: "/assets/intro/07.png", 
-           desc: "별빛을 따라 떠나는 토끼의 여행" },
-           
-  { id: 8, title: "하늘의 펭귄", 
-           image: "/assets/intro/08.png", 
-           desc: "하늘을 나는 펭귄의 모험" },
 ];
 
 const THEME_COLORS = ["#2fa36b", "#ff9b7a", "#87ceeb", "#ffd166"];

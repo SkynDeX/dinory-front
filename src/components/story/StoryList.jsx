@@ -5,6 +5,7 @@ import { getRecommendedStories } from '../../services/api/storyApi';
 import StoryCard from "./StoryCard";
 import DinoCharacter from "../dino/DinoCharacter";
 import { useChild } from "../../context/ChildContext";
+import LoadingScreen from "../common/LoadingScreen";
 
 function StoryList() {
     const [stories, setStories] = useState([]);
@@ -59,11 +60,7 @@ function StoryList() {
     };
 
     if(loding) {
-        return (
-            <div className="story_list_wrapper">
-                <div className="loding">동화를 찾는 중...</div>
-            </div>
-        );
+        return <LoadingScreen message="동화를 찾는 중이에요..." />;
     }
 
     return (

@@ -90,10 +90,13 @@ function Login() {
 
       {/* 로그인 카드 */}
       <div ref={loginBoxRef} className="login-card">
-        <h1 className="login-title">
-          <span className="logo-din">Din</span>
-          <span className="logo-ory">ory</span>
+        <h1 className="login-logo">
+          <span className="green">Din</span>
+          <span className="coral">o</span>
+          <span className="sky">r</span>
+          <span className="yellow">y</span>
         </h1>
+
         <p className="login-sub">아이와 함께 떠나는 상상 여행</p>
 
         <div className="login-buttons">

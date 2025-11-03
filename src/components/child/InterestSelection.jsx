@@ -4,22 +4,62 @@ import { useNavigate } from "react-router-dom";
 import { useChild } from "../../context/ChildContext";
 import DinoCharacter from "../dino/DinoCharacter";
 
+import dinosaur from "../../assets/interests/dinosaur.png";
+import animal from "../../assets/interests/lion.png";
+import vehicle from "../../assets/interests/car.png";
+import space from "../../assets/interests/space.png";
+import ocean from "../../assets/interests/waves.png";
+import fairy from "../../assets/interests/fairy.png";
+import friend from "../../assets/interests/friends.png";
+import robot from "../../assets/interests/robot.png";
+
 // 아이가 오늘의 관심사를 선택하는 랜딩 페이지
 function InterestSelection() {
     const [selectedInterests, setSelectedInterests] = useState([]);
     const navigate = useNavigate();
     const { setSelectedInterests: setContextInterests } = useChild();
 
-    const interests = [
-        { id: "dinosaur", emoji: "🦕", label: "공룡", color: "#2fa36b" },
-        { id: "animal", emoji: "🐶", label: "동물", color: "#ffd166" },
-        { id: "vehicle", emoji: "🚗", label: "탈것", color: "#ff6b6b" },
-        { id: "space", emoji: "🚀", label: "우주", color: "#87ceeb" },
-        { id: "ocean", emoji: "🌊", label: "바다", color: "#4a90e2" },
-        { id: "fairy", emoji: "🧚", label: "요정", color: "#ff9b7a" },
-        { id: "friend", emoji: "👫", label: "친구", color: "#ffb6c1" },
-        { id: "robot", emoji: "🤖", label: "로봇", color: "#c0c0c0" },
-    ];
+  const interests = [
+    { id: "dinosaur", 
+      img: dinosaur, 
+      label: "공룡", 
+      color: "#2fa36b" },
+
+    { id: "animal", 
+      img: animal, 
+      label: "동물", 
+      color: "#ffd166" },
+
+    { id: "vehicle", 
+      img: vehicle, 
+      label: "탈것", 
+      color: "#ff6b6b" },
+
+    { id: "space", 
+      img: space, 
+      label: "우주", 
+      color: "#87ceeb" },
+
+    { id: "ocean", 
+      img: ocean, 
+      label: "바다", 
+      color: "#4a90e2" },
+
+    { id: "fairy", 
+      img: fairy, 
+      label: "요정", 
+      color: "#ff9b7a" },
+
+    { id: "friend", 
+      img: friend, 
+      label: "친구", 
+      color: "#ffb6c1" },
+
+    { id: "robot", 
+      img: robot, 
+      label: "로봇", 
+      color: "#c0c0c0" },
+  ];
 
     // 다중 선택 핸들러
     const handleSelectInterest = (interest) => {
@@ -60,26 +100,35 @@ function InterestSelection() {
                 <p>좋아하는 주제를 골라봐! (여러 개 선택 가능)</p>
             </div>
 
-            <div className="interest_grid">
-                {interests.map((interest) =>(
-                    <div
-                        key={interest.id}
-                        className={`interest_card${isSelected(interest.id) ? " interest_card_active" : ""}`}
-                        onClick={() => handleSelectInterest(interest)}
-                        style={{
-                            borderColor: isSelected(interest.id) ? interest.color : "#e0e0e0",
-                        }}
-                    >
-                        <span className="interest_emoji">{interest.emoji}</span>
-                        <p className="interest_label">{interest.label}</p>
 
-                        {/* 선택 표시 */}
-                        {isSelected(interest.id) && (
-                            <div className="selected_check">✓</div>
-                        )}
-                    </div>
-                ))}
-            </div>
+            <div className="interest_grid">
+              {interests.map((interest) => (
+                <div
+                 key={interest.id}
+                 className={`interest_card${
+                    isSelected(interest.id) ? " interest_card_active" : ""
+                }`}
+                onClick={() => handleSelectInterest(interest)}
+                style={{
+                  borderColor: isSelected(interest.id)
+                    ? interest.color
+                    : "#e0e0e0",
+                }}
+               >
+                <img
+                  src={interest.img}
+                  alt={interest.label}
+                  className="interest_img"
+                />
+                <p className="interest_label">{interest.label}</p>
+
+                {isSelected(interest.id) && (
+                  <div className="selected_check">✓</div>
+                )}
+             </div>
+            ))}
+           </div>
+           
                 {/* 선택된 관심사 표시 */}
                 {selectedInterests.length > 0 && (
                     <div className="interest_selected">
