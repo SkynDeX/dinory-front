@@ -118,7 +118,7 @@ function DinoCharacter() {
       setChoices([
         "오늘 기분이 어때?",
         "재미있는 이야기 들려줘",
-        "놀이 추천해줘",
+        "메뉴",
         "직접 입력하기",
       ]);
     } catch (error) {
