@@ -1,77 +1,396 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Lottie from "lottie-react";
 import "./DinoCharacter.css";
 import dinoAnimation from "../../assets/dino.json";
 import { useNavigate } from "react-router-dom";
 import { authApi } from "../../services/api/authApi";
+import { chatApi } from "../../services/api/chatApi";
 import { useAuth } from "../../context/AuthContext";
 
 function DinoCharacter() {
-    const [isOpen, setIsOpen] = useState(false);
-    const [isJumping, setIsJumping] = useState(false);
-    const navigate = useNavigate();
-    const { user, logout } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isJumping, setIsJumping] = useState(false);
+  const [sessionId, setSessionId] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [inputMessage, setInputMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [choices, setChoices] = useState([]);
+  const [isTextInputMode, setIsTextInputMode] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
 
-    const handleLogout = async () => {
+  // 메시지 업데이트 시 스크롤 아래로
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  // 음성 인식 초기화
+  useEffect(() => {
+    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.lang = "ko-KR";
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+
+      recognitionRef.current.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setInputMessage(transcript);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onerror = (event) => {
+        console.error("음성 인식 오류:", event.error);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+
+    return () => {
+      if (recognitionRef.current) recognitionRef.current.stop();
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
+      logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      logout();
+      navigate("/login");
+    }
+  };
+
+  const handleClick = async () => {
+    setIsJumping(true);
+    setTimeout(() => setIsJumping(false), 600);
+
+    // 이미 열려있으면 닫기
+    if (isOpen) {
+      setIsOpen(false);
+      if (sessionId) {
         try {
-            await authApi.logout();
-            logout();
-            navigate("/login");
+          await chatApi.endChatSession(sessionId);
         } catch (error) {
-            console.error('Logout failed:', error);
-            logout();
-            navigate("/login");
+          console.error("채팅 세션 종료 실패:", error);
         }
-    };
+      }
+      setSessionId(null);
+      setMessages([]);
+      setInputMessage("");
+      setChoices([]);
+      setIsTextInputMode(false);
+      setIsMenuOpen(false);
+      return;
+    }
 
-    const handleClick = () => {
-        setIsJumping(true);
-        setTimeout(() => setIsJumping(false), 600);
-        setIsOpen((prev) => !prev);
-    };
+    // 공룡 클릭 시 바로 채팅 모드로 전환
+    setIsOpen(true);
+    setIsLoading(true);
 
-    return (
-        <div className="dino-wrapper">
-            {/* 공룡 본체 */}
-            <div
-                className={`dino-container ${isJumping ? "jump" : ""}`}
-                onClick={handleClick}
-            >
-                <Lottie
-                    animationData={dinoAnimation}
-                    loop
-                    autoplay
-                    className="dino-lottie"
-                />
+    try {
+      // 채팅 세션 초기화
+      const childId = user?.id || null;
+      const response = await chatApi.initChatSession(childId);
+      setSessionId(response.sessionId);
+
+      // 초기 인사와 선택지
+      setMessages([
+        {
+          sender: "AI",
+          message: "안녕! 나는 디노야! 무엇을 도와줄까?",
+          createdAt: new Date(),
+        },
+      ]);
+
+      setChoices([
+        "오늘 기분이 어때?",
+        "재미있는 이야기 들려줘",
+        "놀이 추천해줘",
+        "직접 입력하기",
+      ]);
+    } catch (error) {
+      console.error("채팅 세션 초기화 실패:", error);
+
+      // 오프라인 모드: 메뉴 노출 + 모달 즉시 오픈
+      setMessages([
+        {
+          sender: "AI",
+          message: "안녕! 나는 디노야! (오프라인 모드)",
+          createdAt: new Date(),
+        },
+      ]);
+
+      setChoices([
+        "오늘 기분이 어때?",
+        "재미있는 이야기 들려줘",
+        "놀이 추천해줘",
+        "메뉴",
+        "직접 입력하기",
+      ]);
+      setIsMenuOpen(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChoiceSelect = async (choice) => {
+    if (choice === "직접 입력하기") {
+      setIsTextInputMode(true);
+      setChoices([]);
+      return;
+    }
+
+    if (choice === "메뉴") {
+      setIsMenuOpen(true);
+      return;
+    }
+
+    await handleSendMessage(choice);
+  };
+
+  const handleVoiceInput = () => {
+    if (!recognitionRef.current) {
+      alert("음성 인식이 지원되지 않는 브라우저입니다.");
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch (error) {
+        console.error("음성 인식 시작 실패:", error);
+      }
+    }
+  };
+
+  const handleSendMessage = async (messageText = null) => {
+    const currentMessage = messageText || inputMessage.trim();
+    if (!currentMessage || isLoading || !sessionId) return;
+
+    setInputMessage("");
+    setIsLoading(true);
+    setChoices([]);
+
+    const userMessage = {
+      sender: "USER",
+      message: currentMessage,
+      createdAt: new Date(),
+    };
+    setMessages((prev) => [...prev, userMessage]);
+
+    try {
+      const response = await chatApi.sendMessage(sessionId, currentMessage);
+
+      const aiMessage = {
+        sender: "AI",
+        message: response.aiResponse,
+        createdAt: new Date(),
+      };
+      setMessages((prev) => [...prev, aiMessage]);
+
+      generateChoices(currentMessage);
+    } catch (error) {
+      console.error("메시지 전송 실패:", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "AI",
+          message:
+            "죄송해요, 지금은 응답하기 어려워요. 잠시 후 다시 시도해주세요!",
+          createdAt: new Date(),
+        },
+      ]);
+
+      setChoices(["다시 시도하기", "다른 질문하기", "메뉴", "직접 입력하기"]);
+    } finally {
+      setIsLoading(false);
+      setIsTextInputMode(false);
+    }
+  };
+
+  const generateChoices = () => {
+    setChoices(["더 알려줘", "다른 이야기", "메뉴", "직접 입력하기"]);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  return (
+    <div className="dino-wrapper">
+      {/* 공룡 본체 */}
+      <div
+        className={`dino-container ${isJumping ? "jump" : ""}`}
+        onClick={handleClick}
+      >
+        <Lottie animationData={dinoAnimation} loop autoplay className="dino-lottie" />
+      </div>
+
+      {/* 채팅 박스 */}
+      {isOpen && (
+        <div className="speech-bubble chat-bubble">
+          <div className="chat-header">
+            <p className="chat-title">디노와 대화</p>
+          </div>
+
+          <div className="chat-messages">
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`message ${msg.sender === "USER" ? "user" : "bot"}`}
+              >
+                <p>{msg.message}</p>
+              </div>
+            ))}
+            {isLoading && (
+              <div className="message bot">
+                <p className="typing">입력 중...</p>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* 선택지 */}
+          {!isTextInputMode && choices.length > 0 && (
+            <div className="choices-container">
+              {choices.map((choice, index) => (
+                <button
+                  key={index}
+                  className="choice-btn"
+                  onClick={() => handleChoiceSelect(choice)}
+                  disabled={isLoading}
+                >
+                  {choice}
+                </button>
+              ))}
             </div>
+          )}
 
-            {/* 클릭하면 메뉴 말풍선뜨게끔 */}
-            {isOpen && (
-                <div className="speech-bubble menu-bubble">
-                    <p className="menu-title">뭐 할까?</p>
-                    {!user && (
-                        <div>
-                            <button onClick={() => navigate("/login")}>로그인/회원가입</button>
-                        </div>
-                    )}
-                    {user && (
-                        <div>
-                            <button onClick={() => navigate("/my-dinos")}>내 공룡 친구들</button>
-                            <button onClick={() => navigate("/child/registration")}>자녀 등록</button>
-                            <button onClick={() => navigate("/parent/dashboard")}>대시보드</button>
-                            <button onClick={handleLogout}>로그아웃</button>
-                        </div>
-                    )}
-                </div>
-            )}
+          {/* 직접 입력 */}
+          {isTextInputMode && (
+            <div className="chat-input-container">
+              <button
+                className={`voice-button ${isListening ? "listening" : ""}`}
+                onClick={handleVoiceInput}
+                title="음성 입력"
+              >
+                🎤
+              </button>
+              <input
+                type="text"
+                className="chat-input"
+                placeholder={isListening ? "듣고 있어요..." : "메시지를 입력하세요..."}
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={isLoading || isListening}
+              />
+              <button
+                className="send-button"
+                onClick={() => handleSendMessage()}
+                disabled={isLoading || !inputMessage.trim()}
+              >
+                전송
+              </button>
+            </div>
+          )}
 
-            {!isOpen && (
-                <div className="speech-bubble idle-bubble bouncey">
-                    <p>나 눌러봐! </p>
+          {/* 메뉴 모달 */}
+          {isMenuOpen && (
+            <div className="menu-modal">
+              <div className="menu-modal-content">
+                <div className="menu-modal-header">
+                  <h3>메뉴</h3>
+                  <button className="close-btn" onClick={() => setIsMenuOpen(false)}>
+                    ✕
+                  </button>
                 </div>
-            )}
+                <div className="menu-modal-body">
+                  {!user && (
+                    <button
+                      className="menu-btn"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        navigate("/login");
+                      }}
+                    >
+                      🔐 로그인/회원가입
+                    </button>
+                  )}
+                  {user && (
+                    <>
+                      <button
+                        className="menu-btn"
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          navigate("/my-dinos");
+                        }}
+                      >
+                        🦕 내 공룡 친구들
+                      </button>
+                      <button
+                        className="menu-btn"
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          navigate("/child/registration");
+                        }}
+                      >
+                        👶 자녀 등록
+                      </button>
+                      <button
+                        className="menu-btn"
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          navigate("/parent/dashboard");
+                        }}
+                      >
+                        📊 대시보드
+                      </button>
+                      <button
+                        className="menu-btn"
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          handleLogout();
+                        }}
+                      >
+                        🚪 로그아웃
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-    );
+      )}
+
+      {!isOpen && (
+        <div className="speech-bubble idle-bubble bouncey">
+          <p>나 눌러봐! </p>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default DinoCharacter;
