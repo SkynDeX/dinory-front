@@ -5,6 +5,8 @@ import EggHatchModal from "../components/dino/EggHatchModal";
 
 export const RewardContext = createContext();
 
+axios.defaults.baseURL = "";
+
 export const RewardProvider = ({ children }) => {
   const [stars, setStars] = useState(0);
   const [eggs, setEggs] = useState(0);
