@@ -9,99 +9,105 @@
   background: linear-gradient(180deg, #fefefe 0%, #eaf5ff 100%);
 }
 
-/* 다채로운 버블 */
+/* 버블  */
 .bubble {
   position: absolute;
   border-radius: 50%;
-  opacity: 0.7;
-  filter: blur(1px);
-  animation: bubbleFloat var(--duration, 10s) ease-in-out infinite;
+  opacity: 1; 
+  filter: blur(0.5px);
+  z-index: 2;
+  animation: bubbleFloat var(--duration, 11s) ease-in-out infinite;
   background: radial-gradient(
-    circle at 30% 30%,
-    var(--color1, #ff9b7a55) 0%,
-    transparent 70%
+    circle at 35% 35%,
+    var(--color1, #ff9b7a) 0%,
+    rgba(255, 255, 255, 0) 75%
   );
-  transition: opacity 0.3s ease;
+  box-shadow: 0 0 45px var(--color1, #ff9b7a60); 
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* 버블 둥둥 */
+/* 둥둥 떠다니는 애니메이션 */
 @keyframes bubbleFloat {
   0% {
     transform: translateY(0) scale(1);
+    opacity: 0.9;
   }
   50% {
-    transform: translateY(-80px) scale(1.15);
+    transform: translateY(-120px) scale(1.25);
+    opacity: 1;
   }
   100% {
     transform: translateY(0) scale(1);
+    opacity: 0.9;
   }
 }
 
-/* 각 버블 위치 */
+/* 각 버블 색상/위치 */
 .bubble-1 {
-  --color1: #ff9b7a88;
+  --color1: #ff9b7a;
   left: 10%;
   bottom: 20%;
-  width: 160px;
-  height: 160px;
+  width: 180px;
+  height: 180px;
   animation-delay: 0s;
 }
 .bubble-2 {
-  --color1: #2fa36b88; 
+  --color1: #2fa36b;
   left: 25%;
   top: 10%;
-  width: 200px;
-  height: 200px;
+  width: 220px;
+  height: 220px;
   animation-delay: 2s;
 }
 .bubble-3 {
-  --color1: #ffd16688;
+  --color1: #ffd166;
   right: 15%;
-  bottom: 30%;
-  width: 240px;
-  height: 240px;
+  bottom: 25%;
+  width: 260px;
+  height: 260px;
   animation-delay: 4s;
 }
 .bubble-4 {
-  --color1: #87ceeb88; 
-  right: 30%;
+  --color1: #87ceeb;
+  right: 25%;
   top: 15%;
   width: 320px;
   height: 320px;
   animation-delay: 6s;
 }
 .bubble-5 {
-  --color1: #2fa36b66;
+  --color1: #2fa36b;
   left: 40%;
-  bottom: 15%;
-  width: 140px;
-  height: 140px;
+  bottom: 10%;
+  width: 150px;
+  height: 150px;
   animation-delay: 1s;
 }
 .bubble-6 {
-  --color1: #ff9b7a66;
+  --color1: #ff9b7a;
   right: 40%;
   bottom: 5%;
-  width: 200px;
-  height: 200px;
+  width: 210px;
+  height: 210px;
   animation-delay: 3s;
 }
 .bubble-7 {
-  --color1: #ffd16677;
-  right: 10%;
-  top: 5%;
-  width: 270px;
-  height: 270px;
+  --color1: #ffd166;
+  right: 12%;
+  top: 8%;
+  width: 280px;
+  height: 280px;
   animation-delay: 5s;
 }
 .bubble-8 {
-  --color1: #87ceeb77;
-  left: 5%;
-  top: 60%;
-  width: 220px;
-  height: 220px;
+  --color1: #87ceeb;
+  left: 6%;
+  top: 55%;
+  width: 240px;
+  height: 240px;
   animation-delay: 7s;
 }
+
 
 /* 발자국 레이어 */
 .footprint-layer {
@@ -176,22 +182,20 @@
 }
 
 /* 로고 */
-.login-title {
-  font-size: 2.6rem;
+.login-logo {
+  font-size: 50px;
   font-weight: 800;
+  letter-spacing: 2px;
   margin-bottom: 10px;
-}
-.logo-din {
-  color: #2fa36b;
-}
-.logo-ory {
-  color: #ff9b7a;
+  display: inline-block;
+  animation: logoFloat 3s ease-in-out infinite;
 }
 
-.login-sub {
-  color: #555;
-  margin-bottom: 25px;
-}
+/* 각 색상 */
+.login-logo .green { color: #2fa36b; }
+.login-logo .coral { color: #ff9b7a; }
+.login-logo .sky { color: #87ceeb; }
+.login-logo .yellow { color: #ffd166; }
 
 /* 소셜 버튼 */
 .social-btn {
