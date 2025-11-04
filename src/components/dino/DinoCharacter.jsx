@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import Lottie from "lottie-react";
 import "./DinoCharacter.css";
 import dinoAnimation from "../../assets/dino.json";
+import happyDinoAnimation from "../../assets/happy_dino.json";
+import sadDinoAnimation from "../../assets/sad_dino.json";
+import angryDinoAnimation from "../../assets/angry_dino.json";
 import { useNavigate } from "react-router-dom";
 import { authApi } from "../../services/api/authApi";
 import { chatApi } from "../../services/api/chatApi";
@@ -18,6 +21,7 @@ function DinoCharacter() {
   const [isTextInputMode, setIsTextInputMode] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [dinoEmotion, setDinoEmotion] = useState("neutral"); // [2025-11-04 김민중 추가] Dino 감정 상태
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const messagesEndRef = useRef(null);
@@ -60,6 +64,20 @@ function DinoCharacter() {
       if (recognitionRef.current) recognitionRef.current.stop();
     };
   }, []);
+
+  // [2025-11-04 김민중 추가] 감정에 따라 애니메이션 선택
+  const getDinoAnimation = () => {
+    switch (dinoEmotion) {
+      case "happy":
+        return happyDinoAnimation;
+      case "sad":
+        return sadDinoAnimation;
+      case "angry":
+        return angryDinoAnimation;
+      default:
+        return dinoAnimation;
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -115,12 +133,14 @@ function DinoCharacter() {
         },
       ]);
 
+      // [2025-11-04 김민중 수정] 초기 선택지에 고정 메뉴 포함
       setChoices([
         "오늘 기분이 어때?",
         "재미있는 이야기 들려줘",
         "메뉴",
         "직접 입력하기",
       ]);
+      setDinoEmotion("neutral");
     } catch (error) {
       console.error("채팅 세션 초기화 실패:", error);
 
@@ -205,7 +225,8 @@ function DinoCharacter() {
       };
       setMessages((prev) => [...prev, aiMessage]);
 
-      generateChoices(currentMessage);
+      // [2025-11-04 김민중 수정] AI 기반 동적 선택지 생성 (await 추가)
+      await generateChoices(response.aiResponse);
     } catch (error) {
       console.error("메시지 전송 실패:", error);
       setMessages((prev) => [
@@ -219,14 +240,36 @@ function DinoCharacter() {
       ]);
 
       setChoices(["다시 시도하기", "다른 질문하기", "메뉴", "직접 입력하기"]);
+      setDinoEmotion("neutral"); // [2025-11-04 김민중 추가] 에러 시 감정 초기화
     } finally {
       setIsLoading(false);
       setIsTextInputMode(false);
     }
   };
 
-  const generateChoices = () => {
-    setChoices(["더 알려줘", "다른 이야기", "메뉴", "직접 입력하기"]);
+  // [2025-11-04 김민중 수정] AI 기반 동적 선택지 생성
+  const generateChoices = async (lastMessage) => {
+    try {
+      const childId = user?.id || null;
+      const response = await chatApi.generateChoices(sessionId, childId, lastMessage);
+
+      // AI가 생성한 선택지 + 고정 선택지 ("메뉴", "직접 입력하기")
+      const dynamicChoices = response.choices || [];
+      const fixedChoices = ["메뉴", "직접 입력하기"];
+      const allChoices = [...dynamicChoices, ...fixedChoices];
+
+      setChoices(allChoices);
+
+      // AI가 반환한 감정으로 Dino 감정 업데이트
+      if (response.emotion) {
+        setDinoEmotion(response.emotion);
+      }
+    } catch (error) {
+      console.error("선택지 생성 실패:", error);
+      // 실패 시 기본 선택지 사용
+      setChoices(["더 알려줘", "다른 이야기", "메뉴", "직접 입력하기"]);
+      setDinoEmotion("neutral");
+    }
   };
 
   const handleKeyPress = (e) => {
@@ -243,7 +286,14 @@ function DinoCharacter() {
         className={`dino-container ${isJumping ? "jump" : ""}`}
         onClick={handleClick}
       >
-        <Lottie animationData={dinoAnimation} loop autoplay className="dino-lottie" />
+        {/* [2025-11-04 김민중 수정] 감정에 따라 애니메이션 변경 */}
+        <Lottie
+          animationData={getDinoAnimation()}
+          loop
+          autoplay
+          className="dino-lottie"
+          key={dinoEmotion}
+        />
       </div>
 
       {/* 채팅 박스 */}
@@ -253,6 +303,7 @@ function DinoCharacter() {
             <p className="chat-title">디노와 대화</p>
           </div>
 
+          {/* [2025-11-04 김민중 수정] 메시지와 선택지를 하나의 컨테이너로 통합 */}
           <div className="chat-messages">
             {messages.map((msg, index) => (
               <div
@@ -267,24 +318,25 @@ function DinoCharacter() {
                 <p className="typing">입력 중...</p>
               </div>
             )}
+
+            {/* [2025-11-04 김민중 수정] 선택지를 메시지 컨테이너 안에 배치 */}
+            {!isTextInputMode && choices.length > 0 && (
+              <div className="choices-inline">
+                {choices.map((choice, index) => (
+                  <button
+                    key={index}
+                    className="choice-btn"
+                    onClick={() => handleChoiceSelect(choice)}
+                    disabled={isLoading}
+                  >
+                    {choice}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div ref={messagesEndRef} />
           </div>
-
-          {/* 선택지 */}
-          {!isTextInputMode && choices.length > 0 && (
-            <div className="choices-container">
-              {choices.map((choice, index) => (
-                <button
-                  key={index}
-                  className="choice-btn"
-                  onClick={() => handleChoiceSelect(choice)}
-                  disabled={isLoading}
-                >
-                  {choice}
-                </button>
-              ))}
-            </div>
-          )}
 
           {/* 직접 입력 */}
           {isTextInputMode && (

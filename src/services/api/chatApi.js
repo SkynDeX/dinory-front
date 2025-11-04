@@ -42,5 +42,15 @@ export const chatApi = {
             completionId
         });
         return response.data;
+    },
+
+    // [2025-11-04 김민중 추가] AI 기반 동적 선택지 생성
+    generateChoices: async (sessionId, childId, lastMessage) => {
+        const response = await axiosInstance.post('/api/chat/generate-choices', {
+            sessionId,
+            childId,
+            lastMessage
+        });
+        return response.data;
     }
 };
