@@ -104,6 +104,12 @@ function StoryReading() {
 
                     console.log("분석 결과 : ", analysisResult);
 
+                    // [2025-11-04] 부정적 표현 감지 시 경고
+                    if (analysisResult.isNegative) {
+                        alert(analysisResult.feedback || "부정적인 말은 나빠요! 다시 생각해보면 좋아요!");
+                        return;  // 다음 씬으로 넘어가지 않음
+                    }
+
                     // 분석 결과로 chocie 재구성
                     finalChoice = {
                         choiceId: choice.choiceId,
@@ -113,8 +119,8 @@ function StoryReading() {
                     };
 
                     // 사용자에게 피드백 표시
-                    if(analysisResult.feadback) {
-                        console.log("피드백: ", analysisResult.feadback);
+                    if(analysisResult.feedback) {
+                        console.log("피드백: ", analysisResult.feedback);
                     }
 
                 } catch (error) {

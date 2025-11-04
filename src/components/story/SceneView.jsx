@@ -1,9 +1,69 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./SceneView.css";
 import ChoiceButton from "./ChoiceButton";
 import ImageDisplay from "./ImageDisplay";
+import axiosInstance from "../../services/api/axiosInstance";
 
 function SceneView({ scene, totalScenes, onChoiceSelect }) {
+
+    const [imageUrl, setImageUrl] = useState(scene.imageUrl);
+
+    useEffect(() => {
+        // scene 변경시 이미지 초기화
+        setImageUrl(scene.imageUrl);
+    }, [scene.sceneNumber]);
+
+    // [2025-11-04 김광현] 동화생성 이미지 비동기
+    useEffect(() => {
+        // sceneId가 없거나 이미 imageUrl이 있으면 스킵
+        if (!scene.sceneId || imageUrl) {
+            return;
+        }
+
+        console.log(`씬 ${scene.sceneNumber} 이미지 폴링 시작...`);
+
+        let attemptCount = 0;
+        const maxAttempts = 15; 
+        let isMounted = true;  // cleanup 체크용
+
+        // 2초마다 이미지 확인
+        const interval = setInterval(async () => {
+            if (!isMounted) {
+                clearInterval(interval);
+                return;
+            }
+
+            attemptCount++;
+
+            try {
+                // axiosInstance 사용 (인증 토큰 자동 포함)
+                const response = await axiosInstance.get(`/api/story/scene/${scene.sceneId}/image`);
+                
+                if (response.data && response.data.imageUrl) {
+                    console.log(`씬 ${scene.sceneNumber} 이미지 로드 완료`);
+                    setImageUrl(response.data.imageUrl);
+                    clearInterval(interval);
+                } else {
+                    console.log(`이미지 아직 생성 중... (${attemptCount}/${maxAttempts})`);
+                }
+            } catch (error) {
+                console.log(`이미지 로딩 중... (${attemptCount}/${maxAttempts})`, error.message);
+            }
+
+            // 최대 시도 횟수 초과 시 포기
+            if (attemptCount >= maxAttempts) {
+                console.log(`씬 ${scene.sceneNumber} 이미지 로딩 타임아웃`);
+                clearInterval(interval);
+            }
+        }, 1000);
+
+        return () => {
+            isMounted = false;
+            clearInterval(interval);
+        };
+    }, [scene.sceneId, scene.sceneNumber]); 
+
+
     return (
         <div className="scene_view_wrapper">
             {/* 진행 상황 표시 */}
@@ -17,7 +77,7 @@ function SceneView({ scene, totalScenes, onChoiceSelect }) {
             </div>
 
             {/* 이미지 영역 */}
-            <ImageDisplay imagePrompt={scene.imagePrompt} imageUrl={scene.imageUrl}/>
+            <ImageDisplay imagePrompt={scene.imagePrompt} imageUrl={imageUrl} />  {/* scene.imageUrl → imageUrl */}
 
             {/* 스토리 내용 */}
             <div className="scene_content">
