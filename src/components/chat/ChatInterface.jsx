@@ -185,6 +185,7 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
     };
   }, []);
 
+  // [2025-11-04 김민중 수정] 동화 추천 키워드 감지 및 자동 추천
   const handleSend = async () => {
     if (!input.trim() || !sessionId) return;
 
@@ -200,6 +201,16 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
       const aiText = res?.aiResponse ?? res?.message ?? '답변을 생성하지 못했습니다.';
       const aiMsg = { sender: 'assistant', content: aiText, createdAt: new Date().toISOString() };
       setMessages(prev => [...prev, aiMsg]);
+
+      // [2025-11-04 김민중 추가] "동화 추천" 키워드 감지
+      const recommendKeywords = ['동화 추천', '추천해줘', '추천해', '동화 알려', '다른 동화', '새로운 동화'];
+      const hasRecommendKeyword = recommendKeywords.some(keyword => text.includes(keyword));
+
+      if (hasRecommendKeyword) {
+        console.log('[ChatInterface] 동화 추천 키워드 감지! 자동 추천 시작');
+        // AI 응답 후 바로 추천 실행
+        await handleRequestRecommendation();
+      }
     } catch (e) {
       console.error('sendMessage 실패:', e);
       setMessages(prev => [...prev, {
@@ -231,13 +242,20 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
     }
   };
 
+  // [2025-11-04 김민중 수정] 대화 종료 시 세션 종료 + 메인페이지 이동
   const handleComplete = async () => {
     try {
-      if (sessionId) await chatApi.endChatSession(sessionId);
+      if (sessionId) {
+        await chatApi.endChatSession(sessionId);
+        console.log('✅ 채팅 세션 종료:', sessionId);
+      }
+      // 메인페이지로 이동
+      window.location.href = '/';
     } catch (e) {
       console.error('endChatSession 실패:', e);
+      // 실패해도 메인페이지로 이동
+      window.location.href = '/';
     }
-    onComplete?.(messages);
   };
 
   // 동화 추천 요청
@@ -375,19 +393,12 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
 
         <div className="chat-footer">
           <div className="footer-buttons">
-            <button
-              onClick={handleRequestRecommendation}
-              className="recommend-button"
-              type="button"
-              disabled={!sessionId}
-            >
-              📚 동화 추천받기
-            </button>
+            {/* [2025-11-04 김민중 수정] 동화 추천받기 버튼 제거 - 채팅으로 "동화 추천해줘" 입력하면 AI가 자동 추천 */}
             <button onClick={handleComplete} className="complete-button" type="button">
               대화 종료
             </button>
           </div>
-          <p className="chat-hint">Enter 전송 · Shift+Enter 줄바꿈</p>
+          <p className="chat-hint">Enter 전송 · Shift+Enter 줄바꿈 · "동화 추천해줘"로 추천받기</p>
         </div>
       </div>
     </div>
