@@ -18,6 +18,7 @@ import StoryList from "../components/story/StoryList.jsx";
 import StoryReading from "../components/story/StoryReading.jsx";
 import StoryFlowTest from "../pages/StoryFlowTest.jsx";
 import ChatInterface from "../components/chat/ChatInterface.jsx";
+import StoryReplay from "../components/story/StoryReplay.jsx";
 
 const MyDinos = lazy(() => import("../components/dino/MyDinos.jsx"));
 
@@ -165,6 +166,16 @@ function AppRoutes() {
               </PrivateRoute>
             }
           />
+
+           {/*[2025-11-03 김광현] 동화 다시보기 추가 */}
+            <Route
+              path="/story/replay/:completionId"
+              element={
+                <PrivateRoute>
+                  <StoryReplay />
+                </PrivateRoute>
+              }
+            />
 
           {/* 동화 완료 후 채팅 (더 구체적인 경로가 먼저) */}
           <Route

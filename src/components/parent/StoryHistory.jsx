@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./StoryHistory.css";
 import { getStoryHistory } from "../../services/api/dashboardApi";
+import { useNavigate } from "react-router-dom";
 
 const EMOTION_LABELS = {
     // 한글
@@ -26,6 +27,9 @@ function StoryHistory({ childId }) {
     const [filterStatus, setFilterStatus] = useState("all");
     const [loading, setLoading] = useState(true);
     const [statistics, setStatistics] = useState(null);
+
+    // [2025-11-30 김광현] 추가
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (childId) {
@@ -85,6 +89,13 @@ function StoryHistory({ childId }) {
             setLoading(false);
         }
     };
+
+    // [2025-11-03 김광현 추가]
+    const handleReplayStory = (e, completionId) => {
+        e.stopPropagation();
+        console.log("다시보기 클릭 : ", completionId);
+        navigate(`/story/replay/${completionId}`);
+    }
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -264,7 +275,9 @@ function StoryHistory({ childId }) {
                                 </div>
                             </div>
 
-                            <button className="story_action_btn">
+                            <button 
+                                className="story_action_btn"
+                                onClick={(e) => handleReplayStory(e, story.completionId)}>
                                 {story.completedAt ? "다시 보기" : "이어서 하기"}
                             </button>
                         </div>

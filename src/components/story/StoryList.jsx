@@ -29,14 +29,18 @@ function StoryList() {
                 emotion,
                 selectedInterests,
                 childId,
-                5
+                10
             );
 
             console.log("API 응답:", recommendedStories); // 응답 확인
 
             // 응답이 배열인지 확인
             if (Array.isArray(recommendedStories)) {
-                setStories(recommendedStories);
+                // storyId 기준으로 중복제거
+                const uniqueStories = recommendedStories.filter((story, index, self) =>
+                    index === self.findIndex((s) => s.title === story.title)
+                );
+                setStories(uniqueStories.slice(0,5));   // 화면에 보여지는 데이터는 5개로 지정
             } else {
                 console.error("응답이 배열이 아닙니다:", recommendedStories);
                 setStories([]);
@@ -44,8 +48,6 @@ function StoryList() {
             
             setLoading(false);
 
-            // setStories(recommendedStories);
-            // setLoading(false);
         
         } catch (error) {
             console.error("동화 추천 실패: ", error);

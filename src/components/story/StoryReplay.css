@@ -1,0 +1,352 @@
+/* 다시보기 래퍼 - 기존 동화 읽기와 유사한 배경 */
+.story_replay_wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #fff5e6 0%, #ffe6f0 100%);
+    padding: 20px;
+}
+
+/* 헤더 */
+.replay_header {
+    max-width: 1200px;
+    margin: 0 auto 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.back_button {
+    padding: 10px 20px;
+    background: linear-gradient(90deg, #2fa36b, #87ceeb);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back_button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(47, 163, 107, 0.3);
+}
+
+.story_title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+    flex: 1;
+    text-align: center;
+}
+
+.scene_counter {
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    background: linear-gradient(90deg, #2fa36b, #87ceeb);
+    padding: 10px 20px;
+    border-radius: 20px;
+    min-width: 80px;
+    text-align: center;
+}
+
+/* 동화 정보 */
+.story_info {
+    max-width: 1200px;
+    margin: 0 auto 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.emotion_badge {
+    padding: 8px 16px;
+    background: rgba(47, 163, 107, 0.1);
+    border-radius: 20px;
+    color: #2fa36b;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.interests_tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.interest_tag {
+    font-size: 13px;
+    padding: 6px 12px;
+    background: rgba(135, 206, 235, 0.15);
+    border-radius: 15px;
+    color: #4a90a4;
+    font-weight: 600;
+}
+
+/* 씬 컨테이너 */
+.scene_container {
+    max-width: 1200px;
+    margin: 0 auto 30px;
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.scene_image {
+    margin-bottom: 30px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.scene_image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.scene_content {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 40px;
+    padding: 20px;
+    background: rgba(255, 245, 230, 0.3);
+    border-radius: 12px;
+    border-left: 4px solid #2fa36b;
+}
+
+.scene_content p {
+    margin: 0;
+}
+
+/* 선택지 컨테이너 */
+.choices_container h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 16px;
+}
+
+.choices_list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.choice_item {
+    padding: 16px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+}
+
+.choice_item.selected {
+    border-color: #2fa36b;
+    background: rgba(47, 163, 107, 0.05);
+    box-shadow: 0 4px 12px rgba(47, 163, 107, 0.15);
+}
+
+.choice_text {
+    flex: 1;
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+.choice_ability {
+    padding: 6px 12px;
+    background: rgba(255, 159, 64, 0.15);
+    color: #ff9f40;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.selected_badge {
+    padding: 6px 12px;
+    background: linear-gradient(90deg, #2fa36b, #87ceeb);
+    color: white;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* 네비게이션 버튼 */
+.replay_navigation {
+    max-width: 1200px;
+    margin: 0 auto 30px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.nav_button {
+    padding: 14px 40px;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 140px;
+}
+
+.nav_button.prev {
+    background: white;
+    color: #2fa36b;
+    border: 2px solid #2fa36b;
+}
+
+.nav_button.prev:hover:not(:disabled) {
+    background: rgba(47, 163, 107, 0.05);
+    transform: translateX(-5px);
+}
+
+.nav_button.next {
+    background: linear-gradient(90deg, #2fa36b, #87ceeb);
+    color: white;
+}
+
+.nav_button.next:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(47, 163, 107, 0.3);
+}
+
+.nav_button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* 푸터 */
+.replay_footer {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+}
+
+.home_button {
+    padding: 14px 50px;
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffd166 0%, #ff9b7a 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 155, 122, 0.3);
+}
+
+.home_button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(255, 155, 122, 0.4);
+}
+
+.home_button:active {
+    transform: translateY(0);
+}
+
+/* 로딩 및 에러 상태 */
+.loading_state,
+.error_state {
+    max-width: 600px;
+    margin: 100px auto;
+    text-align: center;
+    padding: 60px 40px;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.loading_state {
+    font-size: 18px;
+    color: #666;
+}
+
+.error_state h3 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.error_state p {
+    font-size: 16px;
+    color: #999;
+    margin-bottom: 24px;
+}
+
+.error_state button {
+    padding: 12px 30px;
+    background: linear-gradient(90deg, #2fa36b, #87ceeb);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.error_state button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .replay_header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .story_title {
+        font-size: 20px;
+    }
+
+    .scene_container {
+        padding: 24px;
+    }
+
+    .scene_content {
+        font-size: 16px;
+    }
+
+    .replay_navigation {
+        flex-direction: column;
+    }
+
+    .nav_button {
+        width: 100%;
+    }
+}

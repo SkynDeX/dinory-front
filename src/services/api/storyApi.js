@@ -55,3 +55,9 @@ export const analyzeCustomChoice = async (completionId, sceneNumber, text) => {
     });
     return res.data;
 };
+
+// 완성된 동화 전체조회(다시보기용)
+export const getCompletedStory = async (completionId) => {
+    const res = await axiosInstance.get(`/api/story/completion/${completionId}/full-story`);
+    return res.data
+}
