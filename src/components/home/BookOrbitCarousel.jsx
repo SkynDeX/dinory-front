@@ -12,6 +12,8 @@ import { RewardContext } from "../../context/RewardContext";
 import { useChild } from "../../context/ChildContext";
 import BookInfoModal from "../dino/BookInfoModal"; 
 
+
+// @@ 캐러셀 중앙에 한권씩 멈추게 설정
 // 예시 도서 데이터
 const books = [
   { id: 1, title: "달 위의 곰돌이", 
@@ -129,12 +131,13 @@ function BookOrbitCarousel() {
 
     let rotation = 0;
     const step = (Math.PI * 2) / books.length;
+    const offset = Math.PI / books.length / 2; 
 
     const animate = () => {
       requestAnimationFrame(animate);
       rotation += (targetRotation.current - rotation) * 0.08;
       meshes.forEach((mesh, i) => {
-        const angle = (i / books.length) * Math.PI * 2 + rotation;
+        const angle = (i / books.length) * Math.PI * 2 + rotation + offset;
         mesh.position.set(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
         mesh.lookAt(camera.position);
         const dist = Math.abs(angle % (Math.PI * 2) - Math.PI);
@@ -177,6 +180,8 @@ function BookOrbitCarousel() {
     const onWheel = (e) => {
       e.preventDefault();
       targetRotation.current += e.deltaY > 0 ? -step : step;
+      const snapped = Math.round(targetRotation.current / step) * step;
+      targetRotation.current = snapped;
     };
     container.addEventListener("wheel", onWheel, { passive: false });
 
@@ -211,9 +216,15 @@ function BookOrbitCarousel() {
 
   const handlePrev = () => {
     targetRotation.current += (Math.PI * 2) / books.length;
+    const step = (Math.PI * 2) / books.length;
+    const snapped = Math.round(targetRotation.current / step) * step;
+    targetRotation.current = snapped;
   };
   const handleNext = () => {
     targetRotation.current -= (Math.PI * 2) / books.length;
+    const step = (Math.PI * 2) / books.length;
+    const snapped = Math.round(targetRotation.current / step) * step;
+    targetRotation.current = snapped;
   };
 
   return (

@@ -36,7 +36,7 @@ function ParentDashboard() {
             {/* 사이드바 */}
             <aside className="dashboard_sidebar">
                 <div className="sidebar_header">
-                    <h2 className="logo">
+                    <h2 className="logo" onClick={() => navigate("/main")}>
                         <span className="green">Din</span>
                         <span className="coral">o</span>
                         <span className="sky">r</span>

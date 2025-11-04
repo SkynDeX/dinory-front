@@ -25,6 +25,7 @@
   display: flex;
   gap: 2px;
   cursor: default;
+  cursor: pointer;
 }
 
 .logo .green { color: #2fa36b; }
