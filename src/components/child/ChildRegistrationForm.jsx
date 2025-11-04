@@ -1,27 +1,69 @@
 import React, { useEffect, useState, useRef } from "react";
 import './ChildRegistrationForm.css';
 
+// 이미지 임포트
+import inhibition from "../../assets/icons/inhibition.png";
+import conflict from "../../assets/icons/conflict.png";
+import separation from "../../assets/icons/separation.png";
+import sleep from "../../assets/icons/sleep.png";
+import meals from "../../assets/icons/meals.png";
+import aggression from "../../assets/icons/aggression.png";
+import friend from "../../assets/icons/friend.png";
+import school from "../../assets/icons/school.png";
+import emotion from "../../assets/icons/emotion.png";
+import concentration from "../../assets/icons/concentration.png";
+import fear from "../../assets/icons/fear.png";
+import confidence from "../../assets/icons/confidence.png";
+
 // 재사용 가능한 폼 컴포넌트
 function ChildRegistrationForm({
     onSubmit,   // 등록 완료 핸들러
     onCancel,   // 나중에 하기 핸들러
     initialData,    // 수정 모드용 초기 데이터
     mode = "register"
-}) {
+}) 
 
+{
+
+    // 이미지 아이콘 기반 옵션
     const options = [
-        { emoji: "😳", label: "낯가림" },
-        { emoji: "🧍‍♂️🧍‍♀️", label: "형제 갈등" },
-        { emoji: "🥺", label: "분리불안" },
-        { emoji: "😴", label: "수면 문제" },
-        { emoji: "🍽️🚫", label: "식사 거부" },
-        { emoji: "💢", label: "공격성" },
-        { emoji: "👭", label: "친구 관계" },
-        { emoji: "🏫", label: "학교 적응" },
-        { emoji: "🎭", label: "감정 표현" },
-        { emoji: "🎯", label: "집중력" },
-        { emoji: "😨", label: "두려움" },
-        { emoji: "😔", label: "자신감 부족" },
+
+        { image: inhibition, 
+          label: "낯가림" },
+
+        { image: conflict, 
+          label: "형제 갈등" },
+
+        { image: separation, 
+          label: "분리불안" },
+
+        { image: sleep, 
+          label: "수면 문제" },
+
+        { image: meals, 
+          label: "식사 거부" },
+
+        { image: aggression, 
+          label: "공격성" },
+
+        { image: friend, 
+          label: "친구 관계" },
+
+        { image: school, 
+          label: "학교 적응" },
+          
+        { image: emotion, 
+          label: "감정 표현" },
+
+        { image: concentration, 
+          label: "집중력" },
+
+        { image: fear, 
+          label: "두려움" },
+
+        { image: confidence, 
+          label: "자신감 부족" },
+
     ];
 
     // 폼 데이터 상태
@@ -49,20 +91,20 @@ function ChildRegistrationForm({
         setFormData(prev => ({
             ...prev,
             concerns: prev.concerns.includes(label)
-            ? prev.concerns.filter((item) => item !== label)
-            : [...prev.concerns, label]
+                ? prev.concerns.filter((item) => item !== label)
+                : [...prev.concerns, label]
         }));
     };
 
     const handleEtcClick = () => setShowInput(true);
 
     const handleEtcSubmit = () => {
-        if(etcText.trim() !== "") {
+        if (etcText.trim() !== "") {
             setFormData((prev) => ({
                 ...prev,
                 concerns: [...prev.concerns, etcText.trim()]
             }));
-            setEtcText(""); // 입력 내용 초기화
+            setEtcText("");
             setShowInput(false);
         }
     };
@@ -85,18 +127,15 @@ function ChildRegistrationForm({
         };
     }, [showInput]);
 
-
     // 기존 우려사항에 기타로 등록된 항목 필터링
     const customConcerns = formData.concerns.filter(
-        concern => !options.find(opt => opt.label === concern)  
+        concern => !options.find(opt => opt.label === concern)
     );
-
 
     // 폼 제출
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // 유효성 검사
         if (!formData.name.trim()) {
             alert("아이 이름을 입력해주세요");
             return;
@@ -112,7 +151,6 @@ function ChildRegistrationForm({
             return;
         }
 
-        // 부모 컴포넌트로 데이터 전달
         onSubmit?.(formData);
     };
 
@@ -121,22 +159,21 @@ function ChildRegistrationForm({
         onCancel?.();
     };
 
-
-    return(
+    return (
         <div>
             <div className="child_register_form">
                 <form onSubmit={handleSubmit}>
                     <h3>아이 이름</h3>
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         placeholder="예: 명호"
                         value={formData.name}
                         onChange={(e) => handleInputChange("name", e.target.value)}
                     />
 
                     <h3>생년월일</h3>
-                    <input 
-                        type="date" 
+                    <input
+                        type="date"
                         placeholder="날짜를 선택하세요"
                         value={formData.birthDate}
                         onChange={(e) => handleInputChange("birthDate", e.target.value)}
@@ -154,6 +191,7 @@ function ChildRegistrationForm({
 
                     <h3>특별히 신경 쓰이는 부분 (선택)</h3>
                     <p>아이의 정서 발달에 도움이 되는 맞춤 동화를 제공해요 (여러 개 선택 가능)</p>
+
                     <div className="child_register_card_grid">
                         {options.map((item) => (
                             <div
@@ -161,12 +199,12 @@ function ChildRegistrationForm({
                                 className={`card ${formData.concerns.includes(item.label) ? "active" : ""}`}
                                 onClick={() => selectConcern(item.label)}
                             >
-                                <span className="emoji">{item.emoji}</span>
+                                <img src={item.image} alt={item.label} className="concern-icon" />
                                 <p>{item.label}</p>
                             </div>
                         ))}
 
-                        {/* 직접 입력으로 추가된 우려사항 카드 표시 */}
+                        {/* 직접 입력된 우려사항 카드 */}
                         {customConcerns.map((concern) => (
                             <div
                                 key={concern}
@@ -180,7 +218,7 @@ function ChildRegistrationForm({
 
                         {showInput ? (
                             <div className="card_input_card" ref={inputCardRef}>
-                                <input 
+                                <input
                                     type="text"
                                     placeholder="직접 입력"
                                     value={etcText}
@@ -198,6 +236,7 @@ function ChildRegistrationForm({
                             </div>
                         )}
                     </div>
+
                     <div className="button_area">
                         <button type="button" className="skip_btn" onClick={handleSkip}>
                             {mode === "edit" ? "취소" : "나중에 하기"}
@@ -205,7 +244,7 @@ function ChildRegistrationForm({
                         <button type="submit" className="submit_btn">
                             {mode === "edit" ? "수정 완료" : "등록 완료"}
                         </button>
-                    </div>    
+                    </div>
                 </form>
             </div>
         </div>

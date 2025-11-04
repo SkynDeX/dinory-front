@@ -82,28 +82,22 @@
 }
 
 .card.active p {
-  color: #2fa36b;  /* 라벨 텍스트는 그린 */
+  color: #2fa36b;
   font-size: 13px;
   font-weight: 700;
 }
 
-.card.active.emoji {
-    font-size: 32px;
-    display: block;
-    margin-bottom: 8px;
-}
-
-.card .emoji {
-  font-size: 32px;
-  display: block;
+/* 아이콘 이미지 */
+.concern-icon {
+  width: 52px;
+  height: 52px;
   margin-bottom: 8px;
+  object-fit: contain;
+  transition: transform 0.2s ease;
 }
 
-.card p {
-  font-size: 13px;
-  font-weight: 600;
-  margin: 0;
-  color: inherit;
+.card.active .concern-icon {
+  transform: scale(1.1);
 }
 
 /* 기타 입력 카드 */
@@ -125,7 +119,6 @@
   background: transparent;
   font-size: 14px;
   padding: 12px;
-  box-sizing: border-box;
 }
 
 .card_input_card button {
