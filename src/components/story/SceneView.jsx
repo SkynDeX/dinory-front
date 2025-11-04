@@ -23,7 +23,7 @@ function SceneView({ scene, totalScenes, onChoiceSelect }) {
         console.log(`씬 ${scene.sceneNumber} 이미지 폴링 시작...`);
 
         let attemptCount = 0;
-        const maxAttempts = 15; 
+        const maxAttempts = 20; 
         let isMounted = true;  // cleanup 체크용
 
         // 2초마다 이미지 확인
@@ -55,7 +55,7 @@ function SceneView({ scene, totalScenes, onChoiceSelect }) {
                 console.log(`씬 ${scene.sceneNumber} 이미지 로딩 타임아웃`);
                 clearInterval(interval);
             }
-        }, 1000);
+        }, 500);
 
         return () => {
             isMounted = false;

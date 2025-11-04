@@ -9,7 +9,8 @@
 
 .image_wrapper {
     width: 100%;
-    height: 400px;
+    /* height: 400px; */
+    aspect-ratio: 16 / 9;
     border-radius: 20px;
     overflow: hidden;
     background: linear-gradient(135deg, #f5f7fa 0%, #e8ebf0 100%);
@@ -21,10 +22,11 @@
 .image_wrapper img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;  /* cover → contain: 이미지 전체 표시, 잘리지 않음 */
     object-position: center;
     display: block;
     transition: transform 0.3s ease;
+    background: #f5f7fa;  /* 여백 부분 배경색 */
 }
 
 .image_wrapper:hover img {
