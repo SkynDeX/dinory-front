@@ -9,6 +9,14 @@ export const getOverview = async (childId, period = "day") => {
     return res.data;
 };
 
+// 성장 리포트 조회
+export const getGrowthReport = async (childId, period = 'month') => {
+    const res = await axiosInstance.get('/api/parent/dashboard/growth-report', {
+        params: {childId, period}
+    });
+    return res.data;
+}
+
 // 동화 히스토리 조회
 export const getStoryHistory = async (childId, startDate, endDate, page = 0, size = 10) => {
     const params = {
@@ -25,6 +33,18 @@ export const getStoryHistory = async (childId, startDate, endDate, page = 0, siz
     }
 
     const res = await axiosInstance.get('/api/parent/dashboard/story-history', { params });
+    return res.data;
+};
+
+// 추천 동화 조회 - 대시보드 분석 기반
+export const getRecommendedStories = async (childId, period = 'week', limit = 5) => {
+    const res = await axiosInstance.post('/api/parent/dashboard/recommended-stories', null, {
+        params: {
+            childId,
+            period,  
+            limit
+        }
+    });
     return res.data;
 };
 

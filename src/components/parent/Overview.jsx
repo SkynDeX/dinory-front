@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useChild } from "../../context/ChildContext"
 import { getOverview } from '../../services/api/dashboardApi';
 import AbilityRadarChart from "./charts/AbilityRadarChart";
 import EmotionLineChart from "./charts/EmotionLineChart";
@@ -23,6 +22,10 @@ function Overview({ dashboardSelectedChild }) {
         setLoading(true);
         try {
            const data = await getOverview(dashboardSelectedChild.id, period);
+           console.log('📊 Overview API Response:', data);
+           console.log('emotions:', data.emotions);
+           console.log('choices:', data.choices);
+           console.log('topics:', data.topics);
            setOverviewData(data);
         } catch (e) {
             console.error('Overview 데이터 조회 실패:', e);
@@ -30,6 +33,7 @@ function Overview({ dashboardSelectedChild }) {
             setLoading(false);
         }
     };
+
 
     if (loading) {
         return (
@@ -107,24 +111,6 @@ function Overview({ dashboardSelectedChild }) {
                 </div>
             </div>
 
-            {/* 최근 동화 목록 */}
-            {overviewData.recentStories && overviewData.recentStories.lengh > 0 && (
-                <div className="recent_stories_section">
-                    <h3 className="section_title">최근 완료한 동화</h3>
-                    <div className="recent_stories_list">
-                        {overviewData.recentStories.map(story => (
-                            <div key={story.id} className="recent_story_item">
-                                <span className="story_emotion">{story.emotion}</span>
-                                <div className="story_info">
-                                    <h4 className="story_title">{story.title}</h4>
-                                    <span className="story_date">{story.date}</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-                   
         </div>
     );
 }

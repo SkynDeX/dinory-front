@@ -124,66 +124,6 @@
     box-shadow: 0 4px 12px rgba(47, 163, 107, 0.3);
 }
 
-/* 최근 동화 섹션 */
-.recent_stories_section {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    border: 2px solid #e0e0e0;
-}
-
-.section_title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid #f0f0f0;
-}
-
-.recent_stories_list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.recent_story_item {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    border: 1px solid #e0e0e0;
-    transition: all 0.2s ease;
-}
-
-.recent_story_item:hover {
-    background: #f0f7f4;
-    border-color: #2fa36b;
-    transform: translateX(4px);
-}
-
-.recent_stories_section .story_emotion {
-    font-size: 32px;
-}
-
-.story_info {
-    flex: 1;
-}
-
-.story_title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 4px;
-}
-
-.story_date {
-    font-size: 14px;
-    color: #666;
-}
-
 /* 빈 상태 & 로딩 */
 .empty_state,
 .loading_state {
@@ -204,6 +144,97 @@
 
 .empty_state p {
     color: #999;
+}
+
+/* 추천 동화 섹션 */
+.recommended_stories_section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 2px solid #e0e0e0;
+    margin-top: 24px;
+}
+
+.recommended_stories_list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.recommended_story_item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s ease;
+}
+
+.recommended_story_item:hover {
+    background: #f0f7f4;
+    border-color: #2fa36b;
+    transform: translateX(4px);
+}
+
+.story_match {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;
+    padding: 12px;
+    background: linear-gradient(135deg, #2fa36b 0%, #87ceeb 100%);
+    border-radius: 12px;
+    color: white;
+}
+
+.match_score {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.match_label {
+    font-size: 11px;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.recommended_story_item .story_info {
+    flex: 1;
+}
+
+.recommended_story_item .story_title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.story_description {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.story_start_btn {
+    padding: 10px 24px;
+    background: #2fa36b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.story_start_btn:hover {
+    background: #258a5a;
+    transform: scale(1.05);
 }
 
 /* 반응형 */
