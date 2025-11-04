@@ -24,20 +24,31 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
 
   // 세션 초기화
   useEffect(() => {
+    console.log("=== ChatInterface useEffect 실행 ===");
+    console.log("initialSessionId:", initialSessionId);
+    console.log("completionId:", completionId);
+    console.log("childId:", childId);
 
     // [2025-10-29 김광현] sessionId가 있으면 기존 세션 로드
     if(initialSessionId) {
+      console.log("→ 기존 세션 로드 경로");
       loadExistingSession(initialSessionId);
       return;
     }
 
     // completionId가 있으면 동화 기반 세션 생성
     if(completionId) {
+      console.log("→ 동화 기반 세션 생성 경로");
       initChatSessionFromStory(completionId);
       return;
     }
 
-    if (!childId) return;
+    if (!childId) {
+      console.log("→ childId 없음, 초기화 안 함");
+      return;
+    }
+
+    console.log("→ 일반 세션 초기화 경로");
     let cancelled = false;
 
     (async () => {
@@ -102,7 +113,8 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
   // 동화 완료 후 챗봇 세션 초기화
   const initChatSessionFromStory = async (completionIdToUse) => {
     try {
-      console.log("동화 기반 채팅 세션 시작: completionId=", completionIdToUse);
+      console.log("★★★ 동화 기반 채팅 세션 시작: completionId=", completionIdToUse);
+      console.log("★★★ initChatSessionFromStory 호출!");
 
       // 1. 동화 완료 요약 데이터 가져오기
       const summary = await getStoryCompletionSummary(completionIdToUse);
