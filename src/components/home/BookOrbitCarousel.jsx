@@ -10,32 +10,14 @@ import DinoCharacter from "../dino/DinoCharacter";
 import RewardProgress from "./RewardProgress";
 import { RewardContext } from "../../context/RewardContext";
 import { useChild } from "../../context/ChildContext";
-import BookInfoModal from "../dino/BookInfoModal"; 
+import BookInfoModal from "../dino/BookInfoModal";
 
-
-// @@ 캐러셀 중앙에 한권씩 멈추게 설정
-// 예시 도서 데이터
 const books = [
-  { id: 1, title: "달 위의 곰돌이", 
-           image: "/assets/intro/01.png", 
-           desc: "달 위에서 꿈꾸는 귀여운 곰돌이 이야기" },
-
-  { id: 2, title: "바다의 인어", 
-           image: "/assets/intro/02.png", 
-           desc: "푸른 바다 속 인어의 노래" },
-
-  { id: 3, title: "꿈나라 기차", 
-           image: "/assets/intro/03.png", 
-           desc: "밤하늘을 달리는 꿈나라 기차" },
-
-  { id: 4, title: "마법 고양이", 
-           image: "/assets/intro/04.png", 
-           desc: "마법 지팡이를 든 고양이의 모험" },
-
-  { id: 5, title: "무지개 유니콘", 
-           image: "/assets/intro/05.png", 
-           desc: "무지개를 달리는 유니콘의 이야기" },
-
+  { id: 1, title: "달 위의 곰돌이", image: "/assets/intro/01.png", desc: "달 위에서 꿈꾸는 귀여운 곰돌이 이야기" },
+  { id: 2, title: "바다의 인어", image: "/assets/intro/02.png", desc: "푸른 바다 속 인어의 노래" },
+  { id: 3, title: "꿈나라 기차", image: "/assets/intro/03.png", desc: "밤하늘을 달리는 꿈나라 기차" },
+  { id: 4, title: "마법 고양이", image: "/assets/intro/04.png", desc: "마법 지팡이를 든 고양이의 모험" },
+  { id: 5, title: "무지개 유니콘", image: "/assets/intro/05.png", desc: "무지개를 달리는 유니콘의 이야기" },
 ];
 
 const THEME_COLORS = ["#2fa36b", "#ff9b7a", "#87ceeb", "#ffd166"];
@@ -52,9 +34,8 @@ function BookOrbitCarousel() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
 
-  // 자녀 변경 핸들러
   const handleChangeChild = () => {
-    navigate('/child/select');
+    navigate("/child/select");
   };
 
   const textures = useMemo(() => {
@@ -69,7 +50,6 @@ function BookOrbitCarousel() {
 
     const scene = new THREE.Scene();
 
-    // 배경
     const gradientCanvas = document.createElement("canvas");
     gradientCanvas.width = 32;
     gradientCanvas.height = 32;
@@ -112,7 +92,6 @@ function BookOrbitCarousel() {
     composer.addPass(renderPass);
     composer.addPass(bloomPass);
 
-    // 책 모델
     const radius = 7;
     const geom = new THREE.BoxGeometry(2.0, 2.6, 0.25);
     const meshes = [];
@@ -131,20 +110,32 @@ function BookOrbitCarousel() {
 
     let rotation = 0;
     const step = (Math.PI * 2) / books.length;
-    const offset = Math.PI / books.length / 2; 
+    const offset = Math.PI / books.length / 2;
 
     const animate = () => {
       requestAnimationFrame(animate);
       rotation += (targetRotation.current - rotation) * 0.08;
+
+      let minDist = Infinity;
+      let centerIndex = 0;
+
       meshes.forEach((mesh, i) => {
         const angle = (i / books.length) * Math.PI * 2 + rotation + offset;
-        mesh.position.set(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
+        mesh.position.set(Math.sin(angle - Math.PI / 2) * radius, 0, Math.cos(angle - Math.PI / 2) * radius);
         mesh.lookAt(camera.position);
-        const dist = Math.abs(angle % (Math.PI * 2) - Math.PI);
-        const glow = 1 - Math.min(1, dist / Math.PI);
+
+        const dist = Math.abs(mesh.position.z - camera.position.z);
+        if (dist < minDist) {
+          minDist = dist;
+          centerIndex = i;
+        }
+
+        const glow = 1 - Math.min(1, Math.abs(angle % (Math.PI * 2) - Math.PI) / Math.PI);
         mesh.scale.setScalar(1 + glow * 0.45);
-        if (glow > 0.9) setSelectedIndex(i);
       });
+
+      if (selectedIndex !== centerIndex) setSelectedIndex(centerIndex);
+
       composer.render();
     };
     animate();
@@ -240,11 +231,20 @@ function BookOrbitCarousel() {
         </h1>
       </div>
 
-      {/* 우측 상단: 자녀 정보 + 보상 진행도 */}
       <div className="top-right-section">
         {selectedChild && (
           <div className="selected-child-info" onClick={handleChangeChild}>
-            <span className="child-avatar">{selectedChild.avatar || (selectedChild.gender === 'male' ? '👦' : '👧')}</span>
+            <span className="child-avatar">
+              <img
+                src={
+                  selectedChild.gender === "male"
+                    ? "/assets/icons/bkid.png"
+                    : "/assets/icons/gkid.png"
+                }
+                alt={selectedChild.gender === "male" ? "남자 아이" : "여자 아이"}
+                className="child-avatar-img"
+              />
+            </span>
             <span className="child-name-display">{selectedChild.name}</span>
             <MdSwapHoriz className="change-icon" />
           </div>
@@ -275,13 +275,11 @@ function BookOrbitCarousel() {
 
       <DinoCharacter book={books[selectedIndex]} />
 
-      {/* 모달 표시 */}
       {isModalOpen && selectedBook && (
         <BookInfoModal book={selectedBook} onClose={() => setIsModalOpen(false)} />
       )}
     </div>
   );
 }
-
 
 export default BookOrbitCarousel;

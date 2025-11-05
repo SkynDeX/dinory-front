@@ -266,3 +266,23 @@ canvas {
     transform: translateY(0);
   }
 }
+
+.child-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.child-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
