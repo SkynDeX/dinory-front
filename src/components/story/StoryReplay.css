@@ -8,7 +8,7 @@
 /* 헤더 */
 .replay_header {
     max-width: 1200px;
-    margin: 0 auto 20px;
+    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -59,7 +59,7 @@
 /* 동화 정보 */
 .story_info {
     max-width: 1200px;
-    margin: 0 auto 20px;
+    margin: 0 auto;
     display: flex;
     gap: 10px;
     align-items: center;
@@ -117,12 +117,17 @@
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    width: 442px;
 }
 
 .scene_image img {
-    width: 100%;
-    height: auto;
+    /* width: 100%;
+    height: auto; */
+    width: 440px;
+    height: 267px;
     display: block;
+    margin: 0 auto;
 }
 
 .scene_content {

@@ -5,6 +5,7 @@ import { generateStory, getNextScene, completeStory, analyzeCustomChoice  } from
 import SceneView from "../../components/story/SceneView";
 import StoryCompletion from "../../components/story/StoryCompletion";
 import { useChild } from "../../context/ChildContext";
+import NegativeModal from "./NegativeModal";
 
 const MAX_SCENES = 8;
 
@@ -21,6 +22,12 @@ function StoryReading() {
     const [startTime, setStartTime] = useState(null);
     const [storyContext, setStoryContext] = useState("");
     const { selectedChild, selectedEmotion, selectedInterests } = useChild();
+    const [modalState, setModalState] = useState({
+        isOpen: false,
+        title: '',
+        message: '',
+        type: 'info'
+    });
 
     useEffect(() => {
         let isMounted = true;
@@ -104,9 +111,14 @@ function StoryReading() {
 
                     console.log("분석 결과 : ", analysisResult);
 
-                    // [2025-11-04] 부정적 표현 감지 시 경고
+                    // [2025-11-04] 부정적 표현 감지 시 경고 -> [2025-11-05 김광현] alert에서 모달로 변경
                     if (analysisResult.isNegative) {
-                        alert(analysisResult.feedback || "부정적인 말은 나빠요! 다시 생각해보면 좋아요!");
+                        setModalState({
+                            isOpen: true,
+                            title:'다시 생각해볼까요?',
+                            message: analysisResult.feedback || "부정적인 말보다 긍정적인 말을 사용하면 어떨까요? 친구를 도와주거나 용기를 내는 선택을 해보세요!",
+                            type: 'warning'
+                        });
                         return;  // 다음 씬으로 넘어가지 않음
                     }
 
@@ -229,6 +241,15 @@ function StoryReading() {
 
     return (
         <div className="story_reading_wrapper">
+
+            <NegativeModal 
+                isOpen={modalState.isOpen}
+                onClose={() => setModalState({...modalState, isOpen: false})}
+                title={modalState.title}
+                message={modalState.message}
+                type={modalState.type}
+            />
+
             {currentScene && (
                 <SceneView
                     scene={currentScene}
