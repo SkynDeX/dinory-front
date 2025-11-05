@@ -1,10 +1,11 @@
 // axiosInstance.js — 최종본
 import axios from 'axios';
 
-const baseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8090';
+const rawBaseURL = process.env.REACT_APP_API_BASE_URL || '';
+const baseURL = rawBaseURL.replace(/\/+$/, '');
 
 const axiosInstance = axios.create({
-  baseURL,
+  baseURL: baseURL || undefined,
   timeout: 60000,
   withCredentials: true,
 });

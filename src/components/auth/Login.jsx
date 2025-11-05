@@ -3,8 +3,7 @@ import { gsap } from "gsap";
 import "./Login.css";
 
 function Login() {
-  const API_BASE_URL =
-    process.env.REACT_APP_API_BASE_URL || "http://localhost:8090";
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "";
 
   const footprintsRef = useRef([]);
   const loginBoxRef = useRef();
