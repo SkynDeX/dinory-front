@@ -3,7 +3,6 @@ import "./StoryReading.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { generateStory, getNextScene, completeStory, analyzeCustomChoice  } from "../../services/api/storyApi";
 import SceneView from "../../components/story/SceneView";
-import StoryCompletion from "../../components/story/StoryCompletion";
 import { useChild } from "../../context/ChildContext";
 import NegativeModal from "./NegativeModal";
 
@@ -18,7 +17,6 @@ function StoryReading() {
     const [currentScene, setCurrentScene] = useState(null);
     const [currentSceneNumber, setCurrentSceneNumber] = useState(0);
     const [completionId, setCompletionId] = useState(null);
-    const [isCompleted, setIsCompleted] = useState(false);
     const [startTime, setStartTime] = useState(null);
     const [storyContext, setStoryContext] = useState("");
     const { selectedChild, selectedEmotion, selectedInterests } = useChild();
@@ -28,6 +26,7 @@ function StoryReading() {
         message: '',
         type: 'info'
     });
+
 
     useEffect(() => {
         let isMounted = true;
@@ -197,16 +196,16 @@ function StoryReading() {
 
             await completeStory(completionId, { totalTime });
 
-            setIsCompleted(true);
+            // setIsCompleted(true);
+            // [2025-11-05 김광현] 챗봇으로 바로 이동
+            console.log("✅ 동화 완료! 챗봇 페이지로 이동:", `/chat/story/${completionId}`);
+            navigate(`/chat/story/${completionId}`);
         } catch (error) {
             console.error("❌ 동화 완료 처리 실패:", error);
             alert("동화 완료 처리에 실패했습니다.");
         }
     };
 
-    const handleGoHome = () => {
-        navigate("/main");
-    }
 
     if(loading) {
         return (
@@ -227,16 +226,6 @@ function StoryReading() {
                 </div>
             </div>
         )
-    }
-
-    if (isCompleted) {
-        return (
-            <StoryCompletion
-                storyTitle={storyContext.substring(0, 50) + "..."}
-                completionId={completionId}
-                onGoHome={handleGoHome}
-            />
-        );
     }
 
     return (
