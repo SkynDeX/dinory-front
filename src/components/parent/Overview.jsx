@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { getOverview } from '../../services/api/dashboardApi';
-import AbilityRadarChart from "./charts/AbilityRadarChart";
-import EmotionLineChart from "./charts/EmotionLineChart";
-import ChoicePatternChart from "./charts/ChoicePatternChart";
-import TopicCloud from "./charts/TopicCloud";
+import { getOverview, getAIInsights, getTopics } from '../../services/api/dashboardApi';
+import OverviewTab from "./tabs/OverviewTab";
+import AbilitiesTab from "./tabs/AbilitiesTab";
+import PatternsTab from "./tabs/PatternsTab";
 import "./Overview.css";
 
 
 function Overview({ dashboardSelectedChild }) {
-    const [period, setPeriod] = useState("day");
+    const [period, setPeriod] = useState("week");  // 기본값을 주간으로
+    const [activeSubTab, setActiveSubTab] = useState("overview");  // 서브 탭 상태
     const [overviewData, setOverviewData] = useState(null);
+    const [aiInsights, setAiInsights] = useState(null);  // AI 인사이트 별도 상태
+    const [topics, setTopics] = useState([]);  // Topics 별도 상태
     const [loading, setLoading] = useState();
+    const [insightsLoading, setInsightsLoading] = useState(false);  // AI 로딩 상태
+    const [topicsLoading, setTopicsLoading] = useState(false);  // Topics 로딩 상태
 
     useEffect(() => {
         if (dashboardSelectedChild) {
             fetchOverviewData();
+            fetchAIInsights();  // AI 인사이트 별도 로딩
+            fetchTopics();  // Topics 별도 로딩
         }
     }, [dashboardSelectedChild, period]);
 
@@ -31,6 +37,43 @@ function Overview({ dashboardSelectedChild }) {
             console.error('Overview 데이터 조회 실패:', e);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchAIInsights = async () => {
+        setInsightsLoading(true);
+        setAiInsights(null);  // 기존 인사이트 초기화
+        try {
+            const data = await getAIInsights(dashboardSelectedChild.id, period);
+            console.log('💡 AI Insights Response:', data);
+            setAiInsights(data);
+        } catch (e) {
+            console.error('AI 인사이트 조회 실패:', e);
+            // 실패 시 기본값 설정
+            setAiInsights({
+                quickInsight: "아이와 함께 동화를 읽으며 성장해보세요!",
+                recommendation: {
+                    ability: "용기",
+                    message: "용기 관련 동화를 함께 읽어보세요."
+                }
+            });
+        } finally {
+            setInsightsLoading(false);
+        }
+    };
+
+    const fetchTopics = async () => {
+        setTopicsLoading(true);
+        setTopics([]);  // 기존 Topics 초기화
+        try {
+            const data = await getTopics(dashboardSelectedChild.id, period);
+            console.log('🏷️ Topics Response:', data);
+            setTopics(data);
+        } catch (e) {
+            console.error('Topics 조회 실패:', e);
+            setTopics([]);
+        } finally {
+            setTopicsLoading(false);
         }
     };
 
@@ -78,39 +121,58 @@ function Overview({ dashboardSelectedChild }) {
                 </div>
             </div>
 
-            {/* 차트 영역 */}
-            <div className="charts_grid">
-                {/* 능력 발달 레이더 차트 */}
-                <div className="chart_card">
-                    <h3 className="chart_title">능력 발달 현황</h3>
-                    <div className="chart_container" style={{ pointerEvents: 'auto', position: 'relative', zIndex: 100 }}>
-                        <AbilityRadarChart data={overviewData}/>
-                    </div>
-                </div>
-
-                {/* 감정 추이 라인 차트 */}
-                <div className="chart_card">
-                    <h3 className="chart_title">감정 변화 추이</h3>
-                    <div className="chart_container">
-                        <EmotionLineChart data={overviewData.emotions} period={period} />
-                    </div>
-                </div>
-
-                {/* 선택 패턴 도넛 차트 */}
-                <div className="chart_card">
-                    <h3 className="chart_title">선택 패턴 분석</h3>
-                    <div className="chart_container">
-                        <ChoicePatternChart data={overviewData.choices} />
-                    </div>
-                </div>
-
-                {/* 관심사 태그 클라우드 */}
-                <div className="chart_card">
-                    <h3 className="chart_title">대화 주제 분석</h3>
-                    <TopicCloud topics={overviewData.topics} />
-                </div>
+            {/* 서브 탭 */}
+            <div className="sub_tabs">
+                <button
+                    className={`sub_tab_btn ${activeSubTab === 'overview' ? 'active' : ''}`}
+                    onClick={() => setActiveSubTab('overview')}
+                >
+                    <span className="tab_icon">📊</span>
+                    <span className="tab_label">종합 현황</span>
+                </button>
+                <button
+                    className={`sub_tab_btn ${activeSubTab === 'abilities' ? 'active' : ''}`}
+                    onClick={() => setActiveSubTab('abilities')}
+                >
+                    <span className="tab_icon">📈</span>
+                    <span className="tab_label">능력 발달</span>
+                </button>
+                <button
+                    className={`sub_tab_btn ${activeSubTab === 'patterns' ? 'active' : ''}`}
+                    onClick={() => setActiveSubTab('patterns')}
+                >
+                    <span className="tab_icon">🎯</span>
+                    <span className="tab_label">활동 분석</span>
+                </button>
             </div>
 
+            {/* 탭 컨텐츠 */}
+            <div className="tab_content">
+                {activeSubTab === 'overview' && (
+                    <OverviewTab
+                        data={overviewData}
+                        period={period}
+                        aiInsights={aiInsights}
+                        insightsLoading={insightsLoading}
+                    />
+                )}
+                {activeSubTab === 'abilities' && (
+                    <AbilitiesTab
+                        data={overviewData}
+                        period={period}
+                        aiInsights={aiInsights}
+                        insightsLoading={insightsLoading}
+                    />
+                )}
+                {activeSubTab === 'patterns' && (
+                    <PatternsTab
+                        data={overviewData}
+                        period={period}
+                        topics={topics}
+                        topicsLoading={topicsLoading}
+                    />
+                )}
+            </div>
         </div>
     );
 }

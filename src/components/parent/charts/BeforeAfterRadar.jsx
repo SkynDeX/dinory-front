@@ -50,6 +50,7 @@ function BeforeAfterRadar({ data }) {
     const options = {
         responsive: true,
         maintainAspectRatio: true,
+        aspectRatio: 1.5,
         scales: {
             r: {
                 beginAtZero: true,
@@ -57,10 +58,10 @@ function BeforeAfterRadar({ data }) {
                 max: 100,
                 ticks: {
                     stepSize: 20,
-                    font: { size: 12 }
+                    font: { size: 11 }
                 },
                 pointLabels: {
-                    font: { size: 14, weight: '600' }
+                    font: { size: 13, weight: '600' }
                 }
             }
         },

@@ -1,0 +1,218 @@
+.abilities_tab {
+    padding: 24px;
+}
+
+/* 레이더 차트 섹션 */
+.radar_section {
+    margin-bottom: 32px;
+}
+
+.section_title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.radar_card {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    border: 2px solid #e0e0e0;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* 능력별 카드 */
+.ability_cards_section {
+    margin-bottom: 32px;
+}
+
+.ability_cards_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.ability_card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 2px solid #e0e0e0;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ability_card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.ability_header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.ability_icon {
+    font-size: 32px;
+}
+
+.ability_info {
+    flex: 1;
+}
+
+.ability_name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.ability_score {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2fa36b;
+}
+
+/* 점수 바 */
+.ability_bar_container {
+    position: relative;
+    height: 24px;
+    background: #f0f0f0;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.ability_bar {
+    height: 100%;
+    border-radius: 12px;
+    transition: width 0.5s ease;
+}
+
+.ability_percentage {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+}
+
+.ability_description {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.ability_level {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.level_label {
+    font-size: 12px;
+    color: #888;
+}
+
+.level_badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.level_high {
+    background: #d4edda;
+    color: #155724;
+}
+
+.level_medium {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.level_low {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* 추천 활동 */
+.recommendation_section {
+    margin-top: 32px;
+}
+
+.recommendation_card {
+    background: linear-gradient(135deg, #ff9b7a 0%, #ffd166 100%);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: white;
+}
+
+.recommendation_icon {
+    font-size: 48px;
+    flex-shrink: 0;
+}
+
+.recommendation_content {
+    flex: 1;
+}
+
+.recommendation_text {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.recommendation_text strong {
+    color: #ffd166;
+    font-weight: 700;
+}
+
+.recommendation_btn {
+    background: white;
+    color: #ff9b7a;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.recommendation_btn:hover {
+    transform: scale(1.05);
+}
+
+.loading_text {
+    display: inline-block;
+    animation: pulse 1.5s ease-in-out infinite;
+    opacity: 0.8;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.empty_state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+    font-size: 16px;
+}

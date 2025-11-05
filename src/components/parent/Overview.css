@@ -49,6 +49,59 @@
     color: white;
 }
 
+/* 서브 탭 */
+.sub_tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    background: white;
+    padding: 8px;
+    border-radius: 12px;
+    border: 2px solid #e0e0e0;
+}
+
+.sub_tab_btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sub_tab_btn:hover {
+    background: rgba(47, 163, 107, 0.1);
+    color: #2fa36b;
+}
+
+.sub_tab_btn.active {
+    background: #2fa36b;
+    color: white;
+    box-shadow: 0 4px 12px rgba(47, 163, 107, 0.3);
+}
+
+.tab_icon {
+    font-size: 18px;
+}
+
+.tab_label {
+    font-size: 15px;
+}
+
+.tab_content {
+    background: #f8f9fa;
+    border-radius: 16px;
+    min-height: 400px;
+}
+
 /* 차트 그리드 */
 .charts_grid {
     display: grid;

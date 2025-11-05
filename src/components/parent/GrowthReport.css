@@ -4,6 +4,57 @@
     margin: 0 auto;
 }
 
+/* AI 로딩 애니메이션 */
+.ai_loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    gap: 16px;
+}
+
+.loading_spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e0e0e0;
+    border-top: 4px solid #2fa36b;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading_text {
+    color: #666;
+    font-size: 14px;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.area_loading {
+    padding: 20px;
+    text-align: center;
+}
+
+.empty_section {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+    font-size: 14px;
+}
+
 .report_header {
     display: flex;
     justify-content: space-between;
@@ -92,7 +143,9 @@
     border-radius: 16px;
     padding: 32px;
     border: 2px solid #e0e0e0;
-    min-height: 400px;
+    max-width: 500px;
+    max-height: 400px;
+    margin: 0 auto;
 }
 
 .ai_evaluation_card {
@@ -187,6 +240,18 @@
 .area_recommendation strong {
     color: #2fa36b;
     font-weight: 600;
+}
+
+.area_example ul {
+    margin: 8px 0 0 0;
+    padding-left: 20px;
+    list-style-type: disc;
+}
+
+.area_example li {
+    margin: 4px 0;
+    color: #555;
+    line-height: 1.6;
 }
 
 .milestones_list {

@@ -32,7 +32,7 @@ function EmotionLineChart({ data, period }) {
                 tension: 0.4,
                 fill: false,
                 pointRadius: 5,
-                pointHoverRadius: 7,
+                pointHoverRadius: 5,
                 borderWidth: 3,
                 borderDash: []  // 실선
             },
@@ -49,7 +49,7 @@ function EmotionLineChart({ data, period }) {
                 tension: 0.4,
                 fill: false,
                 pointRadius: 5,
-                pointHoverRadius: 7,
+                pointHoverRadius: 5,
                 borderWidth: 3,
                 borderDash: [5, 5],  // 점선 (5px 선, 5px 간격)
                 pointStyle: 'rectRot'  // 포인트를 다이아몬드 모양으로
@@ -60,6 +60,16 @@ function EmotionLineChart({ data, period }) {
     const options = {
         responsive: true,
         maintainAspectRatio: false,
+        interaction: {
+            mode: 'index',
+            intersect: false
+        },
+        elements: {
+            point: {
+                hoverRadius: 5,
+                hoverBorderWidth: 3
+            }
+        },
         plugins: {
             legend: {
                 position: 'top',
