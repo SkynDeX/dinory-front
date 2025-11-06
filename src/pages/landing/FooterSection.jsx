@@ -10,9 +10,9 @@ function FooterSection() {
   return (
     <motion.footer
       className="footer-section"
-      initial={{ opacity: 0, y: 60 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.9, ease: "easeOut" }}
+      // initial={{ opacity: 0, y: 60 }}
+      // whileInView={{ opacity: 1, y: 0 }}
+      // transition={{ duration: 0.9, ease: "easeOut" }}
       viewport={{ once: true, amount: 0.5 }}
     >
       <div className="footer-cta">
@@ -25,7 +25,7 @@ function FooterSection() {
             scale: 1.05,
             boxShadow: "0 8px 28px rgba(255, 155, 122, 0.6)",
           }}
-          transition={{ type: "spring", stiffness: 300 }}
+          // transition={{ type: "spring", stiffness: 300 }}
         >
           이야기 만들기 시작하기
         </motion.button>

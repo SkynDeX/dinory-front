@@ -65,9 +65,9 @@ function SceneView({ scene, totalScenes, onChoiceSelect }) {
 
 
     return (
-        <div className="scene_view_wrapper">
+        <div className="scene_book_wrapper">
             {/* 진행 상황 표시 */}
-            <div className="scene_progress">
+            <div className="scene_progress_top">
                 <span>Scene {scene.sceneNumber} / {totalScenes}</span>
                 <div className="progress_bar">
                     <div className="progress_fill"
@@ -76,15 +76,22 @@ function SceneView({ scene, totalScenes, onChoiceSelect }) {
                 </div>
             </div>
 
-            {/* 이미지 영역 */}
-            <ImageDisplay imagePrompt={scene.imagePrompt} imageUrl={imageUrl} />  {/* scene.imageUrl → imageUrl */}
+            {/* 본문 영역 */}
+            <div className="scene_book_body">
+                {/* 왼쪽: 이야기 */}
+                <div className="scene_left">
+                    <div className="scene_content">
+                        <p>{scene.content}</p>
+                    </div>
+                </div>
 
-            {/* 스토리 내용 */}
-            <div className="scene_content">
-                <p>{scene.content}</p>
+                {/* 오른쪽: 이미지 */}
+                <div className="scene_right">
+                    <ImageDisplay imagePrompt={scene.imagePrompt} imageUrl={imageUrl} />
+                </div>
             </div>
 
-            {/* 선택지 버튼들 */}
+            {/* 하단 선택지 영역 */}
             <div className="choices_container">
                 <p className="choices_title">어떻게 할까?</p>
                 <div className="choices_grid">
