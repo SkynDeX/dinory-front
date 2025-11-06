@@ -19,6 +19,7 @@ import StoryReading from "../components/story/StoryReading.jsx";
 import StoryFlowTest from "../pages/StoryFlowTest.jsx";
 import ChatInterface from "../components/chat/ChatInterface.jsx";
 import StoryReplay from "../components/story/StoryReplay.jsx";
+import LandingPage from "../pages/landing/LandingPage"; // ✅ [추가]
 
 const MyDinos = lazy(() => import("../components/dino/MyDinos.jsx"));
 
@@ -57,6 +58,7 @@ function AppRoutes() {
     <Suspense fallback={<LoadingScreen />}>
       <Routes>
         {/* Public Routes */}
+        <Route path="/landing" element={<LandingPage />} /> {/* ✅ [추가] */}
         <Route path="/intro" element={<Intro />} />
         <Route path="/main" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
@@ -204,8 +206,8 @@ function AppRoutes() {
           />
 
         {/* 기본 경로 */}
-        <Route path="/" element={<Navigate to="/intro" replace />} />
-        <Route path="*" element={<Navigate to="/intro" replace />} />
+        <Route path="/" element={<Navigate to="/landing" replace />} /> 
+        <Route path="*" element={<Navigate to="/landing" replace />} /> 
       </Routes>
     </Suspense>
   );
