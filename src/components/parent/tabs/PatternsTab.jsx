@@ -4,7 +4,7 @@ import EmotionLineChart from '../charts/EmotionLineChart';
 import TopicCloud from '../charts/TopicCloud';
 import './PatternsTab.css';
 
-function PatternsTab({ data, period, topics = [], topicsLoading = false }) {
+function PatternsTab({ data, period, topics = [], topicsLoading = false, psychAnalysis = "" }) {
     if (!data) {
         return <div className="empty_state">데이터가 없습니다.</div>;
     }
@@ -71,6 +71,17 @@ function PatternsTab({ data, period, topics = [], topicsLoading = false }) {
                         <div className="no_topics">아직 대화 기록이 없습니다.</div>
                     )}
                 </div>
+
+                {/* 심리 분석 카드 */}
+                {psychAnalysis && !topicsLoading && (
+                    <div className="psychological_analysis_card">
+                        <div className="analysis_icon">🧠</div>
+                        <div className="analysis_content">
+                            <h4 className="analysis_title">AI 심리 분석</h4>
+                            <p className="analysis_text">{psychAnalysis}</p>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

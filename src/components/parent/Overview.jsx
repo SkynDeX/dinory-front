@@ -7,13 +7,14 @@ import "./Overview.css";
 
 
 function Overview({ dashboardSelectedChild }) {
-    const [period, setPeriod] = useState("week");  // 기본값을 주간으로
+    const [period, setPeriod] = useState("day");  // 기본값을 일간으로
     const [activeSubTab, setActiveSubTab] = useState("overview");  // 서브 탭 상태
     const [overviewData, setOverviewData] = useState(null);
     const [aiInsights, setAiInsights] = useState(null);  // AI 인사이트 별도 상태
     const [topics, setTopics] = useState([]);  // Topics 별도 상태
     const [loading, setLoading] = useState();
     const [insightsLoading, setInsightsLoading] = useState(false);  // AI 로딩 상태
+    const [psychAnalysis, setPsychAnalysis] = useState(""); // 심리 분석 상태 추가
     const [topicsLoading, setTopicsLoading] = useState(false);  // Topics 로딩 상태
 
     useEffect(() => {
@@ -65,13 +66,22 @@ function Overview({ dashboardSelectedChild }) {
     const fetchTopics = async () => {
         setTopicsLoading(true);
         setTopics([]);  // 기존 Topics 초기화
+        setPsychAnalysis(""); // 초기화
         try {
             const data = await getTopics(dashboardSelectedChild.id, period);
             console.log('🏷️ Topics Response:', data);
-            setTopics(data);
+
+            // 첫 번째 항목이 메타데이터(심리분석)인지 확인
+            if (data.length > 0 && data[0].psychologicalAnalysis) {
+                setPsychAnalysis(data[0].psychologicalAnalysis);
+                setTopics(data.slice(1)); // 나머지가 실제 토픽
+            } else {
+                setTopics(data);
+            }           
         } catch (e) {
             console.error('Topics 조회 실패:', e);
             setTopics([]);
+            setPsychAnalysis("");
         } finally {
             setTopicsLoading(false);
         }
@@ -170,6 +180,7 @@ function Overview({ dashboardSelectedChild }) {
                         period={period}
                         topics={topics}
                         topicsLoading={topicsLoading}
+                        psychAnalysis={psychAnalysis}
                     />
                 )}
             </div>
