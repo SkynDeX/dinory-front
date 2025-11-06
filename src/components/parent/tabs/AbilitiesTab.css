@@ -62,11 +62,66 @@
     flex: 1;
 }
 
+.ability_name_wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
 .ability_name {
     font-size: 16px;
     font-weight: 700;
     color: #333;
-    margin-bottom: 4px;
+}
+
+.ability_info_tooltip {
+    position: relative;
+    display: inline-flex;
+}
+
+.info_icon {
+    font-size: 14px;
+    color: #999;
+    cursor: help;
+    transition: color 0.2s;
+}
+
+.info_icon:hover {
+    color: #2fa36b;
+}
+
+.tooltip_content {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    left: 50%;
+    top: -45px;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+}
+
+.tooltip_content::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #333;
+}
+
+.ability_info_tooltip:hover .tooltip_content {
+    visibility: visible;
+    opacity: 1;
 }
 
 .ability_score {
@@ -142,6 +197,46 @@
 .level_low {
     background: #f8d7da;
     color: #721c24;
+}
+
+/* 관련 동화 */
+.related_stories {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.related_stories_label {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.story_badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.story_badge {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    color: #2fa36b;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 16px;
+    border: 1px solid #2fa36b;
+    cursor: default;
+    transition: all 0.2s;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.story_badge:hover {
+    background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+    transform: translateY(-2px);
 }
 
 /* 추천 활동 */

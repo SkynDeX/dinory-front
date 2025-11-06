@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getChildren, registerChild, updateChild as updateChildApi, deleteChild as deleteChildApi } from "../services/api/childApi";
+import { getChildren, registerChild, updateChild as updateChildApi, deleteChild as deleteChildApi, selectChild as selectChildApi, getSelectedChild } from "../services/api/childApi";
 
 // Context 생성
 const ChildContext = createContext();
@@ -36,10 +36,24 @@ export function ChildProvider({ children }) {
         const token = localStorage.getItem('accessToken');
         if (token) {
             fetchChildren();
+            loadSelectedChild();
         } else {
             setLoading(false);
         }
     }, []);
+
+    // 마지막 선택 자녀 불러오기
+    const loadSelectedChild = async () => {
+        try {
+            const response = await getSelectedChild();
+            const data = response.data || response;
+            if (data) {
+                setSelectedChild(data);
+            }
+        } catch (e) {
+            console.error("선택 자녀 조회 실패:", e);
+        }
+    };
 
     // 자녀 추가
     const addChild = async (childData) => {
@@ -90,10 +104,23 @@ export function ChildProvider({ children }) {
         setSelectedInterests([]);
     };
 
+    // 자녀 선택 및 서버 저장
+    const handleSelectChild = async (child) => {
+        try {
+            if (child && child.id) {
+                await selectChildApi(child.id);
+                setSelectedChild(child);
+            }
+        } catch (e) {
+            console.error("자녀 선택 저장 실패:", e);
+            setSelectedChild(child);
+        }
+    };
+
     const value = {
         childrenList,
         selectedChild,
-        setSelectedChild,
+        setSelectedChild: handleSelectChild,
         selectedEmotion,
         setSelectedEmotion,
         selectedInterests,

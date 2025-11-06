@@ -57,3 +57,17 @@ export const deleteChild = async (childId) => {
     () => axiosInstance.delete(`/api/parent/child/${childId}`),
   ]);
 };
+
+// 마지막 선택 자녀 저장
+export const selectChild = async (childId) => {
+  return withFallback([
+    () => axiosInstance.post(`/api/children/select/${childId}`),
+  ]);
+};
+
+// 마지막 선택 자녀 조회
+export const getSelectedChild = async () => {
+  return withFallback([
+    () => axiosInstance.get('/api/children/selected'),
+  ]);
+};

@@ -3,11 +3,13 @@ import { getOverview, getAIInsights, getTopics } from '../../services/api/dashbo
 import OverviewTab from "./tabs/OverviewTab";
 import AbilitiesTab from "./tabs/AbilitiesTab";
 import PatternsTab from "./tabs/PatternsTab";
+import DateRangePicker from "../common/DateRangePicker";
 import "./Overview.css";
 
 
 function Overview({ dashboardSelectedChild }) {
     const [period, setPeriod] = useState("day");  // 기본값을 일간으로
+    const [customDateRange, setCustomDateRange] = useState(null);  // 사용자 지정 날짜
     const [activeSubTab, setActiveSubTab] = useState("overview");  // 서브 탭 상태
     const [overviewData, setOverviewData] = useState(null);
     const [aiInsights, setAiInsights] = useState(null);  // AI 인사이트 별도 상태
@@ -23,7 +25,7 @@ function Overview({ dashboardSelectedChild }) {
             fetchAIInsights();  // AI 인사이트 별도 로딩
             fetchTopics();  // Topics 별도 로딩
         }
-    }, [dashboardSelectedChild, period]);
+    }, [dashboardSelectedChild, period, customDateRange]);
 
     const fetchOverviewData = async () => {
         setLoading(true);
@@ -33,6 +35,8 @@ function Overview({ dashboardSelectedChild }) {
            console.log('emotions:', data.emotions);
            console.log('choices:', data.choices);
            console.log('topics:', data.topics);
+           console.log('abilityDetails:', data.abilityDetails);
+           console.log('abilities:', data.abilities);
            setOverviewData(data);
         } catch (e) {
             console.error('Overview 데이터 조회 실패:', e);
@@ -109,26 +113,17 @@ function Overview({ dashboardSelectedChild }) {
             {/* 헤더 */}
             <div className="overview_header">
                 <h1 className="overview_title">대시보드</h1>
-                <div className="period_filters">
-                    <button
-                        className={`period_btn ${period === 'day' ? 'active' : ''}`}
-                        onClick={() => setPeriod('day')}
-                    >
-                        일간
-                    </button>
-                    <button
-                        className={`period_btn ${period === 'week' ? 'active' : ''}`}
-                        onClick={() => setPeriod('week')}
-                    >
-                        주간
-                    </button>
-                    <button
-                        className={`period_btn ${period === 'month' ? 'active' : ''}`}
-                        onClick={() => setPeriod('month')}
-                    >
-                        월간
-                    </button>
-                </div>
+                <DateRangePicker
+                    mode="dashboard"
+                    period={period}
+                    onPeriodChange={(newPeriod) => {
+                        setPeriod(newPeriod);
+                        setCustomDateRange(null);
+                    }}
+                    onDateRangeChange={(start, end) => {
+                        setCustomDateRange({ start, end });
+                    }}
+                />
             </div>
 
             {/* 서브 탭 */}

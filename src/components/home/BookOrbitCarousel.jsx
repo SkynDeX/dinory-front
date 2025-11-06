@@ -232,23 +232,27 @@ function BookOrbitCarousel() {
       </div>
 
       <div className="top-right-section">
-        {selectedChild && (
-          <div className="selected-child-info" onClick={handleChangeChild}>
-            <span className="child-avatar">
-              <img
-                src={
-                  selectedChild.gender === "male"
-                    ? "/assets/icons/bkid.png"
-                    : "/assets/icons/gkid.png"
-                }
-                alt={selectedChild.gender === "male" ? "남자 아이" : "여자 아이"}
-                className="child-avatar-img"
-              />
-            </span>
-            <span className="child-name-display">{selectedChild.name}</span>
-            <MdSwapHoriz className="change-icon" />
-          </div>
-        )}
+        <div className="selected-child-info" onClick={handleChangeChild}>
+          {selectedChild ? (
+            <>
+              <span className="child-avatar">
+                <img
+                  src={
+                    selectedChild.gender === "male"
+                      ? `${process.env.PUBLIC_URL}/assets/icons/bkid.png`
+                      : `${process.env.PUBLIC_URL}/assets/icons/gkid.png`
+                  }
+                  alt={selectedChild.gender === "male" ? "남자 아이" : "여자 아이"}
+                  className="child-avatar-img"
+                />
+              </span>
+              <span className="child-name-display">{selectedChild.name}</span>
+            </>
+          ) : (
+            <span className="child-name-display">자녀 선택</span>
+          )}
+          <MdSwapHoriz className="change-icon" />
+        </div>
 
         <div className="reward-progress-wrapper">
           <RewardProgress />

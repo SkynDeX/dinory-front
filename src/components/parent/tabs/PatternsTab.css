@@ -23,6 +23,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 32px;
     align-items: center;
+    overflow: visible; /* tooltip이 잘리지 않도록 */
 }
 
 .pattern_card:hover {
@@ -31,11 +32,15 @@
 }
 
 .chart_wrapper {
-    max-width: 400px;
-    margin: 0 auto;
+    width: 100%;
+    height: 350px;
     position: relative;
-    z-index: 1;
+    z-index: 10;
     pointer-events: auto;
+}
+
+.chart_wrapper canvas {
+    cursor: pointer !important;
 }
 
 .pattern_insights {

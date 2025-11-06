@@ -14,7 +14,7 @@ function AbilityRadarChart({ data }) {
         "사회적 상호작용",
         "자아 개념",
         "도전 및 적응력",
-        "공감 및 친사회성"
+        "창의성 및 문제해결"
     ];
 
     const values = labels.map(label => data.abilities[label] || 0);

@@ -3,6 +3,7 @@ import './GrowthReport.css';
 import BeforeAfterRadar from "./charts/BeforeAfterRadar";
 import { FaDownload } from "react-icons/fa";
 import { getGrowthReport, getGrowthReportAIAnalysis } from "../../services/api/dashboardApi";
+import DateRangePicker from "../common/DateRangePicker";
 
 function GrowthReport({ childId }) {
     const [period, setPeriod] = useState("month");
@@ -10,13 +11,14 @@ function GrowthReport({ childId }) {
     const [aiAnalysis, setAiAnalysis] = useState(null);
     const [loading, setLoading] = useState(true);
     const [aiLoading, setAiLoading] = useState(false);
+    const [customDateRange, setCustomDateRange] = useState(null);
 
     useEffect(() => {
         if (childId) {
             fetchReportData();
             fetchAIAnalysis();
         }
-    }, [childId, period]);
+    }, [childId, period, customDateRange]);
 
     const fetchReportData = async () => {
         setLoading(true);
@@ -79,7 +81,7 @@ function GrowthReport({ childId }) {
     return (
         <div className="growth_report_wrapper">
             {/* 헤더 */}
-            <div className="report_header">
+            {/* <div className="report_header">
                 <h1 className="report_title">성장 리포트</h1>
                 <div className="report_controls">
                     <div className="period_filters">
@@ -106,7 +108,25 @@ function GrowthReport({ childId }) {
                         <FaDownload /> PDF 다운로드
                     </button>
                 </div>
+            </div> */}
+            <div className="report_header">
+                <h1 className="report_title">대시보드</h1>
+                <DateRangePicker
+                    mode="report"
+                    period={period}
+                    onPeriodChange={(newPeriod) => {
+                        setPeriod(newPeriod);
+                        setCustomDateRange(null);
+                    }}
+                    onDateRangeChange={(start, end) => {
+                        setCustomDateRange({ start, end });
+                    }}
+                />
+                <button className="download_btn" onClick={handleDownloadPDF}>
+                    <FaDownload /> PDF 다운로드
+                </button>
             </div>
+
 
             {/* AI 종합 평가 */}
             <div className="report_section">

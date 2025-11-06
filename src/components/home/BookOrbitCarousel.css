@@ -106,7 +106,7 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
-canvas {
+.book-orbit-carousel canvas {
   display: block;
   width: 100% !important;
   height: 100% !important;

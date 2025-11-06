@@ -8,8 +8,6 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 function ChoicePatternChart({ data }) {
     if (!data || data.length === 0) return null;
 
-    console.log('ChoicePatternChart data:', data);
-
     const chartData = {
         labels: data.map(p => p.name),
         datasets: [{
@@ -63,14 +61,11 @@ function ChoicePatternChart({ data }) {
                 bodySpacing: 8,
                 callbacks: {
                     title: function(tooltipItems) {
-                        console.log('🎯 Tooltip title triggered!', tooltipItems);
                         return tooltipItems[0].label;
                     },
                     label: function(context) {
-                        console.log('🎯 Tooltip label triggered!', context);
                         const index = context.dataIndex;
                         const item = data[index];
-                        console.log('🎯 Item data:', item);
 
                         if (!item) return `비율: ${context.parsed}%`;
 
