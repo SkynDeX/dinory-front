@@ -6,6 +6,10 @@ import AbilitySummaryMessage from './AbilitySummaryMessage';
 import StoryRecommendationMessage from './StoryRecommendationMessage';
 import './ChatInterface.css';
 
+// 채팅 아이콘
+import micIcon from '../../assets/icons/mike.png';
+import sendIcon from '../../assets/icons/send.png';
+
 const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) => {  // [2025-10-29 김광현] initialSessionId, completionId 추가
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -116,18 +120,14 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
       console.log("★★★ 동화 기반 채팅 세션 시작: completionId=", completionIdToUse);
       console.log("★★★ initChatSessionFromStory 호출!");
 
-      // 1. 동화 완료 요약 데이터 가져오기
       const summary = await getStoryCompletionSummary(completionIdToUse);
       console.log("동화 요약 데이터:", summary);
 
-      // 2. 챗봇 세션 초기화
       const res = await chatApi.initChatSessionFromStory(completionIdToUse);
       setSessionId(res.sessionId);
 
-      // 3. 능력치 요약 메시지 + AI 응답 추가
       const messagesArray = [];
 
-      // 능력치 요약 카드 메시지
       messagesArray.push({
         sender: 'assistant',
         type: 'ability-summary',
@@ -136,7 +136,6 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
         createdAt: new Date().toISOString(),
       });
 
-      // AI의 일반 응답 메시지 (있으면)
       if (res.aiResponse && res.aiResponse.trim()) {
         messagesArray.push({
           sender: 'assistant',
@@ -202,13 +201,11 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
       const aiMsg = { sender: 'assistant', content: aiText, createdAt: new Date().toISOString() };
       setMessages(prev => [...prev, aiMsg]);
 
-      // [2025-11-04 김민중 추가] "동화 추천" 키워드 감지
       const recommendKeywords = ['동화 추천', '추천해줘', '추천해', '동화 알려', '다른 동화', '새로운 동화'];
       const hasRecommendKeyword = recommendKeywords.some(keyword => text.includes(keyword));
 
       if (hasRecommendKeyword) {
         console.log('[ChatInterface] 동화 추천 키워드 감지! 자동 추천 시작');
-        // AI 응답 후 바로 추천 실행
         await handleRequestRecommendation();
       }
     } catch (e) {
@@ -242,41 +239,32 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
     }
   };
 
-  // [2025-11-04 김민중 수정] 대화 종료 시 세션 종료 + 메인페이지 이동
   const handleComplete = async () => {
     try {
       if (sessionId) {
         await chatApi.endChatSession(sessionId);
         console.log('✅ 채팅 세션 종료:', sessionId);
       }
-      // 메인페이지로 이동
       window.location.href = '/main';
     } catch (e) {
       console.error('endChatSession 실패:', e);
-      // 실패해도 메인페이지로 이동
       window.location.href = '/';
     }
   };
 
-  // 동화 추천 요청
   const handleRequestRecommendation = async () => {
     try {
       console.log('[ChatInterface] 동화 추천 요청');
       setIsTyping(true);
-
-      // 추천 API 호출 (emotion, interests, childId는 현재 세션 정보에서 가져올 수 있음)
       const recommendations = await getRecommendedStories(null, null, childId, 3);
-
       console.log('[ChatInterface] 추천 결과:', recommendations);
 
-      // 추천 메시지 추가
       const recommendationMsg = {
         sender: 'assistant',
         type: 'story-recommendation',
         recommendations: recommendations,
         createdAt: new Date().toISOString(),
       };
-
       setMessages(prev => [...prev, recommendationMsg]);
     } catch (error) {
       console.error('[ChatInterface] 추천 요청 실패:', error);
@@ -308,41 +296,24 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
         <div className="chat-messages-container">
           <div className="chat-messages">
             {messages.map((m, i) => {
-              // 능력치 요약 메시지인 경우
               if (m.type === 'ability-summary') {
                 return (
-                  <div
-                    key={`${m.createdAt}-${i}`}
-                    className="message message-assistant message-special"
-                  >
-                    <AbilitySummaryMessage
-                      summary={m.summary}
-                      childName={m.childName}
-                    />
+                  <div key={`${m.createdAt}-${i}`} className="message message-assistant message-special">
+                    <AbilitySummaryMessage summary={m.summary} childName={m.childName} />
                   </div>
                 );
               }
 
-              // 동화 추천 메시지인 경우
               if (m.type === 'story-recommendation') {
                 return (
-                  <div
-                    key={`${m.createdAt}-${i}`}
-                    className="message message-assistant message-special"
-                  >
-                    <StoryRecommendationMessage
-                      recommendations={m.recommendations}
-                    />
+                  <div key={`${m.createdAt}-${i}`} className="message message-assistant message-special">
+                    <StoryRecommendationMessage recommendations={m.recommendations} />
                   </div>
                 );
               }
 
-              // 일반 메시지
               return (
-                <div
-                  key={`${m.createdAt}-${i}`}
-                  className={`message ${m.sender === 'user' ? 'message-user' : 'message-assistant'}`}
-                >
+                <div key={`${m.createdAt}-${i}`} className={`message ${m.sender === 'user' ? 'message-user' : 'message-assistant'}`}>
                   <div className="message-content"><p>{m.content}</p></div>
                 </div>
               );
@@ -377,7 +348,7 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
               aria-label="음성 입력"
               type="button"
             >
-              🎤
+              <img src={micIcon} alt="mic icon" />
             </button>
             <button
               onClick={handleSend}
@@ -386,14 +357,13 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
               aria-label="전송"
               type="button"
             >
-              ➤
+              <img src={sendIcon} alt="send icon" />
             </button>
           </div>
         </div>
 
         <div className="chat-footer">
           <div className="footer-buttons">
-            {/* [2025-11-04 김민중 수정] 동화 추천받기 버튼 제거 - 채팅으로 "동화 추천해줘" 입력하면 AI가 자동 추천 */}
             <button onClick={handleComplete} className="complete-button" type="button">
               대화 종료
             </button>

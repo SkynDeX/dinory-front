@@ -1,132 +1,125 @@
 .ability-summary-message {
-  background: linear-gradient(135deg, #fff5e6 0%, #ffe6f0 100%);
-  border-radius: 20px;
-  padding: 1.5rem;
-  margin: 0.5rem 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  animation: slideIn 0.5s ease-out;
+  background: linear-gradient(145deg, #fffdf9 0%, #fff7f3 100%);
+  border-radius: 28px;
+  padding: 32px;
+  margin: 16px 0;
+  box-shadow: 0 6px 25px rgba(255, 155, 122, 0.2);
+  animation: fadeIn 0.6s ease-out;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
+
+  width: 100%;
+  /* height: 100%; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
+/* 상단 인사 영역 */
 .ability-welcome {
   display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
 }
 
-.dino-avatar {
-  font-size: 3rem;
-  animation: bounce 2s infinite;
-  flex-shrink: 0;
+.dino-avatar img {
+  width: 90px;
+  height: auto;
+  transform: translateY(-4px);
+  animation: bounce 2s infinite ease-in-out;
 }
 
 @keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-.welcome-text {
-  flex: 1;
+  0%, 100% { transform: translateY(-4px); }
+  50% { transform: translateY(-10px); }
 }
 
 .welcome-text h3 {
-  font-size: 1.4rem;
+  font-size: 25.6px;
   color: #333;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 4.8px 0;
   font-weight: 700;
 }
 
 .welcome-text p {
-  font-size: 1rem;
-  color: #666;
+  font-size: 16px;
+  color: #555;
   margin: 0;
   line-height: 1.6;
 }
 
+/* 능력치 카드 */
 .ability-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 0.8rem;
-  margin-bottom: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 19.2px;
 }
 
 .ability-card {
-  background: white;
-  border-radius: 12px;
-  padding: 1rem 0.5rem;
+  background: #fff;
+  border-radius: 20px;
+  padding: 19.2px 12.8px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
-  border: 2px solid transparent;
+  border: 3px solid var(--ability-color);
   position: relative;
   overflow: hidden;
 }
 
-.ability-card::before {
-  content: '';
+/* .ability-card::before {
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 4px;
   background: var(--ability-color);
-  opacity: 0.8;
-}
+} */
 
 .ability-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px);
   border-color: var(--ability-color);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  filter: brightness(1.05);
 }
 
-.ability-card-icon {
-  font-size: 2rem;
-  margin-bottom: 0.3rem;
+.ability-card-icon img {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 6.4px;
   animation: float 3s ease-in-out infinite;
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
 .ability-card-name {
-  font-size: 0.85rem;
+  font-size: 14.4px;
   font-weight: 600;
   color: #555;
-  margin-bottom: 0.3rem;
+  margin-bottom: 6.4px;
 }
 
 .ability-card-value {
-  font-size: 1.5rem;
+  font-size: 22.4px;
   font-weight: 800;
   color: var(--ability-color);
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 }
 
 .ability-card-bar {
   width: 100%;
-  height: 5px;
-  background: #f0f0f0;
+  height: 6px;
+  background: #f1f1f1;
   border-radius: 3px;
   overflow: hidden;
 }
@@ -134,75 +127,200 @@
 .ability-card-bar-fill {
   height: 100%;
   background: var(--ability-color);
-  border-radius: 3px;
   transition: width 1s ease-out;
-  animation: fillBar 1.5s ease-out;
-}
-
-@keyframes fillBar {
-  from {
-    width: 0%;
-  }
 }
 
 .ability-card.zero {
   opacity: 0.6;
+  filter: grayscale(0.4);
 }
 
-.ability-card.zero .ability-card-icon {
-  filter: grayscale(0.5);
-}
-
+/* 하단 안내 */
 .ability-footer {
   text-align: center;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 2px dashed rgba(0, 0, 0, 0.1);
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 2px dashed rgba(0, 0, 0, 0.08);
 }
 
 .ability-footer p {
   margin: 0;
-  font-size: 1.1rem;
-  color: #667eea;
+  font-size: 17.6px;
+  color: #2fa36b;
   font-weight: 600;
 }
 
 /* 반응형 */
 @media (max-width: 768px) {
-  .ability-summary-message {
-    padding: 1rem;
-  }
+  .ability-summary-message { padding: 24px; }
+  .dino-avatar img { width: 70px; }
+  .welcome-text h3 { font-size: 20.8px; }
+  .ability-card { padding: 16px 8px; }
+  .ability-card-icon img { width: 40px; height: 40px; }
+  .ability-card-value { font-size: 19.2px; }
+}
 
-  .dino-avatar {
-    font-size: 2.5rem;
-  }
+/* 디노 등장 애니메이션 */
+.bounce-in {
+  animation: bounceIn 1.2s ease-out forwards;
+}
 
-  .welcome-text h3 {
-    font-size: 1.2rem;
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.6) translateY(60px);
+    opacity: 0;
   }
-
-  .welcome-text p {
-    font-size: 0.9rem;
+  50% {
+    transform: scale(1.1) translateY(-10px);
+    opacity: 1;
   }
-
-  .ability-cards {
-    grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
-    gap: 0.6rem;
+  70% {
+    transform: scale(0.95) translateY(0px);
   }
-
-  .ability-card {
-    padding: 0.8rem 0.4rem;
-  }
-
-  .ability-card-icon {
-    font-size: 1.6rem;
-  }
-
-  .ability-card-value {
-    font-size: 1.3rem;
-  }
-
-  .ability-card-name {
-    font-size: 0.75rem;
+  100% {
+    transform: scale(1) translateY(0px);
   }
 }
+
+.bounce-in img {
+  animation: shakeGift 2.2s ease-in-out 1.2s infinite;
+  transform-origin: bottom center;
+}
+
+@keyframes shakeGift {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(4deg); }
+  50% { transform: rotate(-4deg); }
+  75% { transform: rotate(3deg); }
+}
+
+/* 능력치 카드 등장 애니메이션 */
+.ability-cards {
+  opacity: 0;
+  transform: scale(0.9);
+  animation: fadeCards 1s ease-out forwards;
+  animation-delay: 0.8s; 
+}
+
+@keyframes fadeCards {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 카드 개별 순차 등장 */
+.ability-card {
+  opacity: 0;
+  transform: translateY(15px) scale(0.98);
+  animation: cardPop 0.6s ease-out forwards;
+}
+
+.ability-card:nth-child(1) { animation-delay: 1.0s; }
+.ability-card:nth-child(2) { animation-delay: 1.15s; }
+.ability-card:nth-child(3) { animation-delay: 1.3s; }
+.ability-card:nth-child(4) { animation-delay: 1.45s; }
+.ability-card:nth-child(5) { animation-delay: 1.6s; }
+
+@keyframes cardPop {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-5px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 카드 반짝임 효과 */
+.ability-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg);
+  animation: shine 2.2s ease-in-out forwards;
+  animation-delay: 1.2s; 
+  opacity: 0;
+}
+
+@keyframes shine {
+  0% {
+    left: -75%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    left: 125%;
+    opacity: 0;
+  }
+}
+
+/* 각 카드마다 약간의 시간차로 반짝임 */
+.ability-card:nth-child(1)::after { animation-delay: 1.3s; }
+.ability-card:nth-child(2)::after { animation-delay: 1.45s; }
+.ability-card:nth-child(3)::after { animation-delay: 1.6s; }
+.ability-card:nth-child(4)::after { animation-delay: 1.75s; }
+.ability-card:nth-child(5)::after { animation-delay: 1.9s; }
+
+/* 하단 문구 부드러운 등장 효과 */
+.ability-footer {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeFooter 1s ease-out forwards;
+  animation-delay: 2.3s; 
+}
+
+@keyframes fadeFooter {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 박스 진입 효과 */
+.ability-summary-message {
+  opacity: 0;
+  transform: scale(0.92);
+  animation: summaryFadeIn 0.8s ease-out forwards;
+}
+
+@keyframes summaryFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+

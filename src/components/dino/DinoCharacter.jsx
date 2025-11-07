@@ -10,6 +10,13 @@ import { authApi } from "../../services/api/authApi";
 import { chatApi } from "../../services/api/chatApi";
 import { useAuth } from "../../context/AuthContext";
 
+// 메뉴 이미지
+import iconDino from "../../assets/icons/dino.png";
+import iconLogin from "../../assets/icons/login.png";
+import iconLogout from "../../assets/icons/logout.png";
+import iconDashboard from "../../assets/icons/dashboard.png";
+import iconGirl from "../../assets/icons/girl.png";
+
 function DinoCharacter() {
   const [isOpen, setIsOpen] = useState(false);
   const [isJumping, setIsJumping] = useState(false);
@@ -386,7 +393,9 @@ function DinoCharacter() {
                         navigate("/login");
                       }}
                     >
-                      🔐 로그인/회원가입
+                      {/* [🦕 아이콘 교체됨] */}
+                      <img src={iconLogin} alt="login" className="menu-icon" />
+                      로그인 / 회원가입
                     </button>
                   )}
                   {user && (
@@ -398,7 +407,8 @@ function DinoCharacter() {
                           navigate("/my-dinos");
                         }}
                       >
-                        🦕 내 공룡 친구들
+                        <img src={iconDino} alt="dino" className="menu-icon" />
+                        내 공룡 친구들
                       </button>
                       <button
                         className="menu-btn"
@@ -407,7 +417,8 @@ function DinoCharacter() {
                           navigate("/child/registration");
                         }}
                       >
-                        👶 자녀 등록
+                        <img src={iconGirl} alt="child" className="menu-icon" />
+                        자녀 등록
                       </button>
                       <button
                         className="menu-btn"
@@ -416,7 +427,8 @@ function DinoCharacter() {
                           navigate("/parent/dashboard");
                         }}
                       >
-                        📊 대시보드
+                        <img src={iconDashboard} alt="dashboard" className="menu-icon" />
+                        대시보드
                       </button>
                       <button
                         className="menu-btn"
@@ -425,7 +437,8 @@ function DinoCharacter() {
                           handleLogout();
                         }}
                       >
-                        🚪 로그아웃
+                        <img src={iconLogout} alt="logout" className="menu-icon" />
+                        로그아웃
                       </button>
                     </>
                   )}
