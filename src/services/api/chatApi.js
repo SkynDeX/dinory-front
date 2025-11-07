@@ -24,6 +24,12 @@ export const chatApi = {
         return response.data;
     },
 
+    // [2025-11-07 추가] 대화 종료 버튼 클릭 기록 (세션은 활성 유지)
+    recordChatClose: async (sessionId) => {
+        const response = await axiosInstance.post(`/api/chat/${sessionId}/close`);
+        return response.data;
+    },
+
     // 채팅 세션 조회
     getChatSession: async (sessionId) => {
         const response = await axiosInstance.get(`/api/chat/${sessionId}`);

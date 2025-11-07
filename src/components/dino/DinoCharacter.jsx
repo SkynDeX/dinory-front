@@ -91,30 +91,6 @@ function DinoCharacter() {
     }
   };
 
-  // [2025-11-07 추가] 대화 완전 종료 (새로운 대화 시작)
-  const handleEndConversation = async () => {
-    if (!sessionId) return;
-
-    try {
-      // DB에 세션 종료 기록
-      await chatApi.endChatSession(sessionId);
-      console.log("✅ 대화 종료: 새로운 대화 시작 시 새 세션 생성됨");
-
-      // 프론트엔드 상태 초기화
-      setSessionId(null);
-      setMessages([]);
-      setChoices([]);
-      setInputMessage("");
-      setIsTextInputMode(false);
-      setIsMenuOpen(false);
-      setIsOpen(false);
-
-      alert("대화가 종료되었습니다. 다음에 디노를 클릭하면 새로운 대화가 시작됩니다!");
-    } catch (error) {
-      console.error("대화 종료 실패:", error);
-      alert("대화 종료 중 오류가 발생했습니다.");
-    }
-  };
 
   const handleClick = async () => {
     setIsJumping(true);
@@ -448,13 +424,6 @@ function DinoCharacter() {
                         }}
                       >
                         📊 대시보드
-                      </button>
-                      <button
-                        className="menu-btn"
-                        onClick={handleEndConversation}
-                        style={{ backgroundColor: "#ffebee", color: "#c62828" }}
-                      >
-                        🔚 대화 종료
                       </button>
                       <button
                         className="menu-btn"
