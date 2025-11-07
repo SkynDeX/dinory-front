@@ -10,6 +10,10 @@
     flex-wrap: wrap;
 }
 
+.custom_btn_wrapper {
+    position: relative;
+}
+
 .period_btn {
     padding: 8px 16px;
     border: 1px solid #ddd;
@@ -23,24 +27,43 @@
 }
 
 .period_btn:hover {
-    border-color: #4A90E2;
-    color: #4A90E2;
+    border-color: #7EC77B;
+    color: #7EC77B;
 }
 
 .period_btn.active {
-    background-color: #4A90E2;
+    background-color: #7EC77B;
     color: white;
-    border-color: #4A90E2;
+    border-color: #7EC77B;
+}
+
+.custom_date_popup {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    z-index: 1000;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    min-width: 320px;
+}
+
+.popup_arrow {
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    transform: rotate(45deg);
+    box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .custom_date_inputs {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 12px;
-    padding: 12px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    flex-wrap: wrap;
 }
 
 .date_input {
@@ -55,17 +78,25 @@
 
 .date_input:focus {
     outline: none;
-    border-color: #4A90E2;
+    border-color: #7EC77B;
 }
 
 .date_separator {
     color: #666;
     font-weight: 500;
+    text-align: center;
+}
+
+.popup_buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
 }
 
 .date_apply_btn,
 .date_cancel_btn {
-    padding: 8px 16px;
+    flex: 1;
+    padding: 10px 16px;
     border: none;
     border-radius: 6px;
     font-size: 14px;
@@ -75,12 +106,12 @@
 }
 
 .date_apply_btn {
-    background-color: #4A90E2;
+    background-color: #7EC77B;
     color: white;
 }
 
 .date_apply_btn:hover:not(:disabled) {
-    background-color: #3a7bc8;
+    background-color: #6BB068;
 }
 
 .date_apply_btn:disabled {
@@ -99,12 +130,7 @@
 
 /* 반응형 */
 @media (max-width: 768px) {
-    .custom_date_inputs {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .date_separator {
-        display: none;
+    .custom_date_popup {
+        min-width: 280px;
     }
 }

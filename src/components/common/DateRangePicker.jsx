@@ -1,10 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './DateRangePicker.css';
 
-function DateRangePicker({ mode = 'dashboard', period, onPeriodChange, onDateRangeChange }) {
-    const [customStart, setCustomStart] = useState('');
-    const [customEnd, setCustomEnd] = useState('');
+function DateRangePicker({ mode = 'dashboard', period, onPeriodChange, onDateRangeChange, initialStart = '', initialEnd = '' }) {
+    const [customStart, setCustomStart] = useState(initialStart);
+    const [customEnd, setCustomEnd] = useState(initialEnd);
     const [showCustom, setShowCustom] = useState(false);
+    const [customSelected, setCustomSelected] = useState(!!(initialStart && initialEnd));
+    const popupRef = useRef(null);
+
+    // initialStart/initialEnd가 바뀌면 선택 상태 동기화
+    useEffect(() => {
+        setCustomSelected(!!(initialStart && initialEnd));
+    }, [initialStart, initialEnd]);
 
     // mode에 따른 기간 옵션
     const periodOptions = mode === 'dashboard'
@@ -19,19 +26,33 @@ function DateRangePicker({ mode = 'dashboard', period, onPeriodChange, onDateRan
             { value: 'halfyear', label: '반기' }
           ];
 
-    // 커스텀 날짜 변경 시 부모에게 전달
+    // 외부 클릭 감지
     useEffect(() => {
-        if (showCustom && customStart && customEnd && onDateRangeChange) {
-            onDateRangeChange(customStart, customEnd);
+        const handleClickOutside = (event) => {
+            if (popupRef.current && !popupRef.current.contains(event.target)) {
+                setShowCustom(false);
+            }
+        };
+
+        if (showCustom) {
+            document.addEventListener('mousedown', handleClickOutside);
         }
-    }, [customStart, customEnd, showCustom, onDateRangeChange]);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showCustom]);
 
     const handlePeriodClick = (value) => {
         if (value === 'custom') {
-            setShowCustom(true);
+            // 토글 기능: 이미 열려있으면 닫고, 닫혀있으면 열기
+            setShowCustom((prev) => !prev);
+            setCustomSelected(true);
             return;
         }
+        // 다른 기간 선택 시 팝업 닫고 해당 기간으로 변경
         setShowCustom(false);
+        setCustomSelected(false);
         onPeriodChange(value);
     };
 
@@ -42,14 +63,14 @@ function DateRangePicker({ mode = 'dashboard', period, onPeriodChange, onDateRan
                 return;
             }
             onDateRangeChange(customStart, customEnd);
+            setCustomSelected(true);
+            setShowCustom(false);
         }
     };
 
     const handleCancelCustom = () => {
+        // 사용자 지정 팝업만 닫기 (period는 변경하지 않음)
         setShowCustom(false);
-        setCustomStart('');
-        setCustomEnd('');
-        onPeriodChange(periodOptions[0].value);
     };
 
     return (
@@ -58,50 +79,57 @@ function DateRangePicker({ mode = 'dashboard', period, onPeriodChange, onDateRan
                 {periodOptions.map(option => (
                     <button
                         key={option.value}
-                        className={`period_btn ${period === option.value && !showCustom ? 'active' : ''}`}
+                        className={`period_btn ${period === option.value && !customSelected ? 'active' : ''}`}
                         onClick={() => handlePeriodClick(option.value)}
                     >
                         {option.label}
                     </button>
                 ))}
-                <button
-                    className={`period_btn ${showCustom ? 'active' : ''}`}
-                    onClick={() => handlePeriodClick('custom')}
-                >
-                    사용자 지정
-                </button>
-            </div>
+                <div className="custom_btn_wrapper" ref={popupRef}>
+                    <button
+                        className={`period_btn ${customSelected ? 'active' : ''}`}
+                        onClick={() => handlePeriodClick('custom')}
+                    >
+                        사용자 지정
+                    </button>
 
-            {showCustom && (
-                <div className="custom_date_inputs">
-                    <input
-                        type="date"
-                        value={customStart}
-                        onChange={(e) => setCustomStart(e.target.value)}
-                        className="date_input"
-                    />
-                    <span className="date_separator">~</span>
-                    <input
-                        type="date"
-                        value={customEnd}
-                        onChange={(e) => setCustomEnd(e.target.value)}
-                        className="date_input"
-                    />
-                    <button
-                        className="date_apply_btn"
-                        onClick={handleApplyCustom}
-                        disabled={!customStart || !customEnd}
-                    >
-                        적용
-                    </button>
-                    <button
-                        className="date_cancel_btn"
-                        onClick={handleCancelCustom}
-                    >
-                        취소
-                    </button>
+                    {showCustom && (
+                        <div className="custom_date_popup">
+                            <div className="popup_arrow"></div>
+                            <div className="custom_date_inputs">
+                                <input
+                                    type="date"
+                                    value={customStart}
+                                    onChange={(e) => setCustomStart(e.target.value)}
+                                    className="date_input"
+                                />
+                                <span className="date_separator">~</span>
+                                <input
+                                    type="date"
+                                    value={customEnd}
+                                    onChange={(e) => setCustomEnd(e.target.value)}
+                                    className="date_input"
+                                />
+                                <div className="popup_buttons">
+                                    <button
+                                        className="date_apply_btn"
+                                        onClick={handleApplyCustom}
+                                        disabled={!customStart || !customEnd}
+                                    >
+                                        적용
+                                    </button>
+                                    <button
+                                        className="date_cancel_btn"
+                                        onClick={handleCancelCustom}
+                                    >
+                                        취소
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            )}
+            </div>
         </div>
     );
 }
