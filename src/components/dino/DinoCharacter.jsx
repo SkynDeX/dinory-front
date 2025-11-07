@@ -91,49 +91,80 @@ function DinoCharacter() {
     }
   };
 
+  // [2025-11-07 추가] 대화 완전 종료 (새로운 대화 시작)
+  const handleEndConversation = async () => {
+    if (!sessionId) return;
+
+    try {
+      // DB에 세션 종료 기록
+      await chatApi.endChatSession(sessionId);
+      console.log("✅ 대화 종료: 새로운 대화 시작 시 새 세션 생성됨");
+
+      // 프론트엔드 상태 초기화
+      setSessionId(null);
+      setMessages([]);
+      setChoices([]);
+      setInputMessage("");
+      setIsTextInputMode(false);
+      setIsMenuOpen(false);
+      setIsOpen(false);
+
+      alert("대화가 종료되었습니다. 다음에 디노를 클릭하면 새로운 대화가 시작됩니다!");
+    } catch (error) {
+      console.error("대화 종료 실패:", error);
+      alert("대화 종료 중 오류가 발생했습니다.");
+    }
+  };
+
   const handleClick = async () => {
     setIsJumping(true);
     setTimeout(() => setIsJumping(false), 600);
 
-    // 이미 열려있으면 닫기
+    // [2025-11-07 수정] 이미 열려있으면 닫기 (대화 기록은 유지)
     if (isOpen) {
       setIsOpen(false);
-      if (sessionId) {
-        try {
-          await chatApi.endChatSession(sessionId);
-        } catch (error) {
-          console.error("채팅 세션 종료 실패:", error);
-        }
-      }
-      setSessionId(null);
-      setMessages([]);
+      // 세션은 종료하지 않음 - 다음에 열 때 계속 이어서 대화
+      // setMessages([]) 삭제 - 대화 기록 유지
       setInputMessage("");
-      setChoices([]);
       setIsTextInputMode(false);
       setIsMenuOpen(false);
       return;
     }
 
-    // 공룡 클릭 시 바로 채팅 모드로 전환
+    // [2025-11-07 수정] 공룡 클릭 시 활성 세션 조회 또는 생성
     setIsOpen(true);
     setIsLoading(true);
 
     try {
-      // 채팅 세션 초기화
       const childId = user?.id || null;
-      const response = await chatApi.initChatSession(childId);
+
+      // 활성 세션 조회/생성 (과거 대화 내역 포함)
+      const response = await chatApi.getOrCreateActiveSession(childId);
       setSessionId(response.sessionId);
 
-      // 초기 인사와 선택지
-      setMessages([
-        {
-          sender: "AI",
-          message: "안녕! 나는 디노야! 무엇을 도와줄까?",
-          createdAt: new Date(),
-        },
-      ]);
+      // 과거 대화 내역이 있으면 표시
+      if (response.messages && response.messages.length > 0) {
+        console.log(`✅ 기존 대화 ${response.messages.length}개 불러오기`);
+        setMessages(
+          response.messages.map((msg) => ({
+            sender: msg.sender === "AI" ? "AI" : "USER",
+            message: msg.message,
+            createdAt: msg.createdAt,
+          }))
+        );
+      } else {
+        // 새로운 세션 - 초기 인사
+        console.log("🆕 새로운 세션 시작");
+        setMessages([
+          {
+            sender: "AI",
+            message: "안녕! 나는 디노야! 무엇을 도와줄까?",
+            createdAt: new Date(),
+          },
+        ]);
+      }
 
-      // [2025-11-04 김민중 수정] 초기 선택지에 고정 메뉴 포함
+      // 초기 선택지
       setChoices([
         "오늘 기분이 어때?",
         "재미있는 이야기 들려줘",
@@ -144,7 +175,7 @@ function DinoCharacter() {
     } catch (error) {
       console.error("채팅 세션 초기화 실패:", error);
 
-      // 오프라인 모드: 메뉴 노출 + 모달 즉시 오픈
+      // 오프라인 모드
       setMessages([
         {
           sender: "AI",
@@ -417,6 +448,13 @@ function DinoCharacter() {
                         }}
                       >
                         📊 대시보드
+                      </button>
+                      <button
+                        className="menu-btn"
+                        onClick={handleEndConversation}
+                        style={{ backgroundColor: "#ffebee", color: "#c62828" }}
+                      >
+                        🔚 대화 종료
                       </button>
                       <button
                         className="menu-btn"
