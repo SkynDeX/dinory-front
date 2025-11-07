@@ -9,114 +9,39 @@
   background: linear-gradient(180deg, #fefefe 0%, #eaf5ff 100%);
 }
 
-/* 버블  */
+/* 버블 */
 .bubble {
   position: absolute;
   border-radius: 50%;
-  opacity: 1; 
+  opacity: 1;
   filter: blur(0.5px);
-  z-index: 2;
+  z-index: 5; 
   animation: bubbleFloat var(--duration, 11s) ease-in-out infinite;
   background: radial-gradient(
     circle at 35% 35%,
     var(--color1, #ff9b7a) 0%,
     rgba(255, 255, 255, 0) 75%
   );
-  box-shadow: 0 0 45px var(--color1, #ff9b7a60); 
+  box-shadow: 0 0 45px var(--color1, #ff9b7a60);
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 /* 둥둥 떠다니는 애니메이션 */
 @keyframes bubbleFloat {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 0.9;
-  }
-  50% {
-    transform: translateY(-120px) scale(1.25);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 0.9;
-  }
+  0% { transform: translateY(0) scale(1); opacity: 0.9; }
+  50% { transform: translateY(-120px) scale(1.25); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 0.9; }
 }
-
-/* 각 버블 색상/위치 */
-.bubble-1 {
-  --color1: #ff9b7a;
-  left: 10%;
-  bottom: 20%;
-  width: 180px;
-  height: 180px;
-  animation-delay: 0s;
-}
-.bubble-2 {
-  --color1: #2fa36b;
-  left: 25%;
-  top: 10%;
-  width: 220px;
-  height: 220px;
-  animation-delay: 2s;
-}
-.bubble-3 {
-  --color1: #ffd166;
-  right: 15%;
-  bottom: 25%;
-  width: 260px;
-  height: 260px;
-  animation-delay: 4s;
-}
-.bubble-4 {
-  --color1: #87ceeb;
-  right: 25%;
-  top: 15%;
-  width: 320px;
-  height: 320px;
-  animation-delay: 6s;
-}
-.bubble-5 {
-  --color1: #2fa36b;
-  left: 40%;
-  bottom: 10%;
-  width: 150px;
-  height: 150px;
-  animation-delay: 1s;
-}
-.bubble-6 {
-  --color1: #ff9b7a;
-  right: 40%;
-  bottom: 5%;
-  width: 210px;
-  height: 210px;
-  animation-delay: 3s;
-}
-.bubble-7 {
-  --color1: #ffd166;
-  right: 12%;
-  top: 8%;
-  width: 280px;
-  height: 280px;
-  animation-delay: 5s;
-}
-.bubble-8 {
-  --color1: #87ceeb;
-  left: 6%;
-  top: 55%;
-  width: 240px;
-  height: 240px;
-  animation-delay: 7s;
-}
-
 
 /* 발자국 레이어 */
 .footprint-layer {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 8;
 }
 
-/* 공통 발자국 */
+/* 발자국 공통 */
 .footprint {
   position: absolute;
   background-repeat: no-repeat;
@@ -125,7 +50,7 @@
   opacity: 0;
 }
 
-/* 작은 발자국들 */
+/* 작은 발자국 */
 .fp-1,
 .fp-2,
 .fp-3,
@@ -135,7 +60,7 @@
   background-image: url("/src/assets/icons/footprint64.png");
 }
 
-/* 큰 중앙 발자국 */
+/* 중앙 큰 발자국 */
 .fp-5 {
   width: 128px;
   height: 128px;
@@ -147,29 +72,15 @@
 }
 
 /* 발자국 배치 */
-.fp-1 {
-  left: 20%;
-  top: 70%;
-  transform: rotate(-15deg);
-}
-.fp-2 {
-  left: 35%;
-  top: 60%;
-  transform: rotate(-5deg);
-}
-.fp-3 {
-  left: 50%;
-  top: 50%;
-  transform: rotate(10deg);
-}
-.fp-4 {
-  left: 65%;
-  top: 40%;
-  transform: rotate(20deg);
-}
+.fp-1 { left: 20%; top: 70%; transform: rotate(-15deg); }
+.fp-2 { left: 35%; top: 60%; transform: rotate(-5deg); }
+.fp-3 { left: 50%; top: 50%; transform: rotate(10deg); }
+.fp-4 { left: 65%; top: 40%; transform: rotate(20deg); }
 
 /* 로그인 카드 */
 .login-card {
+  position: relative; 
+  z-index: 20; 
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
   border-radius: 32px;
@@ -191,7 +102,12 @@
   animation: logoFloat 3s ease-in-out infinite;
 }
 
-/* 각 색상 */
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* 색상 */
 .login-logo .green { color: #2fa36b; }
 .login-logo .coral { color: #ff9b7a; }
 .login-logo .sky { color: #87ceeb; }
@@ -219,3 +135,15 @@
 .google:hover { background: #f5f5f5; }
 .naver:hover { background: #02b350; }
 .kakao:hover { background: #fdd835; }
+
+/* ✅ 반응형 대응 */
+@media (max-width: 480px) {
+  .login-card {
+    width: 90%;
+    padding: 40px 25px;
+  }
+
+  .login-logo {
+    font-size: 38px;
+  }
+}
