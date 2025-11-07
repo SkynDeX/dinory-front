@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./StoryReading.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { generateStory, getNextScene, completeStory, analyzeCustomChoice  } from "../../services/api/storyApi";
 import SceneView from "../../components/story/SceneView";
 import { useChild } from "../../context/ChildContext";
 import NegativeModal from "./NegativeModal";
+import { RewardContext } from "../../context/RewardContext";
 
 const MAX_SCENES = 8;
 
@@ -26,6 +27,10 @@ function StoryReading() {
         message: '',
         type: 'info'
     });
+    // [2025-11-07 김광현 추가] 보상관련
+    const {addStar, stars, eggs} = useContext(RewardContext);
+    const [showRewardPopup, setShowRewardPopup] = useState(false);
+    const [earnedEgg, setEarnedEgg] = useState(false);  // 알 획득 여부
 
 
     useEffect(() => {
@@ -196,10 +201,28 @@ function StoryReading() {
 
             await completeStory(completionId, { totalTime });
 
-            // setIsCompleted(true);
-            // [2025-11-05 김광현] 챗봇으로 바로 이동
-            console.log("✅ 동화 완료! 챗봇 페이지로 이동:", `/chat/story/${completionId}`);
-            navigate(`/chat/story/${completionId}`);
+            // [2025-11-07 김광현] 별 추가 로직
+            const previousStars = stars;
+            console.log("별 1개 획득!!!");
+            await addStar();
+
+            // 별 5개에서 0개로 바뀌었으면 알을 얻음
+            if(previousStars === 4) {
+                setEarnedEgg(true);
+            }
+
+
+            // 보상 팝업 표시(3초 후 사라짐)
+            setShowRewardPopup(true);
+
+            setTimeout(() => {
+                setShowRewardPopup(false);
+                // setIsCompleted(true);
+                // [2025-11-05 김광현] 챗봇으로 바로 이동
+                console.log("✅ 동화 완료! 챗봇 페이지로 이동:", `/chat/story/${completionId}`);
+                navigate(`/chat/story/${completionId}`);              
+            }, 3000);
+
         } catch (error) {
             console.error("❌ 동화 완료 처리 실패:", error);
             alert("동화 완료 처리에 실패했습니다.");
@@ -245,6 +268,46 @@ function StoryReading() {
                     totalScenes={MAX_SCENES}
                     onChoiceSelect={handleChoiceSelect}
                 />
+            )}
+
+            
+            {/* 보상 팝업 - 개선 버전 */}
+            {showRewardPopup && (
+                <div className="reward-popup-overlay">
+                    <div className="reward-popup-box">
+                        <div className="popup-star-animation">⭐</div>
+                        <h2>🎉 동화 완료!</h2>
+                        <p className="popup-reward-text">별 1개를 획득했어요!</p>
+                        
+                        {earnedEgg ? (
+                            // 알을 획득한 경우
+                            <div className="popup-egg-reward">
+                                <div className="popup-egg-animation">🥚</div>
+                                <p className="popup-egg-text">축하해요! 공룡알도 얻었어요!</p>
+                                <p className="popup-egg-hint">잠시 후 자동으로 부화합니다...</p>
+                            </div>
+                        ) : (
+                            // 일반 별 획득
+                            <div className="popup-progress">
+                                <div className="popup-stars-display">
+                                    {[...Array(5)].map((_, i) => (
+                                        <span 
+                                            key={i} 
+                                            className={`popup-star ${i < stars ? 'filled' : 'empty'}`}
+                                        >
+                                            {i < stars ? '⭐' : '☆'}
+                                        </span>
+                                    ))}
+                                </div>
+                                <p>별 {stars}개 / 5개</p>
+                                <p className="popup-hint">
+                                    {stars === 4 ? '다음에 별을 모으면 공룡알을 얻어요!' : 
+                                     `앞으로 ${5 - stars}개만 더 모으면 공룡알!`}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
             )}
         </div>
     );

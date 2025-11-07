@@ -20,6 +20,7 @@ import StoryFlowTest from "../pages/StoryFlowTest.jsx";
 import ChatInterface from "../components/chat/ChatInterface.jsx";
 import StoryReplay from "../components/story/StoryReplay.jsx";
 import LandingPage from "../pages/landing/LandingPage"; // ✅ [추가]
+import TestRewardPage from "../pages/TestRewardPage.jsx";
 
 const MyDinos = lazy(() => import("../components/dino/MyDinos.jsx"));
 
@@ -204,6 +205,11 @@ function AppRoutes() {
             path="/test-story"
             element={<StoryFlowTest />}
           />
+          <Route 
+            path="/test-reward"
+            element={<TestRewardPage />}
+          />
+
 
         {/* 기본 경로 */}
         <Route path="/" element={<Navigate to="/landing" replace />} /> 

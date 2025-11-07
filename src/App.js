@@ -9,11 +9,11 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <RewardProvider>
-          <ChildProvider>
+        <ChildProvider>         
+          <RewardProvider>   
             <RouterWrapper />
-          </ChildProvider>
-        </RewardProvider>
+          </RewardProvider>
+        </ChildProvider>
       </AuthProvider>
     </Router>
   );

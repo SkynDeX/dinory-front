@@ -39,3 +39,146 @@
     color: #999 !important;
     margin-top: 1rem !important;
 }
+
+/* 보상 팝업 */
+.reward-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.reward-popup-box {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: popIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.popup-star-animation {
+    font-size: 100px;
+    animation: starBounce 0.6s ease-out;
+    margin-bottom: 20px;
+}
+
+@keyframes starBounce {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.2) rotate(-10deg); }
+    75% { transform: scale(1.2) rotate(10deg); }
+}
+
+.reward-popup-box h2 {
+    color: #ff6b6b;
+    font-size: 32px;
+    margin: 0 0 15px 0;
+}
+
+.popup-reward-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffd93d;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 15px 0;
+}
+
+.popup-progress {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.popup-progress p {
+    margin: 0;
+    color: #666;
+    font-size: 16px;
+}
+
+/* 별 진행도 표시 */
+.popup-stars-display {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 15px;
+    font-size: 32px;
+}
+
+.popup-star.filled {
+    animation: starPop 0.3s ease-out;
+}
+
+.popup-star.empty {
+    opacity: 0.3;
+}
+
+@keyframes starPop {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.popup-hint {
+    font-size: 14px !important;
+    color: #999 !important;
+    margin-top: 10px !important;
+}
+
+/* 알 획득 애니메이션 */
+.popup-egg-reward {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+.popup-egg-animation {
+    font-size: 80px;
+    animation: eggShake 0.5s ease-in-out infinite;
+}
+
+@keyframes eggShake {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
+.popup-egg-text {
+    font-size: 20px !important;
+    font-weight: bold;
+    margin: 10px 0 !important;
+    color: white !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.popup-egg-hint {
+    font-size: 14px !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    margin-top: 5px !important;
+}

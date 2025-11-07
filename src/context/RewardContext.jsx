@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
 import EggHatchModal from "../components/dino/EggHatchModal";
+import { useChild } from "./ChildContext";
 
 export const RewardContext = createContext();
 
@@ -14,6 +15,7 @@ export const RewardProvider = ({ children }) => {
   const [isHatching, setIsHatching] = useState(false);
   const [currentHatch, setCurrentHatch] = useState(null);
   const token = localStorage.getItem("accessToken");
+  const {selectedChild} = useChild();
 
   const dinoList = [
     { name: "벨로시랩터", colorType: "red" },
@@ -33,13 +35,20 @@ export const RewardProvider = ({ children }) => {
     if (!token) return;
     const fetchData = async () => {
       try {
-        const rewardRes = await axios.get("/api/reward/my", {
+
+        const childId = selectedChild?.id;
+        if (!childId) {
+          console.log("선택된 자녀가 없습니다!!");
+          return;
+        }
+
+        const rewardRes = await axios.get(`/api/child/reward/${childId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setStars(rewardRes.data.stars);
         setEggs(rewardRes.data.eggs);
 
-        const dinoRes = await axios.get("/api/dino/my", {
+        const dinoRes = await axios.get(`/api/dino/child/${childId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -53,13 +62,20 @@ export const RewardProvider = ({ children }) => {
       }
     };
     fetchData();
-  }, [token]);
+  }, [token, selectedChild]);
 
   /* 별 추가 */
   const addStar = async () => {
     try {
+
+      const childId = selectedChild?.id;
+        if (!childId) {
+          console.log("선택된 자녀가 없습니다!!");
+          return;
+        }
+
       const res = await axios.post(
-        "/api/reward/star",
+        `/api/child/reward/${childId}/star`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -81,8 +97,15 @@ export const RewardProvider = ({ children }) => {
   /* 알 생성 */
   const addEgg = async () => {
     try {
+
+      const childId = selectedChild?.id;
+        if (!childId) {
+          console.log("선택된 자녀가 없습니다!!");
+          return;
+        }
+
       const res = await axios.post(
-        "/api/reward/egg",
+        `/api/child/reward/${childId}/egg`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -99,6 +122,13 @@ export const RewardProvider = ({ children }) => {
   /* 부화 로직 (성능 개선 버전) */
   const hatchEgg = async () => {
     try {
+
+      const childId = selectedChild?.id;
+        if (!childId) {
+          console.log("선택된 자녀가 없습니다!!");
+          return;
+        }
+        
       const remaining = dinoList.filter(
         (d) => !dinos.some((owned) => owned.name === d.name)
       );
@@ -110,7 +140,7 @@ export const RewardProvider = ({ children }) => {
       const newDino = remaining[random];
 
       const res = await axios.post(
-        "/api/dino/hatch",
+         `/api/dino/child/${childId}/hatch`,
         null,
         {
           params: { name: newDino.name, colorType: newDino.colorType },
