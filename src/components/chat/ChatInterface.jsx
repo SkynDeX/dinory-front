@@ -239,18 +239,21 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
     }
   };
 
-  const handleComplete = async () => {
-    try {
-      if (sessionId) {
-        await chatApi.endChatSession(sessionId);
-        console.log('✅ 채팅 세션 종료:', sessionId);
-      }
-      window.location.href = '/main';
-    } catch (e) {
-      console.error('endChatSession 실패:', e);
-      window.location.href = '/';
+// [2025-11-07 수정] 대화 종료 버튼 클릭 시 DB 기록 + 메인페이지 이동 (세션은 종료하지 않음)
+const handleComplete = async () => {
+  try {
+    if (sessionId) {
+      // last_closed_at 기록 (세션은 활성 유지)
+      await chatApi.recordChatClose(sessionId);
+      console.log('📝 대화 종료 기록 완료 (세션은 유지됨):', sessionId);
     }
-  };
+  } catch (e) {
+    console.error('recordChatClose 실패:', e);
+    // 실패해도 계속 진행
+  }
+  // 메인페이지로 이동
+  window.location.href = '/main';
+};
 
   const handleRequestRecommendation = async () => {
     try {

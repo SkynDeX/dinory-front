@@ -24,6 +24,12 @@ export const chatApi = {
         return response.data;
     },
 
+    // [2025-11-07 추가] 대화 종료 버튼 클릭 기록 (세션은 활성 유지)
+    recordChatClose: async (sessionId) => {
+        const response = await axiosInstance.post(`/api/chat/${sessionId}/close`);
+        return response.data;
+    },
+
     // 채팅 세션 조회
     getChatSession: async (sessionId) => {
         const response = await axiosInstance.get(`/api/chat/${sessionId}`);
@@ -51,6 +57,14 @@ export const chatApi = {
             childId,
             lastMessage
         });
+        return response.data;
+    },
+
+    // [2025-11-07 추가] DinoCharacter용 활성 세션 조회 또는 생성
+    // - 아이별로 하나의 메인 세션을 계속 유지
+    // - 과거 대화 내역 포함
+    getOrCreateActiveSession: async (childId) => {
+        const response = await axiosInstance.get(`/api/chat/child/${childId}/active-session`);
         return response.data;
     }
 };
