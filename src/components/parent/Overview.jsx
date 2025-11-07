@@ -10,6 +10,7 @@ import "./Overview.css";
 function Overview({ dashboardSelectedChild }) {
     const [period, setPeriod] = useState("day");  // 기본값을 일간으로
     const [customDateRange, setCustomDateRange] = useState(null);  // 사용자 지정 날짜
+    const [savedCustomDates, setSavedCustomDates] = useState({ start: '', end: '' });  // 선택한 날짜 저장
     const [activeSubTab, setActiveSubTab] = useState("overview");  // 서브 탭 상태
     const [overviewData, setOverviewData] = useState(null);
     const [aiInsights, setAiInsights] = useState(null);  // AI 인사이트 별도 상태
@@ -30,7 +31,10 @@ function Overview({ dashboardSelectedChild }) {
     const fetchOverviewData = async () => {
         setLoading(true);
         try {
-           const data = await getOverview(dashboardSelectedChild.id, period);
+           const opts = customDateRange
+               ? { period, startDate: customDateRange.start, endDate: customDateRange.end }
+               : { period };
+           const data = await getOverview(dashboardSelectedChild.id, opts);
            console.log('📊 Overview API Response:', data);
            console.log('emotions:', data.emotions);
            console.log('choices:', data.choices);
@@ -49,7 +53,10 @@ function Overview({ dashboardSelectedChild }) {
         setInsightsLoading(true);
         setAiInsights(null);  // 기존 인사이트 초기화
         try {
-            const data = await getAIInsights(dashboardSelectedChild.id, period);
+            const opts = customDateRange
+                ? { period, startDate: customDateRange.start, endDate: customDateRange.end }
+                : { period };
+            const data = await getAIInsights(dashboardSelectedChild.id, opts);
             console.log('💡 AI Insights Response:', data);
             setAiInsights(data);
         } catch (e) {
@@ -72,7 +79,10 @@ function Overview({ dashboardSelectedChild }) {
         setTopics([]);  // 기존 Topics 초기화
         setPsychAnalysis(""); // 초기화
         try {
-            const data = await getTopics(dashboardSelectedChild.id, period);
+            const opts = customDateRange
+                ? { period, startDate: customDateRange.start, endDate: customDateRange.end }
+                : { period };
+            const data = await getTopics(dashboardSelectedChild.id, opts);
             console.log('🏷️ Topics Response:', data);
 
             // 첫 번째 항목이 메타데이터(심리분석)인지 확인
@@ -81,7 +91,7 @@ function Overview({ dashboardSelectedChild }) {
                 setTopics(data.slice(1)); // 나머지가 실제 토픽
             } else {
                 setTopics(data);
-            }           
+            }
         } catch (e) {
             console.error('Topics 조회 실패:', e);
             setTopics([]);
@@ -116,11 +126,15 @@ function Overview({ dashboardSelectedChild }) {
                 <DateRangePicker
                     mode="dashboard"
                     period={period}
+                    initialStart={savedCustomDates.start}
+                    initialEnd={savedCustomDates.end}
                     onPeriodChange={(newPeriod) => {
                         setPeriod(newPeriod);
                         setCustomDateRange(null);
+                        setSavedCustomDates({ start: '', end: '' }); // 사용자 지정 날짜 초기화
                     }}
                     onDateRangeChange={(start, end) => {
+                        setSavedCustomDates({ start, end });
                         setCustomDateRange({ start, end });
                     }}
                 />

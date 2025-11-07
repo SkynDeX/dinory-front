@@ -6,6 +6,7 @@ import ParentSection from "./ParentSection";
 import HowItWorks from "./HowItWorks";
 import FAQSection from "./FAQSection";
 import FooterSection from "./FooterSection";
+import ScrollToTopButton from "./ScrollToTopButton";
 import "./Landing.css";
 
 function LandingPage() {
@@ -26,6 +27,9 @@ function LandingPage() {
       <HowItWorks />
       <FAQSection />
       <FooterSection />
+
+      {/* 맨위로 가는 버튼!!!!! */}
+      <ScrollToTopButton />
     </motion.main>
   );
 }

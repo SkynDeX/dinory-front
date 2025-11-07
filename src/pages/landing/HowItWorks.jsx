@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import howKid from "../../assets/landing/FAQ.png";
+import "./HowItWorks.css";
 
 function HowItWorks() {
   const steps = [

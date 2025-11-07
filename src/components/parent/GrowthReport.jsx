@@ -7,11 +7,12 @@ import DateRangePicker from "../common/DateRangePicker";
 
 function GrowthReport({ childId }) {
     const [period, setPeriod] = useState("month");
+    const [customDateRange, setCustomDateRange] = useState(null);
+    const [savedCustomDates, setSavedCustomDates] = useState({ start: '', end: '' });
     const [reportData, setReportData] = useState(null);
     const [aiAnalysis, setAiAnalysis] = useState(null);
     const [loading, setLoading] = useState(true);
     const [aiLoading, setAiLoading] = useState(false);
-    const [customDateRange, setCustomDateRange] = useState(null);
 
     useEffect(() => {
         if (childId) {
@@ -23,7 +24,10 @@ function GrowthReport({ childId }) {
     const fetchReportData = async () => {
         setLoading(true);
         try {
-            const data = await getGrowthReport(childId, period);
+            const opts = customDateRange
+                ? { period, startDate: customDateRange.start, endDate: customDateRange.end }
+                : { period };
+            const data = await getGrowthReport(childId, opts);
             console.log('성장 리포트 기본 데이터:', data);
             setReportData(data);
             setLoading(false);
@@ -37,7 +41,10 @@ function GrowthReport({ childId }) {
         setAiLoading(true);
         setAiAnalysis(null);
         try {
-            const data = await getGrowthReportAIAnalysis(childId, period);
+            const opts = customDateRange
+                ? { period, startDate: customDateRange.start, endDate: customDateRange.end }
+                : { period };
+            const data = await getGrowthReportAIAnalysis(childId, opts);
             console.log('성장 리포트 AI 분석:', data);
             setAiAnalysis(data);
         } catch (e) {
@@ -114,11 +121,15 @@ function GrowthReport({ childId }) {
                 <DateRangePicker
                     mode="report"
                     period={period}
+                    initialStart={savedCustomDates.start}
+                    initialEnd={savedCustomDates.end}
                     onPeriodChange={(newPeriod) => {
                         setPeriod(newPeriod);
                         setCustomDateRange(null);
+                        setSavedCustomDates({ start: '', end: '' }); // 사용자 지정 날짜 초기화
                     }}
                     onDateRangeChange={(start, end) => {
+                        setSavedCustomDates({ start, end });
                         setCustomDateRange({ start, end });
                     }}
                 />
