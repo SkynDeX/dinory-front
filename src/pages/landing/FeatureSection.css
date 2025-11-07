@@ -1,0 +1,114 @@
+.feature-section {
+  position: relative;
+  text-align: center;
+  padding: 180px 0;
+  background: linear-gradient(180deg, #fefaf6 0%, #f9fcff 100%);
+  overflow: hidden;
+}
+
+/* 부드러운 오로라 흐름 */
+.feature-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 40%, rgba(47, 163, 107, 0.15), transparent 70%),
+              radial-gradient(circle at 80% 60%, rgba(255, 155, 122, 0.15), transparent 70%),
+              radial-gradient(circle at 50% 90%, rgba(135, 206, 235, 0.15), transparent 70%);
+  filter: blur(100px);
+  animation: featureAurora 14s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+@keyframes featureAurora {
+  0% { transform: translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateY(-30px) scale(1.05); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 0.8; }
+}
+
+.feature-title {
+  font-size: 38px;
+  font-weight: 800;
+  color: #2fa36b;
+  margin-bottom: 100px;
+  letter-spacing: -0.3px;
+  position: relative;
+  z-index: 1;
+}
+
+.feature-cards {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.feature-card {
+  position: relative;
+  width: 320px;
+  padding: 48px 32px 60px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  overflow: hidden;
+}
+
+/* 카드 안에 은은한 빛 흐름 */
+.feature-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, rgba(255, 155, 122, 0.1), rgba(255, 209, 102, 0.15), rgba(135, 206, 235, 0.1), transparent);
+  animation: cardGlow 8s linear infinite;
+  z-index: 0;
+}
+
+@keyframes cardGlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.lottie-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 28px;
+  position: relative;
+  z-index: 1;
+}
+
+.feature-card h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.feature-card p {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+.feature-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 14px 40px rgba(255, 155, 122, 0.3);
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+  .feature-cards {
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+  }
+}

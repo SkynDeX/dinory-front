@@ -1,10 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Lottie from "lottie-react";
-
 import lottie1 from "../../assets/landing/1.json";
 import lottie2 from "../../assets/landing/2.json";
 import lottie3 from "../../assets/landing/3.json";
+import "./FeatureSection.css";
 
 function FeatureSection() {
   const features = [

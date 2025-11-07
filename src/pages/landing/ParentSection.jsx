@@ -1,10 +1,24 @@
 import React from "react";
 import { motion } from "framer-motion";
+import Lottie from "lottie-react";
+import parentLottie from "../../assets/landing/parent.json";  // 🔸 Lottie 파일 경로
+import "./ParentSection.css";
 
 function ParentSection() {
   return (
     <section className="parent-section">
+      {/* 오로라 배경 */}
       <div className="parent-bg-glow" />
+
+      {/* Lottie 애니메이션 */}
+      <div className="parent-illustration-wrapper">
+        <Lottie
+          animationData={parentLottie}
+          loop={true}
+          autoplay={true}
+          className="parent-illustration"
+        />
+      </div>
 
       <motion.div
         className="parent-card"

@@ -1,0 +1,122 @@
+.faq-section {
+  background: linear-gradient(180deg, #ffffff 0%, #fffaf6 100%);
+  padding: 180px 120px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 부드러운 오로라 흐름 */
+.faq-section::before {
+  content: "";
+  position: absolute;
+  top: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 209, 102, 0.25), transparent 70%),
+              radial-gradient(circle at 70% 30%, rgba(135, 206, 235, 0.15), transparent 70%);
+  filter: blur(120px);
+  animation: faqAurora 16s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+@keyframes faqAurora {
+  0% { transform: translateX(-50%) scale(1); opacity: 0.7; }
+  50% { transform: translateX(-50%) scale(1.05) translateY(-20px); opacity: 1; }
+  100% { transform: translateX(-50%) scale(1); opacity: 0.7; }
+}
+
+.faq-section h2 {
+  font-size: 40px;
+  font-weight: 800;
+  color: #2fa36b;
+  margin-bottom: 80px;
+  position: relative;
+  z-index: 1;
+}
+
+.faq-container {
+  max-width: 880px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.faq-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 22px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(47, 163, 107, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+/* 오픈할때 Glow */
+.faq-card.open {
+  border-color: #ff9b7a;
+  box-shadow: 0 14px 40px rgba(255, 155, 122, 0.25);
+  filter: drop-shadow(0 0 10px rgba(255, 209, 102, 0.3));
+}
+
+.faq-header {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  padding: 26px 34px;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  color: #2fa36b;
+  transition: color 0.3s ease;
+}
+
+.faq-card.open .faq-header {
+  color: #ff9b7a;
+}
+
+.faq-header:hover {
+  color: #ff9b7a;
+}
+
+.faq-answer {
+  background: rgba(255, 255, 255, 0.9);
+  text-align: left;
+  padding: 0 34px 26px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.faq-answer p {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.8;
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+  .faq-section {
+    padding: 120px 40px;
+  }
+  .faq-container {
+    max-width: 95%;
+  }
+  .faq-section h2 {
+    font-size: 32px;
+  }
+  .faq-header {
+    font-size: 16px;
+  }
+}

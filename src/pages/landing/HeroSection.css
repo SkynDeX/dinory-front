@@ -1,0 +1,123 @@
+.hero-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 160px 180px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #fffefc 0%, #fff7f0 60%, #fef9f4 100%);
+}
+
+/* 오로라 애니메이션 */
+.hero-aurora {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 40%, rgba(255, 155, 122, 0.25), transparent 70%),
+              radial-gradient(circle at 70% 60%, rgba(135, 206, 235, 0.25), transparent 70%),
+              radial-gradient(circle at 50% 80%, rgba(255, 209, 102, 0.2), transparent 70%);
+  filter: blur(120px);
+  animation: auroraFlow 12s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+@keyframes auroraFlow {
+  0% { transform: translateY(0px) scale(1); opacity: 0.7; }
+  50% { transform: translateY(-40px) scale(1.05); opacity: 0.9; }
+  100% { transform: translateY(0px) scale(1); opacity: 0.7; }
+}
+
+.hero-text {
+  flex: 1;
+  max-width: 600px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-text h1 {
+  font-size: 62px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #222;
+  margin-bottom: 28px;
+}
+
+.hero-text p {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 48px;
+}
+
+.hero-btn {
+  background: linear-gradient(90deg, #ff9b7a, #ffd166);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 18px 48px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 18px rgba(255, 155, 122, 0.4);
+}
+
+.hero-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(255, 155, 122, 0.7);
+  filter: drop-shadow(0 0 10px #ffd166);
+}
+
+.hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-image img {
+  margin-bottom: 30px;
+  margin-right: 80px;
+  width: 650px;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.1));
+  animation: floatY 5s ease-in-out infinite;
+}
+
+@keyframes floatY {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+  100% { transform: translateY(0); }
+}
+
+/* 파티클 캔버스 */
+.hero-particles {
+  position: absolute;
+  top: -100px;
+  left: 180px;
+  width: 650px;
+  height: 500px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Dinory 로고 컬러 */
+.main-logo {
+  font-weight: 800;
+  font-size: 72px;
+  letter-spacing: 1px;
+}
+
+.main-logo .green { color: #2fa36b; }
+.main-logo .coral { color: #ff9b7a; }
+.main-logo .sky { color: #87ceeb; }
+.main-logo .yellow { color: #ffd166; }
+
+@media (max-width: 1024px) {
+  .hero-section {
+    flex-direction: column;
+    text-align: center;
+    padding: 100px 40px;
+  }
+  .hero-text h1 { font-size: 44px; }
+  .hero-image img { width: 340px; }
+  .hero-particles { width: 340px; height: 300px; }
+}
