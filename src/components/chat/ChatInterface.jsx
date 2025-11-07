@@ -250,7 +250,7 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
         console.log('✅ 채팅 세션 종료:', sessionId);
       }
       // 메인페이지로 이동
-      window.location.href = '/';
+      window.location.href = '/main';
     } catch (e) {
       console.error('endChatSession 실패:', e);
       // 실패해도 메인페이지로 이동
