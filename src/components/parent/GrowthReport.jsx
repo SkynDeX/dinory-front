@@ -125,7 +125,17 @@ function GrowthReport({ childId }) {
                             <span className="loading_text">AI가 종합 평가를 생성 중입니다...</span>
                         </div>
                     ) : (
-                        <p className="ai_evaluation_text">{aiAnalysis?.aiEvaluation || "AI 평가를 불러오는 중..."}</p>
+                        <div className="ai_evaluation_text">
+                            {(aiAnalysis?.aiEvaluation || "AI 평가를 불러오는 중...")
+                                .split('\n\n')
+                                .filter(paragraph => paragraph.trim())
+                                .map((paragraph, index) => (
+                                    <p key={index} className="evaluation_paragraph">
+                                        {paragraph.trim()}
+                                    </p>
+                                ))
+                            }
+                        </div>
                     )}
                 </div>
             </div>

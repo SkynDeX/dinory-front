@@ -175,6 +175,16 @@
     margin: 0;
 }
 
+.evaluation_paragraph {
+    margin-bottom: 20px;
+    line-height: 1.8;
+    text-align: justify;
+}
+
+.evaluation_paragraph:last-child {
+    margin-bottom: 0;
+}
+
 .areas_grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
