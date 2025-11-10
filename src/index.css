@@ -5,6 +5,17 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /*  커서 전용 컬러 */
+  transition: filter 0.2s ease;
+}
+
+a, button, input, textarea {
+  transition: transform 0.2s ease;
+}
+
+a:active, button:active {
+  transform: scale(0.97);
 }
 
 code {
