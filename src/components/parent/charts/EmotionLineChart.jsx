@@ -79,7 +79,12 @@ function EmotionLineChart({ data, period }) {
                     font: {
                         size: 12,
                         weight: '500'
-                    }
+                    },
+                    boxHeight: 8,
+                },
+
+                padding: {
+                    top: 10
                 }
             },
             tooltip: {

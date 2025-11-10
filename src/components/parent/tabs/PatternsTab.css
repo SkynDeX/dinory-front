@@ -95,16 +95,16 @@
     margin-bottom: 32px;
 }
 
-.emotion_card {
+.emotion_section > .emotion_card {
     background: white;
     border-radius: 16px;
-    padding: 24px;
+    padding: 20px;
     border: 2px solid #e0e0e0;
     margin-bottom: 16px;
-    max-height: 400px;
+    height: 300px;
 }
 
-.emotion_card:hover {
+.emotion_section > .emotion_card:hover {
     transform: none;
     box-shadow: none;
 }
