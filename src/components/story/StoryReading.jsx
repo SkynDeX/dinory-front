@@ -7,6 +7,8 @@ import { useChild } from "../../context/ChildContext";
 import NegativeModal from "./NegativeModal";
 import { RewardContext } from "../../context/RewardContext";
 
+import LoadingScreen from "../../components/common/LoadingScreen.jsx";
+
 const MAX_SCENES = 8;
 
 function StoryReading() {
@@ -230,26 +232,20 @@ function StoryReading() {
     };
 
 
-    if(loading) {
-        return (
-            <div className="story_reading_wrapper">
-                <div className="loading">첫 번째 장면을 준비하는 중...</div>
-            </div>
-        )
+    if (loading) {
+
+        return <LoadingScreen message="첫 번째 이야기를 만들고 있어요..." />;
+
     }
 
     if (loadingNextScene) {
+
         return (
-            <div className="story_reading_wrapper">
-                <div className="loading">
-                    <div className="loading-spinner"></div>
-                    <p>AI가 당신의 선택에 맞는</p>
-                    <p>다음 장면을 만들고 있어요...</p>
-                    <p className="loading-hint">(5-10초 소요)</p>
-                </div>
-            </div>
-        )
-    }
+            
+            <LoadingScreen message="공룡 친구들이 다음 장면을 준비하고 있어요..." />
+
+    );
+  }
 
     return (
         <div className="story_reading_wrapper">

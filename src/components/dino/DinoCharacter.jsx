@@ -16,6 +16,7 @@ import iconLogin from "../../assets/icons/login.png";
 import iconLogout from "../../assets/icons/logout.png";
 import iconDashboard from "../../assets/icons/dashboard.png";
 import iconGirl from "../../assets/icons/girl.png";
+import iconHome from "../../assets/icons/home.png";
 
 function DinoCharacter() {
   const [isOpen, setIsOpen] = useState(false);
@@ -411,12 +412,25 @@ function DinoCharacter() {
                         className="menu-btn"
                         onClick={() => {
                           setIsMenuOpen(false);
+                          navigate("/main");
+                        }}
+                      >
+                        <img src={iconHome} alt="home" className="menu-icon" />
+                        홈으로 가기
+                      </button>
+
+                      <button
+                        className="menu-btn"
+                        onClick={() => {
+                          setIsMenuOpen(false);
                           navigate("/my-dinos");
                         }}
                       >
+
                         <img src={iconDino} alt="dino" className="menu-icon" />
                         내 공룡 친구들
                       </button>
+
                       <button
                         className="menu-btn"
                         onClick={() => {
