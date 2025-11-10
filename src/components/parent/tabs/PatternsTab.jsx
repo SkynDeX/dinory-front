@@ -21,7 +21,7 @@ function PatternsTab({ data, period, topics = [], topicsLoading = false, psychAn
                         <ChoicePatternChart data={choices} />
                     </div>
                     <div className="pattern_insights">
-                        <h4 className="insights_title">인사이트</h4>
+                        <br />
                         {choices.length > 0 ? (
                             <>
                                 <div className="insight_item">
