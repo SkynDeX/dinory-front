@@ -1,0 +1,225 @@
+.settings_wrapper {
+    padding: 32px;
+    max-width: 1400px;
+    animation: fadeIn 0.4s ease;
+    margin: 0 auto;
+}
+
+.settings_wrapper h1 {
+    text-align: left;
+    font-size: 28px;
+}
+
+.settings_title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.settings_section {
+    margin-bottom: 40px;
+}
+
+.section_title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.section_description {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+/* 계정 정보 카드 */
+.account_info_card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.info_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info_row:last-of-type {
+    border-bottom: none;
+    margin-bottom: 20px;
+}
+
+.info_label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+}
+
+.info_value {
+    font-size: 14px;
+    color: #333;
+}
+
+/* 폼 */
+.form_group {
+    margin-bottom: 20px;
+}
+
+.form_group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.form_input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.form_input:focus {
+    outline: none;
+    border-color: #7EC77B;
+}
+
+/* 버튼 */
+.btn_group {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.btn_edit,
+.btn_save {
+    padding: 10px 20px;
+    background-color: #7EC77B;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn_edit:hover,
+.btn_save:hover {
+    background-color: #6bb368;
+}
+
+.btn_cancel {
+    padding: 10px 20px;
+    background-color: #f5f5f5;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn_cancel:hover {
+    background-color: #e0e0e0;
+}
+
+.btn_withdraw {
+    padding: 10px 20px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn_withdraw:hover {
+    background-color: #ff5252;
+}
+
+/* 모달 */
+.modal_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal_box {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 400px;
+    width: 90%;
+}
+
+.modal_box h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.modal_box p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.modal_buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn_modal_cancel,
+.btn_modal_confirm {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn_modal_cancel {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.btn_modal_cancel:hover {
+    background-color: #e0e0e0;
+}
+
+.btn_modal_confirm {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+.btn_modal_confirm:hover {
+    background-color: #ff5252;
+}
