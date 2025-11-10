@@ -3,6 +3,9 @@ import { useChild } from "../../context/ChildContext"; // ChildContext
 import ChildRegistrationForm from "./ChildRegistrationForm";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import "./ChildManagement.css";
+import bkid from "../../assets/icons/bkid.png";
+import gkid from "../../assets/icons/gkid.png";
+import shock from "../../assets/icons/shock.png";
 
 // 자녀 관리
 function ChildManagement() {
@@ -105,7 +108,9 @@ function ChildManagement() {
         {/* 자녀 카드 그리드 */}
         {children.length === 0 ? (
             <div className="empty_state">
-            <div className="empty_icon">👶</div>
+            <div className="empty_icon">
+                <img src={shock} alt="no child" className="empty_icon_img" />
+            </div>
             <h3>등록된 자녀가 없습니다</h3>
             <p>첫 번째 자녀를 등록하고 DinoStory를 시작해보세요</p>
             <button className="add_child_btn" onClick={() => setIsAddModalOpen(true)}>
@@ -119,7 +124,14 @@ function ChildManagement() {
                 {/* 카드 헤더 */}
                 <div className="card_header_section">
                     <div className="child_avatar_section">
-                    <div className="child_avatar_circle">{child.avatar || (child.gender === "male" ? "👦" : "👧")}</div>
+                    {/* 아바타 이미지 */}
+                    <div className="child_avatar_circle">
+                        <img
+                            src={child.gender === "male" ? bkid : gkid}
+                            alt="child avatar"
+                            className="child_avatar_img_small"
+                        />
+                    </div>
                     <div className="child_info">
                         <h3 className="child_item_name">{child.name}</h3>
                         <p className="child_item_age">
@@ -221,7 +233,14 @@ function ChildManagement() {
                 </div>
                 <div className="detail_content">
                 <div className="detail_profile">
-                    <div className="detail_avatar">{selectedChild.avatar || (selectedChild.gender === "male" ? "👦" : "👧")}</div>
+                    {/* 이미지 */}
+                    <div className="detail_avatar">
+                        <img
+                            src={selectedChild.gender === "male" ? bkid : gkid}
+                            alt="child avatar"
+                            className="child_avatar_img_large"
+                        />
+                    </div>
                     <div>
                     <h3 className="detail_name">{selectedChild.name}</h3>
                     <p className="detail_info">

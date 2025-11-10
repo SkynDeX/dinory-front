@@ -25,3 +25,12 @@
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(47, 163, 107, 0.4);
 }
+
+.child_avatar_small_img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+  vertical-align: middle;
+}

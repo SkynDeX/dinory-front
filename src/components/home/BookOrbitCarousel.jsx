@@ -11,6 +11,8 @@ import RewardProgress from "./RewardProgress";
 import { RewardContext } from "../../context/RewardContext";
 import { useChild } from "../../context/ChildContext";
 import BookInfoModal from "../dino/BookInfoModal";
+import bkid from "../../assets/icons/bkid.png";
+import gkid from "../../assets/icons/gkid.png";
 
 const books = [
   { id: 1, title: "달 위의 곰돌이", image: "/assets/intro/01.png", desc: "달 위에서 꿈꾸는 귀여운 곰돌이 이야기" },
@@ -237,11 +239,7 @@ function BookOrbitCarousel() {
             <>
               <span className="child-avatar">
                 <img
-                  src={
-                    selectedChild.gender === "male"
-                      ? `${process.env.PUBLIC_URL}/assets/icons/bkid.png`
-                      : `${process.env.PUBLIC_URL}/assets/icons/gkid.png`
-                  }
+                  src={selectedChild.gender === "male" ? bkid : gkid}
                   alt={selectedChild.gender === "male" ? "남자 아이" : "여자 아이"}
                   className="child-avatar-img"
                 />

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getChildren } from "../../services/api/childApi";
 import "./ChildSelector.css";
+import bkid from "../../assets/icons/bkid.png";
+import gkid from "../../assets/icons/gkid.png";
 
 // 자녀 선택 드롭다운(대시보드용)
 function ChildSelector({onSelectChild, selectedChildId}) {
@@ -103,12 +105,12 @@ function ChildSelector({onSelectChild, selectedChildId}) {
                 <div className="selector_current">
                     {currentChild ? (
                         <>
-                            <span className="child_avatar_small">
-                                {currentChild.avatar || (currentChild.gender === 'male' ? "👦" : "👧")}
-                            </span>
-                            <span className="child_name">
-                                {currentChild.name}
-                            </span>
+                            <img
+                                src={currentChild.gender === "male" ? bkid : gkid}
+                                alt="child avatar"
+                                className="child_avatar_small_img"
+                            />
+                            <span className="child_name">{currentChild.name}</span>
                             <span className="child_age">
                                 &nbsp;({calculateAge(currentChild.birthDate)}세)
                             </span>
@@ -116,9 +118,7 @@ function ChildSelector({onSelectChild, selectedChildId}) {
                     ) : (
                         <span>자녀를 선택하세요</span>
                     )}
-                    <span className="selector_arrow">
-                    {isOpen ? ' ▲' :  ' ▼'}
-                </span>
+                    <span className="selector_arrow">{isOpen ? " ▲" : " ▼"}</span>
                 </div>
             </button>
 
@@ -134,15 +134,17 @@ function ChildSelector({onSelectChild, selectedChildId}) {
                             >
                                 <div className="child_item_content">
                                     {/* 아바타 */}
-                                    <span className="child_avatar_small">
-                                        {child.avatar || (child.gender === 'male' ? '👦' : '👧')}
-                                    </span>
+                                    <img
+                                        src={child.gender === "male" ? bkid : gkid}
+                                        alt="child avatar"
+                                        className="child_avatar_small_img"
+                                    />
 
                                     {/* 정보 */}
-                                        <span className="child_name">{child.name}</span>
-                                        <span className="child_age">
-                                            &nbsp;({calculateAge(child.birthDate)}세)
-                                        </span>  
+                                    <span className="child_name">{child.name}</span>
+                                    <span className="child_age">
+                                        &nbsp;({calculateAge(child.birthDate)}세)
+                                    </span>  
                                 </div>
                             </li>
                         ))}
