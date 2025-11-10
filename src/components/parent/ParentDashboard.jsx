@@ -88,10 +88,11 @@ function ParentDashboard() {
                     >
                         설정
                     </button>
-                </nav>
                     <button className="child_page_btn" onClick={handleGoToChildPage}>
                         아이 페이지로 이동
                     </button>
+                </nav>
+                    
             </aside>
 
             {/* 메인 콘텐츠 */}

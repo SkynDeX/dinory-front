@@ -1,5 +1,6 @@
 .child_management_wrapper {
   width: 100%;
+  padding: 20px;
   animation: fadeIn 0.4s ease;
 }
 
@@ -18,14 +19,14 @@
 }
 
 .management_title {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   color: #333;
   margin: 0 0 8px 0;
 }
 
 .management_subtitle {
-  font-size: 16px;
+  font-size: 14px;
   color: #666;
   margin: 0;
 }

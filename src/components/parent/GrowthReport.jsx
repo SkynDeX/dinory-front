@@ -88,54 +88,30 @@ function GrowthReport({ childId }) {
     return (
         <div className="growth_report_wrapper">
             {/* 헤더 */}
-            {/* <div className="report_header">
-                <h1 className="report_title">성장 리포트</h1>
-                <div className="report_controls">
-                    <div className="period_filters">
-                        <button
-                            className={`period_btn ${period === 'month' ? 'active' : ''}`}
-                            onClick={() => setPeriod('month')}
-                        >
-                            월간
-                        </button>
-                        <button
-                            className={`period_btn ${period === 'quarter' ? 'active' : ''}`}
-                            onClick={() => setPeriod('quarter')}
-                        >
-                            분기
-                        </button>
-                        <button
-                            className={`period_btn ${period === 'halfyear' ? 'active' : ''}`}
-                            onClick={() => setPeriod('halfyear')}
-                        >
-                            반기
-                        </button>
-                    </div>
+            <div className="report_header_container">
+                <div className="report_header_top">
+                    <h1 className="report_title">성장 리포트</h1>
                     <button className="download_btn" onClick={handleDownloadPDF}>
                         <FaDownload /> PDF 다운로드
                     </button>
                 </div>
-            </div> */}
-            <div className="report_header">
-                <h1 className="report_title">대시보드</h1>
-                <DateRangePicker
-                    mode="report"
-                    period={period}
-                    initialStart={savedCustomDates.start}
-                    initialEnd={savedCustomDates.end}
-                    onPeriodChange={(newPeriod) => {
-                        setPeriod(newPeriod);
-                        setCustomDateRange(null);
-                        setSavedCustomDates({ start: '', end: '' }); // 사용자 지정 날짜 초기화
-                    }}
-                    onDateRangeChange={(start, end) => {
-                        setSavedCustomDates({ start, end });
-                        setCustomDateRange({ start, end });
-                    }}
-                />
-                <button className="download_btn" onClick={handleDownloadPDF}>
-                    <FaDownload /> PDF 다운로드
-                </button>
+                <div className="report_header_bottom">
+                    <DateRangePicker
+                        mode="report"
+                        period={period}
+                        initialStart={savedCustomDates.start}
+                        initialEnd={savedCustomDates.end}
+                        onPeriodChange={(newPeriod) => {
+                            setPeriod(newPeriod);
+                            setCustomDateRange(null);
+                            setSavedCustomDates({ start: '', end: '' }); // 사용자 지정 날짜 초기화
+                        }}
+                        onDateRangeChange={(start, end) => {
+                            setSavedCustomDates({ start, end });
+                            setCustomDateRange({ start, end });
+                        }}
+                    />
+                </div>
             </div>
 
 
@@ -170,10 +146,11 @@ function GrowthReport({ childId }) {
                 <div className="areas_grid">
                     {reportData.strengths.map((strength, idx) => {
                         const aiStrength = aiAnalysis?.strengthDescriptions?.find(s => s.area === strength.area);
+                        const areaName = strength.area ? strength.area.replace(/\s*\(.*?\)\s*/g, '').trim() : '';
                         return (
                             <div key={idx} className="area_card strength_card">
                                 <div className="area_header">
-                                    <h3 className="area_name">{strength.area}</h3>
+                                    <h3 className="area_name">{areaName}</h3>
                                     <span className="area_score">{strength.score}점</span>
                                 </div>
                                 {aiLoading ? (
@@ -207,10 +184,11 @@ function GrowthReport({ childId }) {
                 <div className="areas_grid">
                     {reportData.growthAreas.map((area, idx) => {
                         const aiGrowth = aiAnalysis?.growthAreaDescriptions?.find(g => g.area === area.area);
+                        const areaName = area.area ? area.area.replace(/\s*\(.*?\)\s*/g, '').trim() : '';
                         return (
                             <div key={idx} className="area_card growth_card">
                                 <div className="area_header">
-                                    <h3 className="area_name">{area.area}</h3>
+                                    <h3 className="area_name">{areaName}</h3>
                                     <span className="area_score">{area.score}점</span>
                                 </div>
                                 {aiLoading ? (

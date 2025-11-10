@@ -16,6 +16,11 @@
   flex-direction: column;
   gap: 30px;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 /* 로고 */
@@ -242,9 +247,12 @@
 .dashboard_content {
   flex: 1;
   padding: 40px;
-  overflow-y: auto;
   position: relative;
   z-index: 1;
+  margin-left: 280px;
+  height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 /* 각 탭 래퍼 기본 스타일 */
