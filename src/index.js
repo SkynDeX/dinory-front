@@ -24,13 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 클릭 시 커서 살짝 반짝 효과
-  document.addEventListener("mousedown", () => {
-    document.body.style.filter = "brightness(1.3)";
-  });
-  document.addEventListener("mouseup", () => {
-    document.body.style.filter = "brightness(1)";
-  });
 });
 
 reportWebVitals();
