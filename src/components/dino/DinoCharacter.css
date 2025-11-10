@@ -10,7 +10,7 @@
 }
 
 /* 공룡 본체 감싸는 */
-.dino-container {
+.dino-wrapper .dino-container {
   width: 150px !important;
   height: 150px !important;
   min-width: 150px !important;
@@ -23,11 +23,11 @@
   flex-shrink: 0;
 }
 
-.dino-container:hover {
+.dino-wrapper .dino-container:hover {
   transform: scale(1.08);
 }
 
-.dino-lottie {
+.dino-wrapper .dino-lottie {
   width: 150px !important;
   height: 150px !important;
 }
@@ -39,7 +39,7 @@
 }
 
 /* 클릭 시 점프 */
-.jump {
+.dino-wrapper .jump {
   animation: jump 0.6s ease-out;
 }
 
@@ -51,7 +51,7 @@
 }
 
 /* 공통 말풍선 스타일 */
-.speech-bubble {
+.dino-wrapper .speech-bubble {
   background: #fff;
   border-radius: 16px;
   padding: 14px 18px;
@@ -67,7 +67,7 @@
   animation: fadeIn 0.3s ease;
 }
 
-.speech-bubble::after {
+.dino-wrapper .speech-bubble::after {
   content: "";
   position: absolute;
   right: -14px;
@@ -79,7 +79,7 @@
 }
 
 /* 평소 말풍선 */
-.idle-bubble {
+.dino-wrapper .idle-bubble {
   opacity: 0.9;
   background: rgba(255, 255, 255, 0.9);
   font-weight: 600;
@@ -89,7 +89,7 @@
 }
 
 /* 살짝 흔들리며 반짝이는 효과 */
-.bouncey {
+.dino-wrapper .bouncey {
   animation: pulse 3.5s ease-in-out infinite, glow 3s ease-in-out infinite;
 }
 
@@ -118,11 +118,11 @@
 }
 
 /* 클릭 시 메뉴 말풍선 */
-.menu-bubble {
+.dino-wrapper .menu-bubble {
   text-align: center;
 }
 
-.menu-bubble .menu-title {
+.dino-wrapper .menu-bubble .menu-title {
   font-size: 16px;
   font-weight: 800;
   margin-bottom: 8px;
@@ -134,30 +134,9 @@
 }
 
 @keyframes shimmer {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.menu-bubble button {
-  display: block;
-  background: none;
-  border: none;
-  color: #2fa36b;
-  font-weight: 600;
-  cursor: pointer;
-  margin: 6px 0;
-  transition: color 0.2s ease;
-}
-
-.menu-bubble button:hover {
-  color: #ff9b7a;
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* 등장 애니메이션 */
@@ -167,7 +146,7 @@
 }
 
 /* 챗봇 말풍선 */
-.chat-bubble {
+.dino-wrapper .chat-bubble {
   width: 400px;
   min-width: 320px;
   max-width: 90vw;
@@ -179,7 +158,7 @@
 }
 
 /* 챗봇 헤더 */
-.chat-header {
+.dino-wrapper .chat-header {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -189,7 +168,7 @@
   border-bottom: 2px solid #ffd166;
 }
 
-.chat-title {
+.dino-wrapper .chat-title {
   font-size: 16px;
   font-weight: 700;
   color: white;
@@ -197,8 +176,8 @@
   text-align: center;
 }
 
-/* [2025-11-04 김민중 수정] 메시지 영역 - 선택지 포함한 통합 컨테이너 */
-.chat-messages {
+/* 메시지 영역 */
+.dino-wrapper .chat-messages {
   flex: 1;
   overflow-y: auto;
   padding: 14px;
@@ -210,25 +189,26 @@
   gap: 10px;
 }
 
-.chat-messages::-webkit-scrollbar {
+/* 스크롤바 */
+.dino-wrapper .chat-messages::-webkit-scrollbar {
   width: 6px;
 }
 
-.chat-messages::-webkit-scrollbar-track {
+.dino-wrapper .chat-messages::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.chat-messages::-webkit-scrollbar-thumb {
+.dino-wrapper .chat-messages::-webkit-scrollbar-thumb {
   background: #d0d0d0;
   border-radius: 3px;
 }
 
-.chat-messages::-webkit-scrollbar-thumb:hover {
+.dino-wrapper .chat-messages::-webkit-scrollbar-thumb:hover {
   background: #b0b0b0;
 }
 
 /* 메시지 */
-.message {
+.dino-wrapper .message {
   display: flex;
   animation: slideIn 0.3s ease;
 }
@@ -244,7 +224,7 @@
   }
 }
 
-.message p {
+.dino-wrapper .message p {
   margin: 0;
   padding: 8px 12px;
   border-radius: 12px;
@@ -255,11 +235,11 @@
 }
 
 /* 봇 메시지 */
-.message.bot {
+.dino-wrapper .message.bot {
   justify-content: flex-start;
 }
 
-.message.bot p {
+.dino-wrapper .message.bot p {
   background: white;
   color: #333;
   border: 1px solid #e0e0e0;
@@ -267,36 +247,24 @@
 }
 
 /* 사용자 메시지 */
-.message.user {
+.dino-wrapper .message.user {
   justify-content: flex-end;
 }
 
-.message.user p {
+.dino-wrapper .message.user p {
   background: linear-gradient(135deg, #2fa36b, #3bb87a);
   color: white;
   border-bottom-right-radius: 4px;
 }
 
 /* 입력 중 애니메이션 */
-.typing {
+.dino-wrapper .typing {
   position: relative;
   animation: pulse 1.5s ease-in-out infinite;
 }
 
-.typing::after {
-  content: '...';
-  position: absolute;
-  animation: dots 1.5s steps(4, end) infinite;
-}
-
-@keyframes dots {
-  0%, 20% { content: '.'; }
-  40% { content: '..'; }
-  60%, 100% { content: '...'; }
-}
-
-/* [2025-11-04 김민중 수정] 선택지 영역 - 가로 배치로 공간 절약 */
-.choices-inline {
+/* 선택지 */
+.dino-wrapper .choices-inline {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -305,47 +273,31 @@
   margin-top: 8px;
 }
 
-/* [2025-11-04 김민중 수정] 타원형 버튼 스타일 - 가로 배치 최적화 */
-.choice-btn {
+.dino-wrapper .choice-btn {
   background: linear-gradient(135deg, #f0f9f5, #e8f5ee);
   border: 2px solid #2fa36b;
   color: #2fa36b;
   font-weight: 600;
   font-size: 13px;
   padding: 10px 20px;
-  border-radius: 50px; /* 타원형 모양 */
+  border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: center;
-  font-family: "Noto Sans KR", sans-serif;
   box-shadow: 0 2px 4px rgba(47, 163, 107, 0.1);
-  flex: 0 1 auto; /* 내용에 맞게 자동 크기 조정 */
-  white-space: nowrap; /* 텍스트 한 줄 유지 */
 }
 
-.choice-btn:hover:not(:disabled) {
+.dino-wrapper .choice-btn:hover:not(:disabled) {
   background: linear-gradient(135deg, #2fa36b, #3bb87a);
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(47, 163, 107, 0.2);
 }
 
-.choice-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.choice-btn:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-/* 메뉴 모달 */
-.menu-modal {
+/* Dinory 전용 메뉴 모달 영역 */
+.dino-wrapper .dino-menu-modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
@@ -354,7 +306,7 @@
   animation: fadeIn 0.2s ease;
 }
 
-.menu-modal-content {
+.dino-wrapper .dino-menu-content {
   background: white;
   border-radius: 16px;
   width: 90%;
@@ -366,17 +318,11 @@
 }
 
 @keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.menu-modal-header {
+.dino-wrapper .dino-menu-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -385,32 +331,7 @@
   color: white;
 }
 
-.menu-modal-header h3 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.close-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s ease;
-}
-
-.close-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.menu-modal-body {
+.dino-wrapper .dino-menu-body {
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -419,42 +340,52 @@
   overflow-y: auto;
 }
 
-.menu-btn {
+.dino-wrapper .dino-menu-btn {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  padding: 12px 20px;
+  padding: 10px 16px;
   border: none;
-  border-radius: 12px;
-  background: #fdfdfd;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fdfdfd, #fafafa);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  color: #2fa36b;
+}
+
+.dino-wrapper .dino-menu-btn:hover {
+  background: linear-gradient(135deg, #e8f9ef, #dff8ea);
+  box-shadow: 0 4px 10px rgba(47, 163, 107, 0.15);
+  transform: translateY(-2px);
+  color: #ff9b7a;
+}
+
+.dino-wrapper .dino-menu-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  opacity: 0.9;
+  transition: transform 0.2s ease;
+}
+
+.dino-wrapper .dino-menu-btn:hover .dino-menu-icon {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+.dino-wrapper .dino-close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
   cursor: pointer;
 }
 
-.menu-btn:hover {
-  background: #f7faff;
-  transform: translateY(-2px);
-}
-
-/* 아이콘 */
-.menu-icon {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-}
-
-
-.menu-btn:hover {
-  background: #f0f9f5;
-  border-color: #2fa36b;
-  transform: translateX(4px);
-}
-
 /* 입력창 영역 */
-.chat-input-container {
+.dino-wrapper .chat-input-container {
   display: flex;
   gap: 8px;
   padding: 12px;
@@ -463,7 +394,7 @@
   border-radius: 0 0 14px 14px;
 }
 
-.voice-button {
+.dino-wrapper .voice-button {
   background: linear-gradient(135deg, #ff9b7a, #ff7a5a);
   color: white;
   border: none;
@@ -472,57 +403,9 @@
   height: 44px;
   font-size: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(255, 155, 122, 0.3);
 }
 
-.voice-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(255, 155, 122, 0.5);
-}
-
-.voice-button.listening {
-  background: linear-gradient(135deg, #ff5a5a, #ff3a3a);
-  animation: pulse-mic 1s ease-in-out infinite;
-}
-
-@keyframes pulse-mic {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 2px 8px rgba(255, 90, 90, 0.3);
-  }
-  50% {
-    transform: scale(1.15);
-    box-shadow: 0 4px 16px rgba(255, 90, 90, 0.6);
-  }
-}
-
-.chat-input {
-  flex: 1;
-  border: 1px solid #d0d0d0;
-  border-radius: 20px;
-  padding: 10px 16px;
-  font-size: 13px;
-  font-family: "Noto Sans KR", sans-serif;
-  outline: none;
-  transition: border-color 0.2s ease;
-  min-width: 0;
-}
-
-.chat-input:focus {
-  border-color: #2fa36b;
-}
-
-.chat-input:disabled {
-  background: #f5f5f5;
-  cursor: not-allowed;
-}
-
-.send-button {
+.dino-wrapper .send-button {
   background: linear-gradient(135deg, #2fa36b, #3bb87a);
   color: white;
   border: none;
@@ -531,143 +414,4 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-  white-space: nowrap;
-  flex-shrink: 0;
-  font-family: "Noto Sans KR", sans-serif;
-  min-width: 60px;
-}
-
-.send-button:hover:not(:disabled) {
-  transform: scale(1.05);
-}
-
-.send-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-  .chat-bubble {
-    width: 90vw;
-    max-width: 380px;
-  }
-
-  .chat-messages {
-    max-height: 300px; /* [2025-11-04 김민중 수정] 선택지 포함을 위해 증가 */
-    min-height: 150px;
-  }
-
-  .chat-input {
-    font-size: 12px;
-    padding: 8px 12px;
-  }
-
-  .send-button {
-    padding: 8px 16px;
-    font-size: 12px;
-    min-width: 50px;
-  }
-
-  .voice-button {
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
-  }
-
-  .choice-btn {
-    font-size: 12px;
-    padding: 9px 16px; /* 가로 배치 최적화 */
-  }
-
-  .menu-btn {
-    font-size: 13px;
-    padding: 10px 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .dino-wrapper {
-    bottom: 20px;
-    right: 15px;
-  }
-
-  .dino-container {
-    width: 120px !important;
-    height: 120px !important;
-    min-width: 120px !important;
-    min-height: 120px !important;
-    max-width: 120px !important;
-    max-height: 120px !important;
-  }
-
-  .dino-lottie {
-    width: 120px !important;
-    height: 120px !important;
-  }
-
-  .chat-bubble {
-    width: 85vw;
-    max-width: 320px;
-  }
-
-  .chat-messages {
-    max-height: 250px; /* [2025-11-04 김민중 수정] 선택지 포함을 위해 증가 */
-    min-height: 120px;
-    padding: 10px;
-  }
-
-  .message p {
-    font-size: 12px;
-    padding: 7px 10px;
-  }
-
-  .chat-input {
-    font-size: 11px;
-    padding: 7px 10px;
-  }
-
-  .send-button {
-    padding: 7px 12px;
-    font-size: 11px;
-    min-width: 45px;
-  }
-
-  .voice-button {
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
-  }
-
-  .choice-btn {
-    font-size: 11px;
-    padding: 8px 14px; /* 가로 배치 최적화 */
-  }
-
-  .menu-btn {
-    font-size: 12px;
-    padding: 9px 12px;
-  }
-
-  .chat-title {
-    font-size: 14px;
-  }
-}
-
-/* 큰 화면 대응 */
-@media (min-width: 1920px) {
-  .chat-bubble {
-    width: 450px;
-    max-height: 650px;
-  }
-
-  .chat-messages {
-    max-height: 500px; /* [2025-11-04 김민중 수정] 선택지 포함을 위해 증가 */
-  }
-
-  .choice-btn {
-    font-size: 14px;
-    padding: 12px 24px; /* 가로 배치 최적화 */
-  }
 }

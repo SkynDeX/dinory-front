@@ -99,36 +99,27 @@ function DinoCharacter() {
     }
   };
 
-
   const handleClick = async () => {
     setIsJumping(true);
     setTimeout(() => setIsJumping(false), 600);
 
-    // [2025-11-07 수정] 이미 열려있으면 닫기 (대화 기록은 유지)
     if (isOpen) {
       setIsOpen(false);
-      // 세션은 종료하지 않음 - 다음에 열 때 계속 이어서 대화
-      // setMessages([]) 삭제 - 대화 기록 유지
       setInputMessage("");
       setIsTextInputMode(false);
       setIsMenuOpen(false);
       return;
     }
 
-    // [2025-11-07 수정] 공룡 클릭 시 활성 세션 조회 또는 생성
     setIsOpen(true);
     setIsLoading(true);
 
     try {
       const childId = user?.id || null;
-
-      // 활성 세션 조회/생성 (과거 대화 내역 포함)
       const response = await chatApi.getOrCreateActiveSession(childId);
       setSessionId(response.sessionId);
 
-      // 과거 대화 내역이 있으면 표시
       if (response.messages && response.messages.length > 0) {
-        console.log(`✅ 기존 대화 ${response.messages.length}개 불러오기`);
         setMessages(
           response.messages.map((msg) => ({
             sender: msg.sender === "AI" ? "AI" : "USER",
@@ -137,8 +128,6 @@ function DinoCharacter() {
           }))
         );
       } else {
-        // 새로운 세션 - 초기 인사
-        console.log("🆕 새로운 세션 시작");
         setMessages([
           {
             sender: "AI",
@@ -148,7 +137,6 @@ function DinoCharacter() {
         ]);
       }
 
-      // 초기 선택지
       setChoices([
         "오늘 기분이 어때?",
         "재미있는 이야기 들려줘",
@@ -158,8 +146,6 @@ function DinoCharacter() {
       setDinoEmotion("neutral");
     } catch (error) {
       console.error("채팅 세션 초기화 실패:", error);
-
-      // 오프라인 모드
       setMessages([
         {
           sender: "AI",
@@ -167,7 +153,6 @@ function DinoCharacter() {
           createdAt: new Date(),
         },
       ]);
-
       setChoices([
         "오늘 기분이 어때?",
         "재미있는 이야기 들려줘",
@@ -232,15 +217,12 @@ function DinoCharacter() {
 
     try {
       const response = await chatApi.sendMessage(sessionId, currentMessage);
-
       const aiMessage = {
         sender: "AI",
         message: response.aiResponse,
         createdAt: new Date(),
       };
       setMessages((prev) => [...prev, aiMessage]);
-
-      // [2025-11-04 김민중 수정] AI 기반 동적 선택지 생성 (await 추가)
       await generateChoices(response.aiResponse);
     } catch (error) {
       console.error("메시지 전송 실패:", error);
@@ -253,35 +235,25 @@ function DinoCharacter() {
           createdAt: new Date(),
         },
       ]);
-
       setChoices(["다시 시도하기", "다른 질문하기", "메뉴", "직접 입력하기"]);
-      setDinoEmotion("neutral"); // [2025-11-04 김민중 추가] 에러 시 감정 초기화
+      setDinoEmotion("neutral");
     } finally {
       setIsLoading(false);
       setIsTextInputMode(false);
     }
   };
 
-  // [2025-11-04 김민중 수정] AI 기반 동적 선택지 생성
   const generateChoices = async (lastMessage) => {
     try {
       const childId = user?.id || null;
       const response = await chatApi.generateChoices(sessionId, childId, lastMessage);
-
-      // AI가 생성한 선택지 + 고정 선택지 ("메뉴", "직접 입력하기")
       const dynamicChoices = response.choices || [];
       const fixedChoices = ["메뉴", "직접 입력하기"];
       const allChoices = [...dynamicChoices, ...fixedChoices];
-
       setChoices(allChoices);
-
-      // AI가 반환한 감정으로 Dino 감정 업데이트
-      if (response.emotion) {
-        setDinoEmotion(response.emotion);
-      }
+      if (response.emotion) setDinoEmotion(response.emotion);
     } catch (error) {
       console.error("선택지 생성 실패:", error);
-      // 실패 시 기본 선택지 사용
       setChoices(["더 알려줘", "다른 이야기", "메뉴", "직접 입력하기"]);
       setDinoEmotion("neutral");
     }
@@ -296,12 +268,10 @@ function DinoCharacter() {
 
   return (
     <div className="dino-wrapper">
-      {/* 공룡 본체 */}
       <div
         className={`dino-container ${isJumping ? "jump" : ""}`}
         onClick={handleClick}
       >
-        {/* [2025-11-04 김민중 수정] 감정에 따라 애니메이션 변경 */}
         <Lottie
           animationData={getDinoAnimation()}
           loop
@@ -311,14 +281,12 @@ function DinoCharacter() {
         />
       </div>
 
-      {/* 채팅 박스 */}
       {isOpen && (
         <div className="speech-bubble chat-bubble">
           <div className="chat-header">
             <p className="chat-title">디노와 대화</p>
           </div>
 
-          {/* [2025-11-04 김민중 수정] 메시지와 선택지를 하나의 컨테이너로 통합 */}
           <div className="chat-messages">
             {messages.map((msg, index) => (
               <div
@@ -334,7 +302,6 @@ function DinoCharacter() {
               </div>
             )}
 
-            {/* [2025-11-04 김민중 수정] 선택지를 메시지 컨테이너 안에 배치 */}
             {!isTextInputMode && choices.length > 0 && (
               <div className="choices-inline">
                 {choices.map((choice, index) => (
@@ -349,11 +316,9 @@ function DinoCharacter() {
                 ))}
               </div>
             )}
-
             <div ref={messagesEndRef} />
           </div>
 
-          {/* 직접 입력 */}
           {isTextInputMode && (
             <div className="chat-input-container">
               <button
@@ -384,81 +349,77 @@ function DinoCharacter() {
 
           {/* 메뉴 모달 */}
           {isMenuOpen && (
-            <div className="menu-modal">
-              <div className="menu-modal-content">
-                <div className="menu-modal-header">
+            <div className="dino-menu-modal">
+              <div className="dino-menu-content">
+                <div className="dino-menu-header">
                   <h3>메뉴</h3>
-                  <button className="close-btn" onClick={() => setIsMenuOpen(false)}>
+                  <button className="dino-close-btn" onClick={() => setIsMenuOpen(false)}>
                     ✕
                   </button>
                 </div>
-                <div className="menu-modal-body">
+                <div className="dino-menu-body">
                   {!user && (
                     <button
-                      className="menu-btn"
+                      className="dino-menu-btn"
                       onClick={() => {
                         setIsMenuOpen(false);
                         navigate("/login");
                       }}
                     >
-                      {/* [🦕 아이콘 교체됨] */}
-                      <img src={iconLogin} alt="login" className="menu-icon" />
+                      <img src={iconLogin} alt="login" className="dino-menu-icon" />
                       로그인 / 회원가입
                     </button>
                   )}
                   {user && (
                     <>
                       <button
-                        className="menu-btn"
+                        className="dino-menu-btn"
                         onClick={() => {
                           setIsMenuOpen(false);
                           navigate("/main");
                         }}
                       >
-                        <img src={iconHome} alt="home" className="menu-icon" />
+                        <img src={iconHome} alt="home" className="dino-menu-icon" />
                         홈으로 가기
                       </button>
-
                       <button
-                        className="menu-btn"
+                        className="dino-menu-btn"
                         onClick={() => {
                           setIsMenuOpen(false);
                           navigate("/my-dinos");
                         }}
                       >
-
-                        <img src={iconDino} alt="dino" className="menu-icon" />
+                        <img src={iconDino} alt="dino" className="dino-menu-icon" />
                         내 공룡 친구들
                       </button>
-
                       <button
-                        className="menu-btn"
+                        className="dino-menu-btn"
                         onClick={() => {
                           setIsMenuOpen(false);
                           navigate("/child/registration");
                         }}
                       >
-                        <img src={iconGirl} alt="child" className="menu-icon" />
+                        <img src={iconGirl} alt="child" className="dino-menu-icon" />
                         자녀 등록
                       </button>
                       <button
-                        className="menu-btn"
+                        className="dino-menu-btn"
                         onClick={() => {
                           setIsMenuOpen(false);
                           navigate("/parent/dashboard");
                         }}
                       >
-                        <img src={iconDashboard} alt="dashboard" className="menu-icon" />
+                        <img src={iconDashboard} alt="dashboard" className="dino-menu-icon" />
                         대시보드
                       </button>
                       <button
-                        className="menu-btn"
+                        className="dino-menu-btn"
                         onClick={() => {
                           setIsMenuOpen(false);
                           handleLogout();
                         }}
                       >
-                        <img src={iconLogout} alt="logout" className="menu-icon" />
+                        <img src={iconLogout} alt="logout" className="dino-menu-icon" />
                         로그아웃
                       </button>
                     </>

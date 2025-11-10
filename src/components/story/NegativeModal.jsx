@@ -1,5 +1,6 @@
 import React from "react";
 import "../../components/story/NegativeModal.css";
+import warningIcon from "../../assets/icons/book.png";
 
 function NegativeModal({isOpen, onClose, title, message, type = 'info'}) {
     if(!isOpen) {
@@ -11,7 +12,9 @@ function NegativeModal({isOpen, onClose, title, message, type = 'info'}) {
             <div className="modal_container" onClick={(e) => e.stopPropagation()}>
                 <div className={`modal_header modal_${type}`}>
                     <span className="modal_icon">
-                        {type === 'warning' && '⚠️'}
+                        {type === "warning" && (
+                            <img src={warningIcon} alt="경고" className="modal_icon_img" />
+                        )}
                         {type === 'error' && '❌'}
                         {type === 'success' && '✅'}
                         {type === 'info' && 'ℹ️'}

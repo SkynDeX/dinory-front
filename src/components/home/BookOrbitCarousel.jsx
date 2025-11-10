@@ -15,11 +15,30 @@ import bkid from "../../assets/icons/bkid.png";
 import gkid from "../../assets/icons/gkid.png";
 
 const books = [
-  { id: 1, title: "달 위의 곰돌이", image: "/assets/intro/01.png", desc: "달 위에서 꿈꾸는 귀여운 곰돌이 이야기" },
-  { id: 2, title: "바다의 인어", image: "/assets/intro/02.png", desc: "푸른 바다 속 인어의 노래" },
-  { id: 3, title: "꿈나라 기차", image: "/assets/intro/03.png", desc: "밤하늘을 달리는 꿈나라 기차" },
-  { id: 4, title: "마법 고양이", image: "/assets/intro/04.png", desc: "마법 지팡이를 든 고양이의 모험" },
-  { id: 5, title: "무지개 유니콘", image: "/assets/intro/05.png", desc: "무지개를 달리는 유니콘의 이야기" },
+  { id: 1, 
+    title: "달 위의 곰돌이", 
+    image: "/assets/intro/01.png", 
+    desc: "달 위에서 꿈꾸는 귀여운 곰돌이 이야기" },
+
+  { id: 2, 
+    title: "바다의 인어", 
+    image: "/assets/intro/02.png", 
+    desc: "푸른 바다 속 인어의 노래" },
+
+  { id: 3, 
+    title: "꿈나라 기차", 
+    image: "/assets/intro/03.png", 
+    desc: "밤하늘을 달리는 꿈나라 기차" },
+
+  { id: 4, 
+    title: "마법 고양이", 
+    image: "/assets/intro/04.png", 
+    desc: "마법 지팡이를 든 고양이의 모험" },
+
+  { id: 5, 
+    title: "무지개 유니콘", 
+    image: "/assets/intro/05.png", 
+    desc: "무지개를 달리는 유니콘의 이야기" },
 ];
 
 const THEME_COLORS = ["#2fa36b", "#ff9b7a", "#87ceeb", "#ffd166"];
