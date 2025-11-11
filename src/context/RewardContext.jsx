@@ -143,7 +143,7 @@ export const RewardProvider = ({ children }) => {
         console.log("childId:", childId);
         
       const remaining = dinoList.filter(
-        (d) => !dinos.some((owned) => owned.name === d.name)
+        (d) => !dinos.some((owned) => owned.colorType === d.colorType)
       );
       if (remaining.length === 0) {
         alert("모든 공룡을 다 모았어요!");
@@ -185,6 +185,15 @@ export const RewardProvider = ({ children }) => {
       }, 500); // 렌더 프레임 안정화
     } catch (err) {
       console.error("공룡 부화 실패:", err);
+
+      // [2025-11-11 김광현] 공룡 중복 체킁
+      if(err.response?.data?.includes("이미 보유중인 공룡")) {
+        console.log("중복 공룡 - 다른 공룡으로 시도");
+        // 중복 된 경우 다른 랜덤 공룡
+        await hatchEgg();
+        return;
+      }
+
       alert("공룡 부화에 실패했어요! 다시 시도해주세요.");
     }
   };

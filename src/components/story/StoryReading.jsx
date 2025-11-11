@@ -102,6 +102,13 @@ function StoryReading() {
         try {
             console.log("🎯 선택됨:", choice);
 
+            // [2025-11-11 김광현] 추가 동화 완료 버튼 클릭 시
+            if(choice.isEnding) {
+                console.log("=== 동화 완료 버튼 클릭!! ===");
+                await handleStoryComplete();
+                return;
+            }
+
             // 커스텀(글쓰기) 경우 먼저 분석함
             let finalChoice = choice;
 
@@ -284,7 +291,7 @@ function StoryReading() {
                 <div className="reward-popup-overlay">
                     <div className="reward-popup-box">
                         <div className="popup-star-animation">⭐</div>
-                        <h2>동화 완료!</h2>
+                        <h2>🎉 동화 완료!</h2>
                         <p className="popup-reward-text">별 1개를 획득했어요!</p>
                         
                         {earnedEgg ? (
