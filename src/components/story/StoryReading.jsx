@@ -39,6 +39,7 @@ function StoryReading() {
     // [2025-11-11 추가] TTS 관련 상태
     const [isPlayingTts, setIsPlayingTts] = useState(false);
     const [isTtsLoading, setIsTtsLoading] = useState(false);
+    const [preloadedAudioBlob, setPreloadedAudioBlob] = useState(null); // 미리 다운받은 TTS Blob
     const audioRef = useRef(null); // 오디오 재생용 ref
 
 
@@ -208,7 +209,7 @@ function StoryReading() {
         }
     };
 
-    // [2025-11-11 추가] TTS 재생/정지 토글
+    // [2025-11-11 수정] TTS 재생/정지 토글 (사전 다운로드된 Blob 사용)
     const handleTtsToggle = async () => {
         try {
             // 재생 중이면 정지
@@ -221,16 +222,19 @@ function StoryReading() {
                 return;
             }
 
-            // 장면 내용이 없으면 리턴
-            if (!currentScene || !currentScene.content) {
-                alert('읽을 내용이 없습니다.');
-                return;
+            // 미리 다운받은 Blob이 없으면 다시 다운로드 시도
+            let audioBlob = preloadedAudioBlob;
+            if (!audioBlob) {
+                console.log('⚠️ 사전 다운로드된 TTS 없음 - 새로 다운로드');
+                if (!currentScene || !currentScene.content) {
+                    alert('읽을 내용이 없습니다.');
+                    return;
+                }
+
+                setIsTtsLoading(true);
+                audioBlob = await generateGeminiTts(currentScene.content);
+                setIsTtsLoading(false);
             }
-
-            setIsTtsLoading(true);
-
-            // Gemini TTS로 음성 생성
-            const audioBlob = await generateGeminiTts(currentScene.content);
 
             // Blob을 오디오 URL로 변환
             const audioUrl = URL.createObjectURL(audioBlob);
@@ -246,7 +250,6 @@ function StoryReading() {
             audio.onerror = (error) => {
                 console.error('❌ 오디오 재생 실패:', error);
                 setIsPlayingTts(false);
-                setIsTtsLoading(false);
                 alert('음성 재생에 실패했습니다.');
                 URL.revokeObjectURL(audioUrl);
             };
@@ -256,12 +259,11 @@ function StoryReading() {
             // 재생 시작
             await audio.play();
             setIsPlayingTts(true);
-            setIsTtsLoading(false);
 
-            console.log('🎵 TTS 재생 시작');
+            console.log('🎵 TTS 재생 시작 (사전 다운로드 사용)');
 
         } catch (error) {
-            console.error('❌ TTS 생성 실패:', error);
+            console.error('❌ TTS 재생 실패:', error);
             setIsTtsLoading(false);
             alert('동화 읽기에 실패했습니다.');
         }
@@ -277,14 +279,40 @@ function StoryReading() {
         };
     }, []);
 
-    // [2025-11-11 추가] 장면 변경 시 오디오 정지
+    // [2025-11-11 수정] 장면 변경 시 TTS 미리 다운로드 + 오디오 정지
     useEffect(() => {
+        // 재생 중이면 정지
         if (audioRef.current && isPlayingTts) {
             audioRef.current.pause();
             audioRef.current = null;
             setIsPlayingTts(false);
         }
-    }, [currentSceneNumber]);
+
+        // 새 장면의 TTS 미리 다운로드
+        const preloadTts = async () => {
+            if (!currentScene || !currentScene.content) {
+                console.log('⚠️ 장면 내용 없음 - TTS 미리 다운로드 스킵');
+                return;
+            }
+
+            try {
+                console.log('📥 TTS 미리 다운로드 시작:', currentScene.sceneNumber);
+                setIsTtsLoading(true);
+
+                const audioBlob = await generateGeminiTts(currentScene.content);
+                setPreloadedAudioBlob(audioBlob);
+
+                console.log('✅ TTS 미리 다운로드 완료:', audioBlob.size, 'bytes');
+                setIsTtsLoading(false);
+            } catch (error) {
+                console.error('❌ TTS 미리 다운로드 실패:', error);
+                setPreloadedAudioBlob(null);
+                setIsTtsLoading(false);
+            }
+        };
+
+        preloadTts();
+    }, [currentScene, currentSceneNumber]);
 
     const handleStoryComplete = async () => {
         try {
