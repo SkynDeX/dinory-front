@@ -1,12 +1,13 @@
 import React, { createContext, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import axios from "axios";
+// import axios from "axios"; // [2025-11-11 김광현] axiosInstance.js로 교체
+import axiosInstance from "../services/api/axiosInstance";
 import EggHatchModal from "../components/dino/EggHatchModal";
 import { useChild } from "./ChildContext";
 
 export const RewardContext = createContext();
 
-axios.defaults.baseURL = "";
+// axios.defaults.baseURL = "";
 
 export const RewardProvider = ({ children }) => {
   const [stars, setStars] = useState(0);
@@ -14,7 +15,7 @@ export const RewardProvider = ({ children }) => {
   const [dinos, setDinos] = useState([]);
   const [isHatching, setIsHatching] = useState(false);
   const [currentHatch, setCurrentHatch] = useState(null);
-  const token = localStorage.getItem("accessToken");
+  // const token = localStorage.getItem("accessToken");
   const {selectedChild} = useChild();
 
   const dinoList = [
@@ -32,25 +33,26 @@ export const RewardProvider = ({ children }) => {
 
   /* 초기 리워드 데이터 로드 */
   useEffect(() => {
-    if (!token) return;
+    // if (!token) return;
     const fetchData = async () => {
       try {
-
         const childId = selectedChild?.id;
         if (!childId) {
           console.log("선택된 자녀가 없습니다!!");
           return;
         }
 
-        const rewardRes = await axios.get(`/api/child/reward/${childId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        // const rewardRes = await axiosInstance.get(`/api/child/reward/${childId}`, {
+        //   headers: { Authorization: `Bearer ${token}` },
+        // });
+        const rewardRes = await axiosInstance.get(`/api/child/reward/${childId}`);
         setStars(rewardRes.data.stars);
         setEggs(rewardRes.data.eggs);
 
-        const dinoRes = await axios.get(`/api/dino/child/${childId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        // const dinoRes = await axiosInstance.get(`/api/dino/child/${childId}`, {
+        //   headers: { Authorization: `Bearer ${token}` },
+        // });
+        const dinoRes = await axiosInstance.get(`/api/dino/child/${childId}`);
 
         const mappedDinos = (dinoRes.data || []).map((d) => ({
           name: d.name || d.dinoName || d.dino_name || "이름 없는 공룡",
@@ -62,7 +64,7 @@ export const RewardProvider = ({ children }) => {
       }
     };
     fetchData();
-  }, [token, selectedChild]);
+  }, [selectedChild]);  // [2025-11-11 김광현] token 의존성 제거
 
   /* 별 추가 */
   const addStar = async () => {
@@ -74,20 +76,25 @@ export const RewardProvider = ({ children }) => {
           return;
         }
 
-      const res = await axios.post(
-        `/api/child/reward/${childId}/star`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      // const res = await axiosInstance.post(
+      //   `/api/child/reward/${childId}/star`,
+      //   {},
+      //   { headers: { Authorization: `Bearer ${token}` } }
+      // );
+      const res = await axiosInstance.post(`/api/child/reward/${childId}/star`);
       const newStars = res.data.stars;
       const newEggs = res.data.eggs;
 
       setStars(newStars);
       setEggs(newEggs);
 
-      if (newStars === 0 && newEggs > eggs) {
+      console.log("자동 부화 체크 : ", {newStars, newEggs, oldEggs: eggs })
+
+      // [2025-11-11 김광현] 알 증가하면 자동 부화
+      // if (newStars === 0 && newEggs > eggs) {
+      if (newEggs > eggs) {
         await hatchEgg();  
-    }
+      }
     
     } catch (err) {
       console.error("별 추가 실패:", err);
@@ -104,16 +111,19 @@ export const RewardProvider = ({ children }) => {
           return;
         }
 
-      const res = await axios.post(
-        `/api/child/reward/${childId}/egg`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      // const res = await axiosInstance.post(
+      //   `/api/child/reward/${childId}/egg`,
+      //   {},
+      //   { headers: { Authorization: `Bearer ${token}` } }
+      // );
+      const res = await axiosInstance.post(`/api/child/reward/${childId}/egg`);
       const newStars = res.data.stars ?? stars;
       const newEggs = res.data.eggs ?? eggs;
       setStars(newStars);
       setEggs(newEggs);
-      if (newEggs >= 1) await hatchEgg();
+      if (newEggs >= 1) {
+        await hatchEgg();
+      }
     } catch (err) {
       console.error("알 추가 실패:", err);
     }
@@ -121,6 +131,7 @@ export const RewardProvider = ({ children }) => {
 
   /* 부화 로직 (성능 개선 버전) */
   const hatchEgg = async () => {
+    console.log("hathEgg() 함수 시작")
     try {
 
       const childId = selectedChild?.id;
@@ -128,6 +139,8 @@ export const RewardProvider = ({ children }) => {
           console.log("선택된 자녀가 없습니다!!");
           return;
         }
+
+        console.log("childId:", childId);
         
       const remaining = dinoList.filter(
         (d) => !dinos.some((owned) => owned.name === d.name)
@@ -139,22 +152,40 @@ export const RewardProvider = ({ children }) => {
       const random = Math.floor(Math.random() * remaining.length);
       const newDino = remaining[random];
 
-      const res = await axios.post(
-         `/api/dino/child/${childId}/hatch`,
+      // const res = await axiosInstance.post(
+      //    `/api/dino/child/${childId}/hatch`,
+      //   null,
+      //   {
+      //     params: { name: newDino.name, colorType: newDino.colorType },
+      //     headers: { Authorization: `Bearer ${token}` },
+      //   }
+      // );
+      const res = await axiosInstance.post(
+        `/api/dino/child/${childId}/hatch`,
         null,
-        {
-          params: { name: newDino.name, colorType: newDino.colorType },
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { params: { name: newDino.name, colorType: newDino.colorType } }
       );
 
+      console.log("부화 API 응답:", res.data);
+
+      // 공룡 목록에 추가
+      const hatchDino = {
+        name: newDino.name,
+        colorType: newDino.colorType,
+      };
+
       setDinos((prev) => [...prev, res.data]);
+
+      // 알 갯수 차감
+      setEggs((prev) => Math.max(0, prev -1));
+
       setTimeout(() => {
         setCurrentHatch(newDino);
         setIsHatching(true);
       }, 500); // 렌더 프레임 안정화
     } catch (err) {
       console.error("공룡 부화 실패:", err);
+      alert("공룡 부화에 실패했어요! 다시 시도해주세요.");
     }
   };
 
@@ -166,7 +197,7 @@ export const RewardProvider = ({ children }) => {
 
   return (
     <RewardContext.Provider
-      value={{ stars, eggs, dinos, addStar, addEgg, isHatching, currentHatch }}
+      value={{ stars, eggs, dinos, setStars, setEggs, setDinos, addStar, addEgg, hatchEgg, isHatching, currentHatch, setIsHatching }}
     >
       {children}
 

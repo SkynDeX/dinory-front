@@ -198,3 +198,43 @@
   transform: scale(1.05);
   box-shadow: 0 6px 25px rgba(47, 163, 107, 0.4);
 }
+
+/* 알 수동 부화 */
+.egg-section {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  position: relative;  /* [추가] */
+  z-index: 1;          /* [추가] */
+}
+
+.egg-count {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.hatch-btn {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #ff9a56, #ff6a88);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 106, 136, 0.4);
+  transition: all 0.3s ease;
+}
+
+.hatch-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 106, 136, 0.6);
+}
+
+.hatch-btn:active {
+  transform: translateY(0);
+}

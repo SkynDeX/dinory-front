@@ -8,6 +8,7 @@ import NegativeModal from "./NegativeModal";
 import { RewardContext } from "../../context/RewardContext";
 
 import LoadingScreen from "../../components/common/LoadingScreen.jsx";
+import axiosInstance from "../../services/api/axiosInstance.js";
 
 const MAX_SCENES = 8;
 
@@ -30,7 +31,7 @@ function StoryReading() {
         type: 'info'
     });
     // [2025-11-07 김광현 추가] 보상관련
-    const {addStar, stars, eggs} = useContext(RewardContext);
+    const {addStar, stars, eggs, setStars, setEggs, hatchEgg} = useContext(RewardContext);
     const [showRewardPopup, setShowRewardPopup] = useState(false);
     const [earnedEgg, setEarnedEgg] = useState(false);  // 알 획득 여부
 
@@ -199,34 +200,45 @@ function StoryReading() {
             const endTime = Date.now();
             const totalTime = Math.floor((endTime - startTime) / 1000);
 
-            console.log("🎉 동화 완료 처리:", { totalTime });
+            console.log("동화 완료 처리:", { totalTime });
 
             await completeStory(completionId, { totalTime });
 
-            // [2025-11-07 김광현] 별 추가 로직
-            const previousStars = stars;
-            console.log("별 1개 획득!!!");
-            await addStar();
+            console.log("동화 완료! 별 1개 획득!!!(백엔드처리)");
 
-            // 별 5개에서 0개로 바뀌었으면 알을 얻음
-            if(previousStars === 4) {
-                setEarnedEgg(true);
+            // [2025-11-11 김광현] 업데이트된 보상 데이터 가져오기
+            const childId = selectedChild?.id;
+            if (childId) {
+                const rewardRes = await axiosInstance.get(`/api/child/reward/${childId}`);
+                const newStars = rewardRes.data.stars;
+                const newEggs = rewardRes.data.eggs;
+                
+                console.log("최신 보상 데이터:", { newStars, newEggs, oldEggs: eggs });
+                
+                // Context 상태 업데이트
+                setStars(newStars);
+                setEggs(newEggs);
+                
+                // 알을 획득했는지 체크
+                if (newEggs > eggs) {
+                    console.log("알 획득! 자동 부화 시작");
+                    setEarnedEgg(true);
+                    // 자동 부화 트리거
+                    await hatchEgg();
+                }
             }
 
-
-            // 보상 팝업 표시(3초 후 사라짐)
+            // 보상 팝업 표시
             setShowRewardPopup(true);
 
             setTimeout(() => {
                 setShowRewardPopup(false);
-                // setIsCompleted(true);
-                // [2025-11-05 김광현] 챗봇으로 바로 이동
-                console.log("✅ 동화 완료! 챗봇 페이지로 이동:", `/chat/story/${completionId}`);
+                console.log("동화 완료! 챗봇 페이지로 이동:", `/chat/story/${completionId}`);
                 navigate(`/chat/story/${completionId}`);              
-            }, 3000);
+            }, 5000);
 
         } catch (error) {
-            console.error("❌ 동화 완료 처리 실패:", error);
+            console.error("동화 완료 처리 실패:", error);
             alert("동화 완료 처리에 실패했습니다.");
         }
     };
