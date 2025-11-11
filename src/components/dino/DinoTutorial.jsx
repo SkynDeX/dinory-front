@@ -25,7 +25,7 @@ function DinoTutorial() {
         <Lottie animationData={dinoHappy} loop autoplay className="tutorial-dino" />
 
         <div className="tutorial-bubble">
-          <h3>안녕! 나는 디노야! 🦖</h3>
+          <h3>안녕! 나는 디노야!</h3>
           <p>
             여기는 네가 키운 공룡들이 사는 마을이야.<br />
             <b>“꾸미기”</b> 버튼을 눌러서<br />
