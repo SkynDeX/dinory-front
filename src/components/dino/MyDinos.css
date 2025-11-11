@@ -1,9 +1,9 @@
-/* 🦕 전체 배경 */
+/* 전체 배경 */
 .mydinos-wrapper {
   position: relative;
   width: 100%;
   height: 100vh;
-  overflow: hidden;
+  /* overflow: hidden; */
   background: url("../../assets/dinosaur-jungle.png") no-repeat center center / cover;
   font-family: "Noto Sans KR", sans-serif;
   color: #333;
@@ -42,28 +42,44 @@
   50% { transform: translate(-50%, -6px); }
 }
 
-/* 공룡 마을 영역 (자유 배치) */
+/* 공룡 마을 영역 */
 .dino-room {
   position: relative;
-  width: 90%;
-  height: 80vh;
+  width: 100%;
+  height: 75vh;
   border-radius: 28px;
   overflow: hidden;
   background: linear-gradient(180deg, #d9f7d0, #b7e8a4);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   z-index: 1;
+  margin-top: 60px;
 }
+
 
 /* 테마별 배경 */
 .theme-forest {
-  background: linear-gradient(180deg, #d9f7d0, #b7e8a4);
+  background: url("../../assets/backgrounds/forest_bg.png") no-repeat center center / cover;
 }
+
 .theme-desert {
-  background: linear-gradient(180deg, #ffe5b3, #f8c37e);
+  background: url("../../assets/backgrounds/desert_bg.png") no-repeat center center / cover;
 }
+
 .theme-snow {
-  background: linear-gradient(180deg, #e0f7ff, #b3e5ff);
+  background: url("../../assets/backgrounds/snow_bg.png") no-repeat center center / cover;
 }
+
+.dino-room::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(1px);
+  z-index: -1;
+}
+
+
+
 
 /* 공룡 아이템 */
 .dino-draggable {
@@ -157,3 +173,286 @@
   transform: translateX(-50%) scale(1.05);
   box-shadow: 0 6px 25px rgba(47, 163, 107, 0.4);
 }
+
+
+/* 하트 반짝 효과 */
+.heart-float {
+  position: fixed;
+  font-size: 32px;
+  pointer-events: none;
+  transition: all 1s ease;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  z-index: 9999;
+}
+
+/* 애정도 바 */
+.affection-bar {
+  width: 80px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  margin: 6px auto 0;
+  overflow: hidden;
+}
+
+.affection-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff9b7a, #ffd166);
+  transition: width 0.4s ease;
+  border-radius: 8px;
+}
+
+/* 하트 반짝 효과 */
+.heart-float {
+  position: fixed;
+  font-size: 32px;
+  pointer-events: none;
+  transition: all 1s ease;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  z-index: 9999;
+}
+
+/* 반짝이 효과 */
+.sparkle {
+  position: fixed;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.9), transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: sparkleAnim 1.2s ease-out forwards;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+@keyframes sparkleAnim {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  60% { transform: translate(-50%, -50%) scale(2); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+}
+
+/* 말풍선 */
+.speech-bubble {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fffefc;
+  border: 2px solid #ffd166;
+  border-radius: 18px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  white-space: nowrap;
+}
+
+
+/* 여러 하트 이펙트 */
+.heart-float {
+  position: fixed;
+  font-size: 28px;
+  pointer-events: none;
+  transition: all 1s ease;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  z-index: 9999;
+}
+
+/* 반짝이 효과 */
+.sparkle {
+  position: fixed;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.9), transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: sparkleAnim 1.2s ease-out forwards;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+@keyframes sparkleAnim {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  60% { transform: translate(-50%, -50%) scale(2); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+}
+
+/* 말풍선 */
+.speech-bubble {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fffefc;
+  border: 2px solid #ffd166;
+  border-radius: 18px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  white-space: nowrap;
+}
+
+/* 꾸미기 버튼 / 저장 버튼 */
+.decorate-controls {
+  position: absolute;
+  top: 80px;
+  right: 30px;
+  z-index: 50;
+  display: flex;
+  gap: 10px;
+}
+
+.decorate-btn,
+.save-decorate-btn {
+  background: linear-gradient(90deg, #2fa36b, #87ceeb);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 8px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(47, 163, 107, 0.3);
+}
+
+.decorate-btn:hover,
+.save-decorate-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 25px rgba(47, 163, 107, 0.4);
+}
+
+/* 오브젝트 선택 툴바 */
+.object-toolbar {
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 12px 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  z-index: 50;
+  backdrop-filter: blur(4px);
+  animation: fadeInToolbar 0.3s ease-in-out;
+}
+
+@keyframes fadeInToolbar {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* 오브젝트 아이템 */
+.decor-option {
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.25s ease;
+  background: rgba(255,255,255,0.6);
+  padding: 6px;
+}
+
+.decor-option:hover {
+  transform: scale(1.1);
+  background: rgba(255,255,255,0.9);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* 배치된 오브젝트 */
+.decor-item {
+  position: absolute;
+  transition: transform 0.25s ease;
+  user-select: none;
+}
+
+.decor-item:hover {
+  transform: scale(1.05);
+}
+
+/* 오브젝트 삭제 버튼 */
+.delete-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: rgba(255, 80, 80, 0.85);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 14px;
+  line-height: 20px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.decor-wrapper:hover .delete-btn {
+  opacity: 1;
+}
+
+.delete-btn:hover {
+  background: rgba(255, 50, 50, 1);
+}
+
+.dino-lottie {
+  width: 120px;
+  height: 120px;
+  pointer-events: none;
+  z-index: 1; 
+  position: relative;
+}
+
+/* 알 수동 부화 */
+.egg-section {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  position: relative;  /* [추가] */
+  z-index: 1;          /* [추가] */
+}
+
+.egg-count {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.hatch-btn {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #ff9a56, #ff6a88);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 106, 136, 0.4);
+  transition: all 0.3s ease;
+}
+
+.hatch-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 106, 136, 0.6);
+}
+
+.hatch-btn:active {
+  transform: translateY(0);
+}
+
