@@ -14,6 +14,7 @@ function SceneView({ scene, totalScenes, onChoiceSelect }) {
     }, [scene.sceneNumber]);
 
     // [2025-11-04 김광현] 동화생성 이미지 비동기
+    // [2025-11-11 수정] 폴링 간격 및 타임아웃 증가 (이미지 생성 시간 고려)
     useEffect(() => {
         // sceneId가 없거나 이미 imageUrl이 있으면 스킵
         if (!scene.sceneId || imageUrl) {
@@ -23,10 +24,10 @@ function SceneView({ scene, totalScenes, onChoiceSelect }) {
         console.log(`씬 ${scene.sceneNumber} 이미지 폴링 시작...`);
 
         let attemptCount = 0;
-        const maxAttempts = 20; 
+        const maxAttempts = 60;  // [2025-11-11] 20 → 60 증가 (AI 이미지 생성 시간 고려)
         let isMounted = true;  // cleanup 체크용
 
-        // 2초마다 이미지 확인
+        // [2025-11-11] 500ms → 2000ms로 증가 (서버 부하 감소, 총 대기 시간 120초)
         const interval = setInterval(async () => {
             if (!isMounted) {
                 clearInterval(interval);
@@ -38,24 +39,24 @@ function SceneView({ scene, totalScenes, onChoiceSelect }) {
             try {
                 // axiosInstance 사용 (인증 토큰 자동 포함)
                 const response = await axiosInstance.get(`/api/story/scene/${scene.sceneId}/image`);
-                
+
                 if (response.data && response.data.imageUrl) {
-                    console.log(`씬 ${scene.sceneNumber} 이미지 로드 완료`);
+                    console.log(`✅ 씬 ${scene.sceneNumber} 이미지 로드 완료 (${attemptCount}번째 시도)`);
                     setImageUrl(response.data.imageUrl);
                     clearInterval(interval);
                 } else {
-                    console.log(`이미지 아직 생성 중... (${attemptCount}/${maxAttempts})`);
+                    console.log(`⏳ 이미지 생성 중... (${attemptCount}/${maxAttempts}) - 최대 ${Math.floor(maxAttempts * 2 / 60)}분 대기`);
                 }
             } catch (error) {
-                console.log(`이미지 로딩 중... (${attemptCount}/${maxAttempts})`, error.message);
+                console.log(`⚠️ 이미지 로딩 중... (${attemptCount}/${maxAttempts})`, error.message);
             }
 
             // 최대 시도 횟수 초과 시 포기
             if (attemptCount >= maxAttempts) {
-                console.log(`씬 ${scene.sceneNumber} 이미지 로딩 타임아웃`);
+                console.warn(`⏱️ 씬 ${scene.sceneNumber} 이미지 로딩 타임아웃 (${maxAttempts * 2}초 경과)`);
                 clearInterval(interval);
             }
-        }, 500);
+        }, 2000);  // [2025-11-11] 500ms → 2000ms (2초)
 
         return () => {
             isMounted = false;

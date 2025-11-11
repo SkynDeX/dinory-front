@@ -185,6 +185,7 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
   }, []);
 
   // [2025-11-04 김민중 수정] 동화 추천 키워드 감지 및 자동 추천
+  // [2025-11-11 수정] AI가 의도를 판별하도록 변경
   const handleSend = async () => {
     if (!input.trim() || !sessionId) return;
 
@@ -196,17 +197,19 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
     setIsTyping(true);
 
     try {
+      // AI에게 메시지 전송
       const res = await chatApi.sendMessage(sessionId, text);
       const aiText = res?.aiResponse ?? res?.message ?? '답변을 생성하지 못했습니다.';
-      const aiMsg = { sender: 'assistant', content: aiText, createdAt: new Date().toISOString() };
-      setMessages(prev => [...prev, aiMsg]);
 
-      const recommendKeywords = ['동화 추천', '추천해줘', '추천해', '동화 알려', '다른 동화', '새로운 동화'];
-      const hasRecommendKeyword = recommendKeywords.some(keyword => text.includes(keyword));
-
-      if (hasRecommendKeyword) {
-        console.log('[ChatInterface] 동화 추천 키워드 감지! 자동 추천 시작');
+      // [2025-11-11 추가] AI가 동화 추천 의도를 판별
+      if (aiText.includes('[RECOMMEND_STORY]')) {
+        // 동화 추천 요청이면 추천 컴포넌트 표시
+        console.log('[ChatInterface] AI가 동화 추천 의도 감지! 추천 템플릿 표시');
         await handleRequestRecommendation();
+      } else {
+        // 일반 대화는 AI 응답 표시
+        const aiMsg = { sender: 'assistant', content: aiText, createdAt: new Date().toISOString() };
+        setMessages(prev => [...prev, aiMsg]);
       }
     } catch (e) {
       console.error('sendMessage 실패:', e);
