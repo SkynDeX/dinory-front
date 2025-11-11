@@ -1,240 +1,159 @@
+/* 🦕 전체 배경 */
 .mydinos-wrapper {
-  min-height: 100vh;
-  background: url("../../assets/dinosaur-jungle.png") no-repeat center center / cover;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 80px 20px 60px;
-  font-family: "Noto Sans KR", sans-serif;
   position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: url("../../assets/dinosaur-jungle.png") no-repeat center center / cover;
+  font-family: "Noto Sans KR", sans-serif;
   color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+/* 반투명 오버레이 */
 .mydinos-wrapper::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(1px);
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(2px);
   z-index: 0;
 }
 
-.mydinos-title,
-.empty-text,
-.dino-grid,
-.home-btn {
-  position: relative;
-  z-index: 1;
-}
-
+/* 제목 */
 .mydinos-title {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 32px;
   font-weight: 800;
   background: linear-gradient(90deg, #2fa36b, #87ceeb, #ffd166, #ff9b7a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-align: center;
-  margin-bottom: 40px;
   animation: floatTitle 3s ease-in-out infinite;
+  z-index: 5;
 }
 
 @keyframes floatTitle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, -6px); }
 }
 
+/* 공룡 마을 영역 (자유 배치) */
+.dino-room {
+  position: relative;
+  width: 90%;
+  height: 80vh;
+  border-radius: 28px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #d9f7d0, #b7e8a4);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+}
+
+/* 테마별 배경 */
+.theme-forest {
+  background: linear-gradient(180deg, #d9f7d0, #b7e8a4);
+}
+.theme-desert {
+  background: linear-gradient(180deg, #ffe5b3, #f8c37e);
+}
+.theme-snow {
+  background: linear-gradient(180deg, #e0f7ff, #b3e5ff);
+}
+
+/* 공룡 아이템 */
+.dino-draggable {
+  position: absolute;
+  text-align: center;
+  cursor: grab;
+  transition: transform 0.3s ease;
+  user-select: none;
+  z-index: 2;
+}
+
+.dino-draggable:hover {
+  transform: scale(1.05);
+}
+
+.dino-lottie {
+  width: 120px;
+  height: 120px;
+  pointer-events: none;
+}
+
+.dino-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #444;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+}
+
+/* 테마 선택 버튼 */
+.theme-selector {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.theme-selector button {
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 12px;
+  padding: 6px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #2fa36b;
+}
+
+.theme-selector button.active {
+  background: linear-gradient(90deg, #2fa36b, #87ceeb);
+  color: white;
+  box-shadow: 0 0 8px rgba(47, 163, 107, 0.5);
+}
+
+.theme-selector button:hover {
+  transform: scale(1.1);
+}
+
+/* 빈 상태 */
 .empty-text {
   font-size: 18px;
   color: #666;
   text-align: center;
-  margin-top: 100px;
-}
-
-/* 카드 그리드 */
-.dino-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 25px;
-  width: 100%;
-  max-width: 900px;
-  justify-items: center;
-}
-
-/* 카드 스타일 */
-.dino-card {
-  width: 160px;
-  height: 190px;
-  border-radius: 18px;
-  padding: 15px;
-  text-align: center;
-  color: white;
-  background: linear-gradient(135deg, #a1e3b6, #87ceeb);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.dino-card:nth-child(4n+1) { 
-  background: linear-gradient(135deg, #a6e3e9, #ffd6a5); }
-
-.dino-card:nth-child(4n+2) { 
-  background: linear-gradient(135deg, #ffb5a7, #fcd5ce); }
-
-.dino-card:nth-child(4n+3) { 
-  background: linear-gradient(135deg, #bde0fe, #a2d2ff); }
-  
-.dino-card:nth-child(4n+4) { 
-  background: linear-gradient(135deg, #caffbf, #9bf6ff); }
-
-.dino-card:hover {
-  transform: translateY(-6px) scale(1.05);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
-}
-
-/* 🦕 공룡 애니메이션 */
-.dino-lottie {
-  width: 90px;
-  height: 90px;
-  margin: 0 auto 8px;
-  filter: drop-shadow(0 3px 3px rgba(0,0,0,0.15));
-}
-
-/* 이름만 표시 */
-.dino-name {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.25);
-}
-
-/* 모달 (그대로 유지) */
-.dino-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  animation: fadeIn 0.4s ease forwards;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.dino-modal-content {
-  background: white;
-  border-radius: 25px;
-  padding: 40px 30px;
-  text-align: center;
-  max-width: 400px;
-  width: 85%;
-  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.25);
-  animation: scaleIn 0.4s ease;
-}
-
-@keyframes scaleIn {
-  from { transform: scale(0.8); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.dino-modal-lottie {
-  width: 220px;
-  height: 220px;
-  margin: 0 auto 10px;
-}
-
-.modal-dino-name {
-  font-size: 24px;
-  font-weight: 800;
-  margin-bottom: 10px;
-  color: #2fa36b;
-}
-
-.modal-dino-desc {
-  font-size: 16px;
-  color: #555;
-  line-height: 1.6;
-  margin-bottom: 25px;
-}
-
-.modal-close-btn {
-  background: linear-gradient(90deg, #2fa36b, #87ceeb);
-  color: white;
-  border: none;
-  padding: 10px 25px;
-  border-radius: 20px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.modal-close-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(47, 163, 107, 0.3);
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* 홈 버튼 */
 .home-btn {
-  margin-top: 60px;
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
   background: linear-gradient(90deg, #2fa36b, #87ceeb);
   color: #fff;
   border: none;
   border-radius: 25px;
-  padding: 12px 30px;
-  font-size: 17px;
+  padding: 10px 25px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(47, 163, 107, 0.3);
+  z-index: 10;
 }
 
 .home-btn:hover {
-  transform: scale(1.05);
+  transform: translateX(-50%) scale(1.05);
   box-shadow: 0 6px 25px rgba(47, 163, 107, 0.4);
-}
-
-/* 알 수동 부화 */
-.egg-section {
-  text-align: center;
-  margin-bottom: 20px;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 12px;
-  position: relative;  /* [추가] */
-  z-index: 1;          /* [추가] */
-}
-
-.egg-count {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.hatch-btn {
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: bold;
-  background: linear-gradient(135deg, #ff9a56, #ff6a88);
-  color: white;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(255, 106, 136, 0.4);
-  transition: all 0.3s ease;
-}
-
-.hatch-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 106, 136, 0.6);
-}
-
-.hatch-btn:active {
-  transform: translateY(0);
 }
