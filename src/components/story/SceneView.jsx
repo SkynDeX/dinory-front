@@ -145,7 +145,7 @@ function SceneView({ scene, totalScenes, onChoiceSelect }) {
                         </div>
                         <button 
                             className="btn_complete_story" 
-                            onClick={onChoiceSelect({ 
+                            onClick={() => onChoiceSelect({ 
                                 isEnding: true,  // 동화 완료 신호
                                 choiceText: "동화 완료",
                                 choiceId: 'story_complete'
