@@ -82,7 +82,7 @@ function SceneView({ scene, totalScenes, onChoiceSelect }) {
                 {/* 왼쪽: 이야기 */}
                 <div className="scene_left">
                     <div className="scene_content">
-                        <p>{scene.content}</p>
+                        <p style={{whiteSpace: 'pre-line'}}>{scene.content}</p>
                     </div>
                 </div>
 
