@@ -264,3 +264,54 @@
   border-left: none !important;
   box-shadow: none !important;
 }
+
+/* 동화 완료 화면 */
+.scene_ending {
+  text-align: center;
+  padding: 60px 40px;
+  background: linear-gradient(135deg, #fff9e6, #ffe8cc);
+  border-radius: 20px;
+  margin: 30px;
+  box-shadow: 0 8px 30px rgba(255, 200, 100, 0.4);
+}
+
+.ending_message h2 {
+  font-size: 32px;
+  color: #ff9b7a;
+  margin-bottom: 20px;
+  animation: bounceIn 0.8s ease;
+}
+
+.ending_message p {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.btn_complete_story {
+  padding: 18px 50px;
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #ff9b7a, #ffd166);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(255, 155, 122, 0.4);
+}
+
+.btn_complete_story:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 30px rgba(255, 155, 122, 0.6);
+}
+
+.btn_complete_story:active {
+  transform: translateY(-1px);
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}

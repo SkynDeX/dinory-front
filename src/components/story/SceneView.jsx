@@ -93,48 +93,68 @@ function SceneView({ scene, totalScenes, onChoiceSelect }) {
             </div>
 
             {/* 하단 선택지 영역 */}
-            <div className="choices_container">
-                <p className="choices_title">어떻게 할까?</p>
-                <div className="choices_grid">
-                    {scene.choices && scene.choices.map((choice) => (
-                        <ChoiceButton
-                            key={choice.choiceId}
-                            choice={choice}
-                            onSelect={onChoiceSelect}
-                        />
-                    ))}
-                </div>
+            {scene.choices && scene.choices.length > 0 ? (
+                <div className="choices_container">
+                    <p className="choices_title">어떻게 할까?</p>
+                    <div className="choices_grid">
+                        {scene.choices && scene.choices.map((choice) => (
+                            <ChoiceButton
+                                key={choice.choiceId}
+                                choice={choice}
+                                onSelect={onChoiceSelect}
+                            />
+                        ))}
+                    </div>
 
-                {/* 입력창 */}
-                <div className="custom_choice_section">
-                    <p className="custom_choice_title">나만의 선택을 입력해보세요!</p>
-                    <form
-                        className="custom_choice_form" 
-                        onSubmit={(e) => {
-                        e.preventDefault();
-                        const input = e.target.elements.customText;
-                        if (input.value.trim()) {
-                            onChoiceSelect({
-                                isCustom: true,
-                                choiceText: input.value.trim(),
-                                choiceId: `custom_${Date.now()}`
-                            });
-                            input.value = '';
-                        }
-                    }}>
-                        <input
-                            type="text"
-                            name="customText"
-                            placeholder="예: 친구에게 도움을 요청한다."
-                            className="custom_choice_input"
-                            maxLength={100}
-                        ></input>
-                        <button type="submit" className="custom_choice_submit">
-                            선택하기
-                        </button>
-                    </form>
+                    {/* 입력창 */}
+                    <div className="custom_choice_section">
+                        <p className="custom_choice_title">나만의 선택을 입력해보세요!</p>
+                        <form
+                            className="custom_choice_form" 
+                            onSubmit={(e) => {
+                            e.preventDefault();
+                            const input = e.target.elements.customText;
+                            if (input.value.trim()) {
+                                onChoiceSelect({
+                                    isCustom: true,
+                                    choiceText: input.value.trim(),
+                                    choiceId: `custom_${Date.now()}`
+                                });
+                                input.value = '';
+                            }
+                        }}>
+                            <input
+                                type="text"
+                                name="customText"
+                                placeholder="예: 친구에게 도움을 요청한다."
+                                className="custom_choice_input"
+                                maxLength={100}
+                            ></input>
+                            <button type="submit" className="custom_choice_submit">
+                                선택하기
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            ) : (
+                    // 마지막 씬(선택지 없음) - 완료 버튼만 표시
+                    <div className="scene_ending">
+                        <div className="ending_message">
+                            <h2>🎉 동화가 완료되었습니다!</h2>
+                            <p>동화를 마무리하고 별을 받아보세요!</p>
+                        </div>
+                        <button 
+                            className="btn_complete_story" 
+                            onClick={onChoiceSelect({ 
+                                isEnding: true,  // 동화 완료 신호
+                                choiceText: "동화 완료",
+                                choiceId: 'story_complete'
+                            })}
+                        >
+                            동화 완료하기
+                        </button>
+                    </div>
+                )}
         </div>
     );
 }
