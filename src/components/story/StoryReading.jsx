@@ -284,7 +284,7 @@ function StoryReading() {
                 <div className="reward-popup-overlay">
                     <div className="reward-popup-box">
                         <div className="popup-star-animation">⭐</div>
-                        <h2>🎉 동화 완료!</h2>
+                        <h2>동화 완료!</h2>
                         <p className="popup-reward-text">별 1개를 획득했어요!</p>
                         
                         {earnedEgg ? (

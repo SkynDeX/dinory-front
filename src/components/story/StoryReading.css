@@ -1,184 +1,179 @@
 .story_reading_wrapper {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #fff5e6 0%, #ffe6f0 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fffefc 0%, #f9fcff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Pretendard", "Noto Sans KR", sans-serif;
 }
 
-.loading {
-    text-align: center;
-    font-size: 1.5rem;
-    color: #666;
-    padding: 4rem;
-}
-
-.loading-spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #ff6b9d;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 2rem;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.loading p {
-    margin: 0.5rem 0;
-    font-size: 1.2rem;
-    color: #555;
-}
-
-.loading-hint {
-    font-size: 1rem !important;
-    color: #999 !important;
-    margin-top: 1rem !important;
-}
-
-/* 보상 팝업 */
+/* Dinory 테마 보상 팝업 */
 .reward-popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    animation: fadeIn 0.3s ease-out;
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.4s ease-out;
 }
 
 .reward-popup-box {
-    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-    border-radius: 24px;
-    padding: 40px;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    animation: popIn 0.5s ease-out;
+  background: linear-gradient(145deg, #ffffff 0%, #fef8f5 100%);
+  border-radius: 32px;
+  padding: 45px 50px;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(47, 163, 107, 0.25),
+              0 0 40px rgba(255, 209, 102, 0.25);
+  animation: popIn 0.6s ease-out;
+  position: relative;
+  border: 2px solid rgba(255, 209, 102, 0.2);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes popIn {
-    0% {
-        transform: scale(0.5);
-        opacity: 0;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
+/* 별 아이콘 애니메이션 */
 .popup-star-animation {
-    font-size: 100px;
-    animation: starBounce 0.6s ease-out;
-    margin-bottom: 20px;
+  font-size: 90px;
+  margin-bottom: 18px;
+  animation: starGlow 1.5s ease-in-out infinite alternate;
+  text-shadow: 0 0 12px rgba(255, 209, 102, 0.7),
+               0 0 24px rgba(255, 209, 102, 0.5);
 }
 
-@keyframes starBounce {
-    0%, 100% { transform: scale(1) rotate(0deg); }
-    25% { transform: scale(1.2) rotate(-10deg); }
-    75% { transform: scale(1.2) rotate(10deg); }
+@keyframes starGlow {
+  from { transform: scale(1); opacity: 0.8; }
+  to { transform: scale(1.2) rotate(5deg); opacity: 1; }
 }
 
+/* 타이틀 및 텍스트 */
 .reward-popup-box h2 {
-    color: #ff6b6b;
-    font-size: 32px;
-    margin: 0 0 15px 0;
+  color: #2fa36b;
+  font-size: 30px;
+  margin: 0 0 12px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
 .popup-reward-text {
-    font-size: 24px;
-    font-weight: bold;
-    color: #ffd93d;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    margin: 15px 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ff9b7a;
+  text-shadow: 1px 1px 3px rgba(255, 155, 122, 0.3);
+  margin-bottom: 12px;
+  animation: bounceText 1.8s infinite ease-in-out;
 }
 
+@keyframes bounceText {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* 별 보상 영역 */
 .popup-progress {
-    background: white;
-    border-radius: 12px;
-    padding: 15px;
-    margin-top: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 18px 20px;
+  margin-top: 18px;
+  box-shadow: 0 4px 20px rgba(135, 206, 235, 0.25);
 }
 
-.popup-progress p {
-    margin: 0;
-    color: #666;
-    font-size: 16px;
-}
-
-/* 별 진행도 표시 */
 .popup-stars-display {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 15px;
-    font-size: 32px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 30px;
 }
 
 .popup-star.filled {
-    animation: starPop 0.3s ease-out;
+  color: #ffd166;
+  text-shadow: 0 0 8px rgba(255, 209, 102, 0.7);
+  animation: starPop 0.4s ease-out;
 }
 
 .popup-star.empty {
-    opacity: 0.3;
+  color: #ddd;
+  opacity: 0.6;
 }
 
 @keyframes starPop {
-    0% { transform: scale(0); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
+  0% { transform: scale(0); }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.popup-progress p {
+  margin: 0;
+  font-size: 15px;
+  color: #444;
+  font-weight: 500;
 }
 
 .popup-hint {
-    font-size: 14px !important;
-    color: #999 !important;
-    margin-top: 10px !important;
+  margin-top: 8px !important;
+  font-size: 14px !important;
+  color: #87ceeb !important;
+  font-weight: 500;
 }
 
-/* 알 획득 애니메이션 */
+/* 알 보상 영역 */
 .popup-egg-reward {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-top: 20px;
+  background: linear-gradient(135deg, #87ceeb 0%, #2fa36b 100%);
+  color: #fff;
+  padding: 24px;
+  border-radius: 22px;
+  margin-top: 22px;
+  box-shadow: 0 6px 25px rgba(47, 163, 107, 0.3),
+              0 0 20px rgba(135, 206, 235, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 은은한 배경 효과 */
+.popup-egg-reward::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25), transparent 70%);
+  pointer-events: none;
 }
 
 .popup-egg-animation {
-    font-size: 80px;
-    animation: eggShake 0.5s ease-in-out infinite;
+  font-size: 70px;
+  animation: eggBounce 0.8s ease-in-out infinite alternate;
+  display: inline-block;
+  margin-bottom: 10px;
 }
 
-@keyframes eggShake {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-10deg); }
-    75% { transform: rotate(10deg); }
+@keyframes eggBounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-6px) rotate(3deg); }
 }
 
 .popup-egg-text {
-    font-size: 20px !important;
-    font-weight: bold;
-    margin: 10px 0 !important;
-    color: white !important;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 19px;
+  font-weight: 700;
+  margin: 8px 0;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 .popup-egg-hint {
-    font-size: 14px !important;
-    color: rgba(255, 255, 255, 0.9) !important;
-    margin-top: 5px !important;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.2px;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }

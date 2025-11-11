@@ -222,6 +222,39 @@ function MyDinos() {
     fetchDinos();
   }, [selectedChild, setDinos]);
 
+  // 💬 5초마다 랜덤 공룡 말풍선 표시
+  useEffect(() => {
+    if (isDecorating) return;
+
+    const interval = setInterval(() => {
+      if (dinos.length === 0) return;
+      const randomDino = dinos[Math.floor(Math.random() * dinos.length)];
+      const phrases = [
+        "룰루~ 🦕",
+        "오늘 기분 최고야!",
+        "배고파... 🍎",
+        "친구랑 놀고 싶어 🦖",
+        "햇살이 따뜻해 ☀️",
+        "이 마을이 좋아 💚",
+      ];
+      const randomText = phrases[Math.floor(Math.random() * phrases.length)];
+
+      setSpeech((prev) => ({
+        ...prev,
+        [randomDino.name]: { text: randomText, active: true },
+      }));
+
+      setTimeout(() => {
+        setSpeech((prev) => ({
+          ...prev,
+          [randomDino.name]: { text: "", active: false },
+        }));
+      }, 2000);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [dinos, isDecorating]);
+
   return (
     <div className={`mydinos-wrapper theme-${theme}`}>
       <DinoTutorial onStartDecorate={() => setIsDecorating(true)} />
@@ -322,7 +355,7 @@ function MyDinos() {
               className="dino-draggable"
               drag
               dragMomentum={false}
-              dragConstraints={{ top: 0, bottom: 600, left: 0, right: 1000 }}
+              dragConstraints={{ top: 0, bottom: 600, left: 0, right: 2000 }}
               onDragEnd={(e, info) => handleDragEnd(e, info, dino.name)}
               onClick={(e) => handleClickDino(e, dino.name)}
               initial={positions[dino.name] || { x: 100 + i * 120, y: 200 }}
