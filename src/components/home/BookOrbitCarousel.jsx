@@ -15,6 +15,7 @@ import bkid from "../../assets/icons/bkid.png";
 import gkid from "../../assets/icons/gkid.png";
 import {getRecommendedStories, getRandomStories} from '../../services/api/storyApi.js';
 import { useAuth } from "../../context/AuthContext.js";
+import LoadingScreen from '../common/LoadingScreen';
 
 const books = [
   { id: 1, 
@@ -312,7 +313,7 @@ function BookOrbitCarousel() {
   };
 
   if (loading) {
-    return <div className="carousel-loading">동화를 불러오는 중...</div>;
+    return <LoadingScreen message="동화를 불러오는 중이에요..."/>;
   }
 
   return (
