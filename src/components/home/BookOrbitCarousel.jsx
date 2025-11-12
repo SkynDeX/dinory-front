@@ -13,6 +13,8 @@ import { useChild } from "../../context/ChildContext";
 import BookInfoModal from "../dino/BookInfoModal";
 import bkid from "../../assets/icons/bkid.png";
 import gkid from "../../assets/icons/gkid.png";
+import {getRecommendedStories, getRandomStories} from '../../services/api/storyApi.js';
+import { useAuth } from "../../context/AuthContext.js";
 
 const books = [
   { id: 1, 
@@ -48,12 +50,81 @@ function BookOrbitCarousel() {
   const containerRef = useRef(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { addStar } = useContext(RewardContext);
-  const { selectedChild } = useChild();
+  const { selectedChild, selectedEmotion, selectedInterests } = useChild();
   const targetRotation = useRef(0);
   const dragDistanceRef = useRef(0);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
+
+  // [2025-11-12 김광현] 동화추천 state 추가
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  // Context
+  const {user} = useAuth();
+
+  // [2025-11-12 김광현] 동화 로드 - 로그인에 따라서 진행
+  useEffect(() => {
+    const fetchStories = async () => {
+      setLoading(true);
+
+      try {
+        let fetchedStories = [];
+
+        // 로그인 여부
+        if(user && selectedChild && selectedEmotion && selectedInterests?.length > 0) {
+          // 로그인 되면 자녀/감정/관심사 선택하고 추천동화 시작
+          console.log("추천동화 가져오기 :", {
+            emotion: selectedEmotion.id,
+            interests: selectedInterests,
+            childId: selectedChild.id
+          });
+
+          fetchedStories = await getRecommendedStories(
+            selectedEmotion.id,
+            selectedInterests,
+            selectedChild.id,
+            5
+          );
+        } else {
+          // 로그인이 안되거나 자녀/감정/관심사 선택이 안되면
+          console.log("랜덤동화 가져오기 (로그인 전 or 선택 전 입니다.");
+
+          fetchedStories = await getRandomStories(5);
+        }
+
+        // 책 데이터 파이콘에서 가져오기
+        const transformedBooks = fetchedStories.map((story, index) => ({
+          id: index + 1,
+          storyId: story.storyId,
+          title: story.title,
+          image: `/assets/intro/0${(index % 5) + 1}.png`,
+          desc: story.description,
+          themes: story.themes || [],
+          matchingScore: story.matchingScore || 50,
+        }));
+
+        setBooks(transformedBooks);
+        console.log("동화 완료 로드 :", transformedBooks.length, "개");
+
+      } catch (error) {
+        console.error("동화 로드 실패: ", error);
+
+        // 실패하면 하드코딩 사용
+        setBooks([
+          { id: 1, title: "달 위의 곰돌이", image: "/assets/intro/01.png", desc: "달나라에서 펼쳐지는 따뜻한 모험", storyId: "default_1" },
+          { id: 2, title: "바다의 인어", image: "/assets/intro/02.png", desc: "바다 속 친구들과의 우정 이야기", storyId: "default_2" },
+          { id: 3, title: "숲 속 요정", image: "/assets/intro/03.png", desc: "마법의 숲에서 만난 친구들", storyId: "default_3" },
+          { id: 4, title: "우주 탐험", image: "/assets/intro/04.png", desc: "별들 사이를 여행하는 모험", storyId: "default_4" },
+          { id: 5, title: "공룡 친구", image: "/assets/intro/05.png", desc: "용감한 공룡들의 이야기", storyId: "default_5" },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStories();
+  }, [user, selectedChild, selectedEmotion, selectedInterests]);
+
 
   const handleChangeChild = () => {
     navigate("/child/select");
@@ -62,7 +133,7 @@ function BookOrbitCarousel() {
   const textures = useMemo(() => {
     const loader = new THREE.TextureLoader();
     return books.map((book) => loader.load(process.env.PUBLIC_URL + book.image));
-  }, []);
+  }, [books]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -214,11 +285,12 @@ function BookOrbitCarousel() {
       while (container.firstChild) container.removeChild(container.firstChild);
       renderer.dispose();
     };
-  }, [textures]);
+  }, [textures, books]);
 
+  // [2025-11-12 김광현] 책 읽기 핸들러 수정
   const handleReadBook = async () => {
     try {
-      await addStar();
+      // await addStar(); - 동화 완료 후에만 별 추가
       setSelectedBook(books[selectedIndex]);
       setIsModalOpen(true);
     } catch (err) {
@@ -238,6 +310,10 @@ function BookOrbitCarousel() {
     const snapped = Math.round(targetRotation.current / step) * step;
     targetRotation.current = snapped;
   };
+
+  if (loading) {
+    return <div className="carousel-loading">동화를 불러오는 중...</div>;
+  }
 
   return (
     <div className="carousel-wrapper">
@@ -297,7 +373,11 @@ function BookOrbitCarousel() {
       <DinoCharacter book={books[selectedIndex]} />
 
       {isModalOpen && selectedBook && (
-        <BookInfoModal book={selectedBook} onClose={() => setIsModalOpen(false)} />
+        <BookInfoModal book={{
+          ...selectedBook, 
+          storyId: selectedBook.storyId
+        }} 
+        onClose={() => setIsModalOpen(false)} />
       )}
     </div>
   );
