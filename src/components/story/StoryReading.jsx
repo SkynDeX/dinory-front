@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import "./StoryReading.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { generateStory, getNextScene, completeStory, analyzeCustomChoice  } from "../../services/api/storyApi";
@@ -6,6 +6,7 @@ import SceneView from "../../components/story/SceneView";
 import { useChild } from "../../context/ChildContext";
 import NegativeModal from "./NegativeModal";
 import { RewardContext } from "../../context/RewardContext";
+import { generateGeminiTts } from "../../services/api/ttsApi";
 
 import LoadingScreen from "../../components/common/LoadingScreen.jsx";
 import axiosInstance from "../../services/api/axiosInstance.js";
@@ -34,6 +35,12 @@ function StoryReading() {
     const {addStar, stars, eggs, setStars, setEggs, hatchEgg} = useContext(RewardContext);
     const [showRewardPopup, setShowRewardPopup] = useState(false);
     const [earnedEgg, setEarnedEgg] = useState(false);  // 알 획득 여부
+
+    // [2025-11-11 추가] TTS 관련 상태
+    const [isPlayingTts, setIsPlayingTts] = useState(false);
+    const [isTtsLoading, setIsTtsLoading] = useState(false);
+    const [preloadedAudioBlob, setPreloadedAudioBlob] = useState(null); // 미리 다운받은 TTS Blob
+    const audioRef = useRef(null); // 오디오 재생용 ref
 
 
     useEffect(() => {
@@ -202,8 +209,120 @@ function StoryReading() {
         }
     };
 
+    // [2025-11-11 수정] TTS 재생/정지 토글 (사전 다운로드된 Blob 사용)
+    const handleTtsToggle = async () => {
+        try {
+            // 재생 중이면 정지
+            if (isPlayingTts) {
+                if (audioRef.current) {
+                    audioRef.current.pause();
+                    audioRef.current = null;
+                }
+                setIsPlayingTts(false);
+                return;
+            }
+
+            // 미리 다운받은 Blob이 없으면 다시 다운로드 시도
+            let audioBlob = preloadedAudioBlob;
+            if (!audioBlob) {
+                console.log('⚠️ 사전 다운로드된 TTS 없음 - 새로 다운로드');
+                if (!currentScene || !currentScene.content) {
+                    alert('읽을 내용이 없습니다.');
+                    return;
+                }
+
+                setIsTtsLoading(true);
+                audioBlob = await generateGeminiTts(currentScene.content);
+                setIsTtsLoading(false);
+            }
+
+            // Blob을 오디오 URL로 변환
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = new Audio(audioUrl);
+
+            // 오디오 이벤트 리스너
+            audio.onended = () => {
+                console.log('🎵 TTS 재생 완료');
+                setIsPlayingTts(false);
+                URL.revokeObjectURL(audioUrl); // 메모리 해제
+            };
+
+            audio.onerror = (error) => {
+                console.error('❌ 오디오 재생 실패:', error);
+                setIsPlayingTts(false);
+                alert('음성 재생에 실패했습니다.');
+                URL.revokeObjectURL(audioUrl);
+            };
+
+            audioRef.current = audio;
+
+            // 재생 시작
+            await audio.play();
+            setIsPlayingTts(true);
+
+            console.log('🎵 TTS 재생 시작 (사전 다운로드 사용)');
+
+        } catch (error) {
+            console.error('❌ TTS 재생 실패:', error);
+            setIsTtsLoading(false);
+            alert('동화 읽기에 실패했습니다.');
+        }
+    };
+
+    // [2025-11-11 추가] 컴포넌트 언마운트 시 오디오 정리
+    useEffect(() => {
+        return () => {
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current = null;
+            }
+        };
+    }, []);
+
+    // [2025-11-11 수정] 장면 변경 시 TTS 미리 다운로드 + 오디오 정지
+    useEffect(() => {
+        // 재생 중이면 정지
+        if (audioRef.current && isPlayingTts) {
+            audioRef.current.pause();
+            audioRef.current = null;
+            setIsPlayingTts(false);
+        }
+
+        // 새 장면의 TTS 미리 다운로드
+        const preloadTts = async () => {
+            if (!currentScene || !currentScene.content) {
+                console.log('⚠️ 장면 내용 없음 - TTS 미리 다운로드 스킵');
+                return;
+            }
+
+            try {
+                console.log('📥 TTS 미리 다운로드 시작:', currentScene.sceneNumber);
+                setIsTtsLoading(true);
+
+                const audioBlob = await generateGeminiTts(currentScene.content);
+                setPreloadedAudioBlob(audioBlob);
+
+                console.log('✅ TTS 미리 다운로드 완료:', audioBlob.size, 'bytes');
+                setIsTtsLoading(false);
+            } catch (error) {
+                console.error('❌ TTS 미리 다운로드 실패:', error);
+                setPreloadedAudioBlob(null);
+                setIsTtsLoading(false);
+            }
+        };
+
+        preloadTts();
+    }, [currentScene, currentSceneNumber]);
+
     const handleStoryComplete = async () => {
         try {
+            // [2025-11-11 추가] 동화 완료 시 TTS 정지
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current = null;
+                setIsPlayingTts(false);
+            }
+
             const endTime = Date.now();
             const totalTime = Math.floor((endTime - startTime) / 1000);
 
@@ -269,13 +388,31 @@ function StoryReading() {
     return (
         <div className="story_reading_wrapper">
 
-            <NegativeModal 
+            <NegativeModal
                 isOpen={modalState.isOpen}
                 onClose={() => setModalState({...modalState, isOpen: false})}
                 title={modalState.title}
                 message={modalState.message}
                 type={modalState.type}
             />
+
+            {/* [2025-11-11 추가] TTS 동화 읽기 버튼 */}
+            <div className="tts-controls">
+                <button
+                    className={`tts-button ${isPlayingTts ? 'playing' : ''}`}
+                    onClick={handleTtsToggle}
+                    disabled={isTtsLoading || !currentScene}
+                    title={isPlayingTts ? '동화 읽기 정지' : '동화 읽기'}
+                >
+                    {isTtsLoading ? (
+                        <>🔄 로딩중...</>
+                    ) : isPlayingTts ? (
+                        <>⏸️ 정지</>
+                    ) : (
+                        <>🎤 동화 읽기</>
+                    )}
+                </button>
+            </div>
 
             {currentScene && (
                 <SceneView

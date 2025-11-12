@@ -1,21 +1,23 @@
 # Multi-stage build for React application
 
 # Stage 1: Build
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Enable corepack(Yarn) and copy manifests
+RUN corepack enable
 
-# Install dependencies
-RUN npm ci --only=production
+COPY package.json yarn.lock ./
+
+# Install dependencies (Yarn)
+RUN yarn install --frozen-lockfile
 
 # Copy source code
 COPY . .
 
 # Build React app
-RUN npm run build
+RUN yarn build
 
 # Stage 2: Runtime with Nginx
 FROM nginx:1.25-alpine

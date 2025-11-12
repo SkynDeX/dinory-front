@@ -187,7 +187,7 @@ export const RewardProvider = ({ children }) => {
       console.error("공룡 부화 실패:", err);
 
       // [2025-11-11 김광현] 공룡 중복 체킁
-      if(err.response?.data?.includes("이미 보유중인 공룡")) {
+      if(err.response?.data?.message?.includes("이미 보유 중인 공룡입니다.")) {
         console.log("중복 공룡 - 다른 공룡으로 시도");
         // 중복 된 경우 다른 랜덤 공룡
         await hatchEgg();

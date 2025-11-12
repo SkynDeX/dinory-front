@@ -35,11 +35,11 @@ jobs:
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # Step 2: Node.js 설정
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      - name: 🟢 Node.js 18 설정
+      - name: 🟢 Node.js 20 설정
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'          # npm 캐시 사용 (빌드 속도 향상)
+          node-version: '20'
+          cache: 'yarn'          # Yarn 캐시 사용 (빌드 속도 향상)
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # Step 3: Docker 설정
@@ -64,9 +64,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-            ${{ secrets.DOCKER_USERNAME }}/dinory-frontend:latest
-            ${{ secrets.DOCKER_USERNAME }}/dinory-frontend:${{ github.sha }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/dinory-frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

@@ -4,8 +4,10 @@ import BeforeAfterRadar from "./charts/BeforeAfterRadar";
 import { FaDownload } from "react-icons/fa";
 import { getGrowthReport, getGrowthReportAIAnalysis } from "../../services/api/dashboardApi";
 import DateRangePicker from "../common/DateRangePicker";
+import html2pdf from 'html2pdf.js';
 
-function GrowthReport({ childId }) {
+
+function GrowthReport({ childId, childName }) {
     const [period, setPeriod] = useState("month");
     const [customDateRange, setCustomDateRange] = useState(null);
     const [savedCustomDates, setSavedCustomDates] = useState({ start: '', end: '' });
@@ -63,9 +65,57 @@ function GrowthReport({ childId }) {
 
    
 
-    const handleDownloadPDF = () => {
-        // TODO: PDF 다운로드 기능 구현
-        alert("PDF 다운로드 기능은 추후 구현 예정입니다.");
+    const handleDownloadPDF = async () => {
+        try {
+            const element = document.querySelector('.growth_report_wrapper');
+
+            // PDF 다운로드 버튼 숨기기
+            const downloadBtn = document.querySelector('.download_btn');
+            if (downloadBtn) downloadBtn.style.display = 'none';
+
+            // 파일명: 성장리포트_아이이름_날짜.pdf
+            const name = childName || '자녀';
+            const today = new Date().toLocaleDateString('ko-KR').replace(/\. /g, '-').replace('.', '');
+            const filename = `성장리포트_${name}_${today}.pdf`;
+
+            const opt = {
+                margin: [5, 5, 5, 5],
+                filename: filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 1.5,
+                    useCORS: true,
+                    scrollY: 0,
+                    scrollX: 0,
+                    windowWidth: element.scrollWidth,
+                    windowHeight: element.scrollHeight
+                },
+                jsPDF: {
+                    unit: 'mm',
+                    format: 'a4',
+                    orientation: 'portrait',
+                    compress: true
+                },
+                pagebreak: {
+                    mode: ['css', 'legacy'],
+                    before: '.pdf_page_break'
+                }
+            };
+
+            await html2pdf().set(opt).from(element).save();
+
+            // 버튼 다시 보이기
+            if (downloadBtn) downloadBtn.style.display = '';
+
+            alert('PDF 다운로드가 완료되었습니다.');
+        } catch (e) {
+            console.error('PDF 다운로드 실패:', e);
+            alert('PDF 다운로드에 실패했습니다.');
+
+            // 에러 시에도 버튼 다시 보이기
+            const downloadBtn = document.querySelector('.download_btn');
+            if (downloadBtn) downloadBtn.style.display = '';
+        }
     };
 
     if (loading) {
@@ -91,8 +141,16 @@ function GrowthReport({ childId }) {
             <div className="report_header_container">
                 <div className="report_header_top">
                     <h1 className="report_title">성장 리포트</h1>
-                    <button className="download_btn" onClick={handleDownloadPDF}>
-                        <FaDownload /> PDF 다운로드
+                    <button
+                        className="download_btn"
+                        onClick={handleDownloadPDF}
+                        disabled={loading || aiLoading}
+                        style={{
+                            opacity: loading || aiLoading ? 0.5 : 1,
+                            cursor: loading || aiLoading ? 'not-allowed' : 'pointer'
+                        }}
+                    >
+                        <FaDownload /> {loading || aiLoading ? 'AI 분석 중' : 'PDF 다운로드'}
                     </button>
                 </div>
                 <div className="report_header_bottom">
@@ -115,43 +173,46 @@ function GrowthReport({ childId }) {
             </div>
 
 
-            {/* AI 종합 평가 */}
-            <div className="report_section">
-                <h2 className="section_title">AI 종합 평가</h2>
-                <div className="ai_evaluation_card">
-                    {aiLoading ? (
-                        <div className="ai_loading">
-                            <div className="loading_spinner"></div>
-                            <span className="loading_text">AI가 종합 평가를 생성 중입니다...</span>
-                        </div>
-                    ) : (
-                        <div className="ai_evaluation_text">
-                            {(aiAnalysis?.aiEvaluation || "AI 평가를 불러오는 중...")
-                                .split('\n\n')
-                                .filter(paragraph => paragraph.trim())
-                                .map((paragraph, index) => (
-                                    <p key={index} className="evaluation_paragraph">
-                                        {paragraph.trim()}
-                                    </p>
-                                ))
-                            }
-                        </div>
-                    )}
+            {/* 페이지 1: AI 종합 평가 */}
+            <div className="pdf_page_break">
+                <div className="report_section">
+                    <h2 className="section_title">AI 종합 평가</h2>
+                    <div className="ai_evaluation_card">
+                        {aiLoading ? (
+                            <div className="ai_loading">
+                                <div className="loading_spinner"></div>
+                                <span className="loading_text">AI가 종합 평가를 생성 중입니다.</span>
+                                <span className="loading_text">잠시만 기다려주세요!</span>
+                            </div>
+                        ) : (
+                            <div className="ai_evaluation_text">
+                                {(aiAnalysis?.aiEvaluation || "AI 평가를 불러오는 중...")
+                                    .split('\n\n')
+                                    .filter(paragraph => paragraph.trim())
+                                    .map((paragraph, index) => (
+                                        <p key={index} className="evaluation_paragraph">
+                                            {paragraph.trim()}
+                                        </p>
+                                    ))
+                                }
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
-            {/* Before/After 비교 차트 */}
-            <div className="report_section">
-                <h2 className="section_title">성장 비교</h2>
-                <div className="chart_card">
-                    <BeforeAfterRadar data={reportData.comparison} />
+            {/* 페이지 2: 차트 & 강점 영역 */}
+            <div className="pdf_page_break">
+                {/* Before/After 비교 차트 */}
+                <div className="report_section">
+                    <h2 className="section_title">성장 비교</h2>
+                    <div className="chart_card">
+                        <BeforeAfterRadar data={reportData.comparison} />
+                    </div>
                 </div>
-            </div>
 
-            
-
-            {/* 강점 영역 */}
-            <div className="report_section">
+                {/* 강점 영역 */}
+                <div className="report_section">
                 <h2 className="section_title">강점 영역</h2>
                 <div className="areas_grid">
                     {reportData.strengths.map((strength, idx) => {
@@ -165,7 +226,7 @@ function GrowthReport({ childId }) {
                                 </div>
                                 {aiLoading ? (
                                     <div className="area_loading">
-                                        <span className="loading_text">분석 중...</span>
+                                        <span className="loading_text">아이의 강점 영역을 분석하고 있어요!</span>
                                     </div>
                                 ) : (
                                     <>
@@ -187,7 +248,10 @@ function GrowthReport({ childId }) {
                     })}
                 </div>
             </div>
+            </div>
 
+            {/* 페이지 3: 성장 영역, 마일스톤, 추천 활동 */}
+            <div>
             {/* 성장 가능 영역 */}
             <div className="report_section">
                 <h2 className="section_title">성장 가능 영역</h2>
@@ -203,7 +267,7 @@ function GrowthReport({ childId }) {
                                 </div>
                                 {aiLoading ? (
                                     <div className="area_loading">
-                                        <span className="loading_text">분석 중...</span>
+                                        <span className="loading_text">아이의 성장 가능 영역을 분석하고 있어요!</span>
                                     </div>
                                 ) : (
                                     <>
@@ -225,7 +289,7 @@ function GrowthReport({ childId }) {
                 {aiLoading ? (
                     <div className="ai_loading">
                         <div className="loading_spinner"></div>
-                        <span className="loading_text">마일스톤을 분석 중입니다...</span>
+                        <span className="loading_text">마일스톤을 분석하고 있어요!</span>
                     </div>
                 ) : aiAnalysis?.milestones?.length > 0 ? (
                     <div className="milestones_list">
@@ -250,7 +314,7 @@ function GrowthReport({ childId }) {
                 {aiLoading ? (
                     <div className="ai_loading">
                         <div className="loading_spinner"></div>
-                        <span className="loading_text">추천 활동을 생성 중입니다...</span>
+                        <span className="loading_text">추천 활동을 생성하고 있어요!</span>
                     </div>
                 ) : aiAnalysis?.recommendations?.length > 0 ? (
                     <div className="recommendations_list">
@@ -268,6 +332,7 @@ function GrowthReport({ childId }) {
                 ) : (
                     <div className="empty_section">추천 활동을 생성 중입니다...</div>
                 )}
+            </div>
             </div>
         </div>
     );
