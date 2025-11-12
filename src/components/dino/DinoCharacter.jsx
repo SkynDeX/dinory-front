@@ -120,13 +120,31 @@ function DinoCharacter() {
       setSessionId(response.sessionId);
 
       if (response.messages && response.messages.length > 0) {
-        setMessages(
-          response.messages.map((msg) => ({
+        // [2025-11-12 추가] [RECOMMEND_STORY] 포함된 메시지와 그 이전 질문 제거
+        const filteredMessages = [];
+        const rawMessages = response.messages;
+
+        for (let i = 0; i < rawMessages.length; i++) {
+          const msg = rawMessages[i];
+
+          // AI 메시지에 [RECOMMEND_STORY]가 있으면 이 메시지와 이전 USER 메시지 건너뛰기
+          if (msg.sender === "AI" && msg.message && msg.message.includes('[RECOMMEND_STORY]')) {
+            // 바로 이전 메시지가 USER 메시지였다면 제거 (이미 추가된 마지막 메시지)
+            if (filteredMessages.length > 0 && filteredMessages[filteredMessages.length - 1].sender === "USER") {
+              filteredMessages.pop();
+            }
+            // 현재 AI 메시지도 건너뛰기
+            continue;
+          }
+
+          filteredMessages.push({
             sender: msg.sender === "AI" ? "AI" : "USER",
             message: msg.message,
             createdAt: msg.createdAt,
-          }))
-        );
+          });
+        }
+
+        setMessages(filteredMessages);
       } else {
         setMessages([
           {
@@ -217,13 +235,25 @@ function DinoCharacter() {
 
     try {
       const response = await chatApi.sendMessage(sessionId, currentMessage);
+      let aiResponseText = response.aiResponse;
+
+      // [2025-11-12 수정] [RECOMMEND_STORY] 포함되어 있으면 질문+응답 둘 다 숨기기
+      if (aiResponseText && aiResponseText.includes('[RECOMMEND_STORY]')) {
+        // 방금 추가한 사용자 메시지 제거
+        setMessages((prev) => prev.slice(0, -1));
+        console.log('[DinoCharacter] [RECOMMEND_STORY] 감지 - 질문과 응답 화면에 표시 안 함');
+        // AI 메시지도 추가하지 않고, 선택지만 생성
+        await generateChoices(aiResponseText);
+        return;
+      }
+
       const aiMessage = {
         sender: "AI",
-        message: response.aiResponse,
+        message: aiResponseText,
         createdAt: new Date(),
       };
       setMessages((prev) => [...prev, aiMessage]);
-      await generateChoices(response.aiResponse);
+      await generateChoices(aiResponseText);
     } catch (error) {
       console.error("메시지 전송 실패:", error);
       setMessages((prev) => [
