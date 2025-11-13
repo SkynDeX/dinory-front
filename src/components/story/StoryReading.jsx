@@ -62,7 +62,7 @@ function StoryReading() {
 
                 const response = await generateStory(storyId, requestData);
 
-                console.log("✅ 첫 번째 씬 생성 완료: ", response);1
+                console.log("✅ 첫 번째 씬 생성 완료: ", response);
 
                 // 컴포넌트가 아직 마운트되어 있을 때만 state 업데이트
                 if (isMounted) {
