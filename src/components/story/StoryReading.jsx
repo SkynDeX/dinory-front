@@ -6,7 +6,7 @@ import SceneView from "../../components/story/SceneView";
 import { useChild } from "../../context/ChildContext";
 import NegativeModal from "./NegativeModal";
 import { RewardContext } from "../../context/RewardContext";
-import { generateGoogleCloudTts } from "../../services/api/ttsApi";
+import { generateGeminiTts } from "../../services/api/ttsApi";
 
 import LoadingScreen from "../../components/common/LoadingScreen.jsx";
 import axiosInstance from "../../services/api/axiosInstance.js";
@@ -62,7 +62,7 @@ function StoryReading() {
 
                 const response = await generateStory(storyId, requestData);
 
-                console.log("✅ 첫 번째 씬 생성 완료: ", response);
+                console.log("✅ 첫 번째 씬 생성 완료: ", response);1
 
                 // 컴포넌트가 아직 마운트되어 있을 때만 state 업데이트
                 if (isMounted) {
@@ -232,7 +232,7 @@ function StoryReading() {
                 }
 
                 setIsTtsLoading(true);
-                audioBlob = await generateGoogleCloudTts(currentScene.content);
+                audioBlob = await generateGeminiTts(currentScene.content);
                 setIsTtsLoading(false);
             }
 
@@ -299,7 +299,7 @@ function StoryReading() {
                 console.log('📥 TTS 미리 다운로드 시작:', currentScene.sceneNumber);
                 setIsTtsLoading(true);
 
-                const audioBlob = await generateGoogleCloudTts(currentScene.content);
+                const audioBlob = await generateGeminiTts(currentScene.content);
                 setPreloadedAudioBlob(audioBlob);
 
                 console.log('✅ TTS 미리 다운로드 완료:', audioBlob.size, 'bytes');
