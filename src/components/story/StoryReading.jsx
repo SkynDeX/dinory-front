@@ -6,7 +6,7 @@ import SceneView from "../../components/story/SceneView";
 import { useChild } from "../../context/ChildContext";
 import NegativeModal from "./NegativeModal";
 import { RewardContext } from "../../context/RewardContext";
-import { generateGeminiTts } from "../../services/api/ttsApi";
+import { generateGoogleCloudTts } from "../../services/api/ttsApi";
 
 import LoadingScreen from "../../components/common/LoadingScreen.jsx";
 import axiosInstance from "../../services/api/axiosInstance.js";
@@ -232,7 +232,7 @@ function StoryReading() {
                 }
 
                 setIsTtsLoading(true);
-                audioBlob = await generateGeminiTts(currentScene.content);
+                audioBlob = await generateGoogleCloudTts(currentScene.content, "ko-KR-Wavenet-A", 1.0, 0.0);
                 setIsTtsLoading(false);
             }
 
@@ -299,7 +299,7 @@ function StoryReading() {
                 console.log('📥 TTS 미리 다운로드 시작:', currentScene.sceneNumber);
                 setIsTtsLoading(true);
 
-                const audioBlob = await generateGeminiTts(currentScene.content);
+                const audioBlob = await generateGoogleCloudTts(currentScene.content, "ko-KR-Wavenet-A", 1.0, 0.0);
                 setPreloadedAudioBlob(audioBlob);
 
                 console.log('✅ TTS 미리 다운로드 완료:', audioBlob.size, 'bytes');
