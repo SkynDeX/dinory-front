@@ -1,23 +1,18 @@
 .ability-summary-message {
-  background: linear-gradient(145deg, #fffdf9 0%, #fff7f3 100%);
+  background: linear-gradient(145deg, #f9fffc 0%, #e8fff7 50%, #f6fbff 100%);
   border-radius: 28px;
-  padding: 32px;
-  margin: 16px 0;
-  box-shadow: 0 6px 25px rgba(255, 155, 122, 0.2);
+  padding: 15px;
+  margin-top: -15px;
+  margin-left: -15px;
+  box-shadow: 0 6px 25px rgba(135, 206, 235, 0.25);
   animation: fadeIn 0.6s ease-out;
   font-family: "Pretendard", "Noto Sans KR", sans-serif;
 
   width: 100%;
-  /* height: 100%; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 /* 상단 인사 영역 */
@@ -42,19 +37,19 @@
 
 .welcome-text h3 {
   font-size: 25.6px;
-  color: #333;
+  color: #2fa36b;
   margin: 0 0 4.8px 0;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .welcome-text p {
-  font-size: 16px;
+  font-size: 15.5px;
   color: #555;
   margin: 0;
   line-height: 1.6;
 }
 
-/* 능력치 카드 */
+/* 능력치 카드 영역 */
 .ability-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -62,34 +57,25 @@
 }
 
 .ability-card {
-  background: #fff;
+  background: #ffffff;
   border-radius: 20px;
   padding: 19.2px 12.8px;
   text-align: center;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(135, 206, 235, 0.22);
   border: 3px solid var(--ability-color);
   position: relative;
   overflow: hidden;
+  transition: all 0.3s ease;
 }
-
-/* .ability-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--ability-color);
-} */
 
 .ability-card:hover {
   transform: translateY(-6px);
   border-color: var(--ability-color);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 20px rgba(47, 163, 107, 0.25);
   filter: brightness(1.05);
 }
 
+/* 아이콘 */
 .ability-card-icon img {
   width: 48px;
   height: 48px;
@@ -102,10 +88,11 @@
   50% { transform: translateY(-5px); }
 }
 
+/* 텍스트 */
 .ability-card-name {
   font-size: 14.4px;
   font-weight: 600;
-  color: #555;
+  color: #2fa36b;
   margin-bottom: 6.4px;
 }
 
@@ -116,10 +103,11 @@
   margin-bottom: 8px;
 }
 
+/* 게이지 바 */
 .ability-card-bar {
   width: 100%;
   height: 6px;
-  background: #f1f1f1;
+  background: #e6f7f3;
   border-radius: 3px;
   overflow: hidden;
 }
@@ -130,9 +118,10 @@
   transition: width 1s ease-out;
 }
 
+/* 능력치 0일 때 */
 .ability-card.zero {
-  opacity: 0.6;
-  filter: grayscale(0.4);
+  opacity: 0.55;
+  filter: grayscale(0.35);
 }
 
 /* 하단 안내 */
@@ -140,80 +129,49 @@
   text-align: center;
   margin-top: 24px;
   padding-top: 16px;
-  border-top: 2px dashed rgba(0, 0, 0, 0.08);
+  border-top: 2px dashed rgba(47, 163, 107, 0.18);
 }
 
 .ability-footer p {
   margin: 0;
-  font-size: 17.6px;
+  font-size: 17px;
   color: #2fa36b;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-/* 반응형 */
-@media (max-width: 768px) {
-  .ability-summary-message { padding: 24px; }
-  .dino-avatar img { width: 70px; }
-  .welcome-text h3 { font-size: 20.8px; }
-  .ability-card { padding: 16px 8px; }
-  .ability-card-icon img { width: 40px; height: 40px; }
-  .ability-card-value { font-size: 19.2px; }
+
+/* 애니메이션 */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* 디노 등장 애니메이션 */
+/* 디노 등장 */
 .bounce-in {
   animation: bounceIn 1.2s ease-out forwards;
 }
 
 @keyframes bounceIn {
-  0% {
-    transform: scale(0.6) translateY(60px);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.1) translateY(-10px);
-    opacity: 1;
-  }
-  70% {
-    transform: scale(0.95) translateY(0px);
-  }
-  100% {
-    transform: scale(1) translateY(0px);
-  }
+  0% { transform: scale(0.6) translateY(60px); opacity: 0; }
+  50% { transform: scale(1.1) translateY(-10px); }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 
-.bounce-in img {
-  animation: shakeGift 2.2s ease-in-out 1.2s infinite;
-  transform-origin: bottom center;
-}
-
-@keyframes shakeGift {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(4deg); }
-  50% { transform: rotate(-4deg); }
-  75% { transform: rotate(3deg); }
-}
-
-/* 능력치 카드 등장 애니메이션 */
+/* 카드 전체 등장 */
 .ability-cards {
   opacity: 0;
   transform: scale(0.9);
   animation: fadeCards 1s ease-out forwards;
-  animation-delay: 0.8s; 
+  animation-delay: 0.8s;
 }
 
 @keyframes fadeCards {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-/* 카드 개별 순차 등장 */
+/* 카드 순서대로 팝 */
 .ability-card {
   opacity: 0;
   transform: translateY(15px) scale(0.98);
@@ -227,21 +185,11 @@
 .ability-card:nth-child(5) { animation-delay: 1.6s; }
 
 @keyframes cardPop {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  60% {
-    opacity: 1;
-    transform: translateY(-5px) scale(1.02);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* 카드 반짝임 효과 */
+/* 반짝 효과 */
 .ability-card::after {
   content: "";
   position: absolute;
@@ -249,78 +197,37 @@
   left: -75%;
   width: 50%;
   height: 100%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.6) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(120deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.6) 50%,
+    rgba(255,255,255,0) 100%);
   transform: skewX(-20deg);
   animation: shine 2.2s ease-in-out forwards;
-  animation-delay: 1.2s; 
   opacity: 0;
 }
 
 @keyframes shine {
-  0% {
-    left: -75%;
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    left: 125%;
-    opacity: 0;
-  }
+  0% { left: -75%; opacity: 0; }
+  25% { opacity: 1; }
+  100% { left: 120%; opacity: 0; }
 }
 
-/* 각 카드마다 약간의 시간차로 반짝임 */
+/* 시간차 반짝 */
 .ability-card:nth-child(1)::after { animation-delay: 1.3s; }
 .ability-card:nth-child(2)::after { animation-delay: 1.45s; }
 .ability-card:nth-child(3)::after { animation-delay: 1.6s; }
 .ability-card:nth-child(4)::after { animation-delay: 1.75s; }
 .ability-card:nth-child(5)::after { animation-delay: 1.9s; }
 
-/* 하단 문구 부드러운 등장 효과 */
+/* 하단 텍스트 등장 */
 .ability-footer {
   opacity: 0;
   transform: translateY(10px);
   animation: fadeFooter 1s ease-out forwards;
-  animation-delay: 2.3s; 
+  animation-delay: 2.3s;
 }
 
 @keyframes fadeFooter {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-/* 박스 진입 효과 */
-.ability-summary-message {
-  opacity: 0;
-  transform: scale(0.92);
-  animation: summaryFadeIn 0.8s ease-out forwards;
-}
-
-@keyframes summaryFadeIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.92);
-  }
-  60% {
-    opacity: 1;
-    transform: scale(1.03);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-

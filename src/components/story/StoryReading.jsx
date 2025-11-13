@@ -423,44 +423,51 @@ function StoryReading() {
             )}
 
             
-            {/* 보상 팝업 - 개선 버전 */}
+            {/* Reward Popup ★ */}
             {showRewardPopup && (
-                <div className="reward-popup-overlay">
-                    <div className="reward-popup-box">
-                        <div className="popup-star-animation">⭐</div>
-                        <h2>🎉 동화 완료!</h2>
-                        <p className="popup-reward-text">별 1개를 획득했어요!</p>
-                        
-                        {earnedEgg ? (
-                            // 알을 획득한 경우
-                            <div className="popup-egg-reward">
-                                <div className="popup-egg-animation">🥚</div>
-                                <p className="popup-egg-text">축하해요! 공룡알도 얻었어요!</p>
-                                <p className="popup-egg-hint">잠시 후 자동으로 부화합니다...</p>
-                            </div>
-                        ) : (
-                            // 일반 별 획득
-                            <div className="popup-progress">
-                                <div className="popup-stars-display">
-                                    {[...Array(5)].map((_, i) => (
-                                        <span 
-                                            key={i} 
-                                            className={`popup-star ${i < stars ? 'filled' : 'empty'}`}
-                                        >
-                                            {i < stars ? '⭐' : '☆'}
-                                        </span>
-                                    ))}
-                                </div>
-                                <p>별 {stars}개 / 5개</p>
-                                <p className="popup-hint">
-                                    {stars === 4 ? '다음에 별을 모으면 공룡알을 얻어요!' : 
-                                     `앞으로 ${5 - stars}개만 더 모으면 공룡알!`}
-                                </p>
-                            </div>
-                        )}
+                <div className="dinory-popup-overlay">
+                <div className="dinory-popup">
+            
+                {/* 메인 별 */}
+                <div className="dinory-popup-star">⭐</div>
+
+                {/* 타이틀 */}
+                <h2 className="dinory-popup-title"> 동화 완료!</h2>
+                <p className="dinory-popup-sub">별 1개를 획득했어요!</p>
+
+                {/* 알 획득 여부 */}
+                {earnedEgg ? (
+                <div className="dinory-egg-box">
+                    <div className="dinory-egg-icon">🥚</div>
+                    <p className="dinory-egg-text">축하해요! 공룡알도 얻었어요!</p>
+                    <p className="dinory-egg-hint">잠시 후 자동으로 부화해요...</p>
+                </div>
+                ) : (
+                <div className="dinory-stars-box">
+                    <div className="dinory-stars">
+                        {[...Array(5)].map((_, i) => (
+                            <span
+                                key={i}
+                                className={`dinory-star ${i < stars ? "on" : ""}`}
+                            >
+                                {i < stars ? "⭐" : "☆"}
+                            </span>
+                        ))}
                     </div>
+
+                    <p className="dinory-stars-progress">별 {stars}개 / 5개</p>
+
+                    <p className="dinory-stars-hint">
+                        {stars === 4
+                            ? "다음 별을 얻으면 공룡알이 생성돼요!"
+                            : `앞으로 ${5 - stars}개만 더 모으면 공룡알!`}
+                    </p>
                 </div>
             )}
+        </div>
+    </div>
+)}
+
         </div>
     );
 }
