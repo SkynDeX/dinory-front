@@ -122,7 +122,7 @@ export default function BookInfoModal({ book, onClose }) {
         {/* 푸터 */}
         <div className="book-modal-footer">
           <button className="btn-start-story" onClick={handleStartStory}>
-            📖 동화 읽기
+            동화 읽기
           </button>
           <button className="book-modal-close" onClick={onClose}>
             닫기
