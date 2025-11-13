@@ -65,8 +65,8 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/dinory-frontend:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=frontend-${{ github.ref_name }}
+          cache-to: type=gha,scope=frontend-${{ github.ref_name }},mode=min,compression=zstd
 
       # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       # Step 6: 서버에 배포
