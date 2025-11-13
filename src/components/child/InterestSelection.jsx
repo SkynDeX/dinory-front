@@ -84,8 +84,8 @@ function InterestSelection() {
         const interestLabels = selectedInterests.map(interest => interest.label);
         setContextInterests(interestLabels);
 
-        // 동화 목록으로 이동
-        navigate("/story/list");
+        // [2025-11-12 김광현] 메인 페이지로 이동하여 추천 동화 캐러셀 표시
+        navigate("/main");
     }
 
     // 선택된 관심사인지 확인

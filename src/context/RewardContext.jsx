@@ -76,6 +76,17 @@ export const RewardProvider = ({ children }) => {
           return;
         }
 
+      // [2025-11-12 김광현] 공룡 전부 수집 하면 별 추가 차단
+      const totalDinos = dinoList.length; // 10마리
+      const ownedDinos = dinos.length; // 현재 보유 공룡 수
+
+      console.log(`공룡 수집 현황: ${ownedDinos}/${totalDinos}`);
+
+      if(ownedDinos >= totalDinos) {
+        console.log("모든 공룡을 수집했습니다. 별을 더 이상 추가 할 수 없습니다.");
+        return;
+      }
+
       // const res = await axiosInstance.post(
       //   `/api/child/reward/${childId}/star`,
       //   {},
@@ -88,11 +99,18 @@ export const RewardProvider = ({ children }) => {
       setStars(newStars);
       setEggs(newEggs);
 
+      console.log("별 추가 완료:", {
+            stars: `${newStars}/5`,
+            eggs: newEggs,
+            dinosaurs: `${ownedDinos}/${totalDinos}`
+        });
+
       console.log("자동 부화 체크 : ", {newStars, newEggs, oldEggs: eggs })
 
       // [2025-11-11 김광현] 알 증가하면 자동 부화
       // if (newStars === 0 && newEggs > eggs) {
       if (newEggs > eggs) {
+        console.log("알이 증가했습니다! 자동 부화를 시작합니다.");
         await hatchEgg();  
       }
     

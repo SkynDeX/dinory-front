@@ -1,3 +1,6 @@
+/* ===============================
+   📘 Book Modal Layout
+==================================*/
 .book-modal-overlay {
   position: fixed;
   inset: 0;
@@ -23,7 +26,32 @@
   overflow: visible;
 }
 
-/* 책 이미지 */
+/* ===============================
+   🪶 Header / Body / Footer
+==================================*/
+.book-modal-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.book-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.book-modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+/* ===============================
+   📖 Book Info
+==================================*/
 .book-modal-img {
   width: 160px;
   height: 160px;
@@ -33,22 +61,88 @@
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
 }
 
-/* 제목 / 설명 */
 .book-modal-title {
   font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 8px;
   color: #333;
 }
 
 .book-modal-desc {
   font-size: 1rem;
   color: #666;
-  margin-bottom: 30px;
+  margin: 15px 0 20px;
   line-height: 1.6;
 }
 
-/* 닫기 버튼 */
+/* ===============================
+   🎨 Themes (주제 태그)
+==================================*/
+.book-modal-themes {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.themes-label {
+  font-weight: bold;
+  color: #2fa36b;
+}
+
+.theme-tag {
+  padding: 4px 12px;
+  background: #e8f8f1;
+  border-radius: 15px;
+  font-size: 14px;
+  color: #2fa36b;
+  font-weight: 500;
+}
+
+/* ===============================
+   💯 Matching Score
+==================================*/
+.book-modal-matching {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.matching-label {
+  font-weight: bold;
+  color: #2fa36b;
+}
+
+.matching-score {
+  padding: 4px 12px;
+  background: linear-gradient(90deg, #2fa36b, #87ceeb);
+  color: white;
+  border-radius: 15px;
+  font-weight: bold;
+}
+
+/* ===============================
+   🎛 Buttons
+==================================*/
+.btn-start-story {
+  padding: 12px 30px;
+  background: linear-gradient(90deg, #2fa36b, #87ceeb);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(47, 163, 107, 0.3);
+}
+
+.btn-start-story:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(47, 163, 107, 0.45);
+}
+
 .book-modal-close {
   background: linear-gradient(90deg, #2fa36b, #87ceeb);
   border: none;
@@ -65,7 +159,9 @@
   transform: scale(1.06);
 }
 
-/* 공룡 기본 상태 */
+/* ===============================
+   🦕 Dino Animation
+==================================*/
 .modal-dino-wrapper {
   position: absolute;
   bottom: -35px;
@@ -76,23 +172,20 @@
   align-items: center;
   animation: floatUpDown 3s ease-in-out infinite;
   z-index: 10;
-  cursor: pointer; 
+  cursor: pointer;
   transition: transform 0.3s ease;
 }
 
-/* 평상시 위아래로 살짝 뜨기 */
 @keyframes floatUpDown {
   0%, 100% { transform: translateY(0) scale(0.9) rotate(3deg); }
   50% { transform: translateY(-8px) scale(0.9) rotate(3deg); }
 }
 
-/* 클릭(놀람) 반응 추가 */
 .modal-dino-wrapper.shocked {
   animation: jumpAndShake 0.8s ease-in-out;
   transform: scale(1.05) rotate(-3deg);
 }
 
-/* 공룡 점프 좌우 흔들림 */
 @keyframes jumpAndShake {
   0% { transform: translateY(0) rotate(0deg) scale(0.9); }
   20% { transform: translateY(-25px) rotate(-5deg) scale(1); }
@@ -121,7 +214,6 @@
   transition: all 0.25s ease;
 }
 
-/* 놀랄 때 말풍선도 같이 움찔 */
 .modal-dino-wrapper.shocked .modal-speech-bubble {
   transform: scale(1.2) rotate(-5deg);
   border-color: #ff9b7a;
@@ -136,7 +228,6 @@
   100% { transform: scale(1) rotate(-3deg); opacity: 1; }
 }
 
-/* 모달 페이드 스케일 */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

@@ -61,3 +61,11 @@ export const getCompletedStory = async (completionId) => {
     const res = await axiosInstance.get(`/api/story/completion/${completionId}/full-story`);
     return res.data
 }
+
+// [2025-11-12 김광현] 랜덤 동화 API 추가
+export const getRandomStories = async (limit = 5) => {
+    const res = await axiosInstance.get('/api/story/random', {
+        params: {limit},
+    });
+    return res.data;
+};
