@@ -295,7 +295,7 @@ const handleComplete = async () => {
     <div className="chat-interface">
       <div className="chat-container">
         <div className="chat-header">
-          <h2>AI 채팅</h2>
+          <h2>Dino 채팅</h2>
           <p>궁금한 것을 편하게 물어보세요.</p>
         </div>
 
