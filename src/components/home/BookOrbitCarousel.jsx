@@ -94,8 +94,18 @@ function BookOrbitCarousel() {
           fetchedStories = await getRandomStories(5);
         }
 
+        // [2025-11-14 김광현] 동화 추천 다양성 개선
+        // Fisher-Yates Shuffle 알고리즘
+        const storiesArry = Array.isArray(fetchedStories) ? fetchedStories : [];
+        const suffled = [...storiesArry];
+        
+        for(let i = suffled.length -1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [suffled[i], suffled[j]] = [suffled[j], suffled[i]];
+        }
+
         // 책 데이터 파이콘에서 가져오기
-        const transformedBooks = fetchedStories.map((story, index) => ({
+        const transformedBooks = suffled.map((story, index) => ({
           id: index + 1,
           storyId: story.storyId,
           title: story.title,
