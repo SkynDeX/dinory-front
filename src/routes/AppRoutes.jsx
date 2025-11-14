@@ -14,13 +14,13 @@ import ParentDashboard from "../components/parent/ParentDashboard.jsx";
 import ChildSelectPage from "../components/child/ChildSelectPage.jsx";
 import EmotionCheckIn from "../components/child/EmotionCheckIn.jsx";
 import InterestSelection from "../components/child/InterestSelection.jsx";
-import StoryList from "../components/story/StoryList.jsx";
 import StoryReading from "../components/story/StoryReading.jsx";
 import StoryFlowTest from "../pages/StoryFlowTest.jsx";
 import ChatInterface from "../components/chat/ChatInterface.jsx";
 import StoryReplay from "../components/story/StoryReplay.jsx";
 import LandingPage from "../pages/landing/LandingPage"; // ✅ [추가]
 import TestRewardPage from "../pages/TestRewardPage.jsx";
+import BookOrbitCarousel from "../components/home/BookOrbitCarousel.jsx";
 
 const MyDinos = lazy(() => import("../components/dino/MyDinos.jsx"));
 
@@ -151,15 +151,16 @@ function AppRoutes() {
           }
           />
 
-          {/* 동화 목록 */}
+          {/* 동화 추천 */}
           <Route 
             path="/story/list"
             element={
               <PrivateRoute>
-                <StoryList />
+                <BookOrbitCarousel />
               </PrivateRoute>
             }
           />
+
           {/* 동화 읽기 */}
           <Route
             path="/story/:storyId"

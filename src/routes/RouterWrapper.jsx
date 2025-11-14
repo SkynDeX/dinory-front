@@ -9,7 +9,8 @@ export default function RouterWrapper() {
 
   // 동화 읽기 페이지에서는 로딩 스크린 제외
   const isStoryReadingPage = location.pathname.startsWith('/story/') &&
-                             location.pathname !== '/story/list';
+                             location.pathname !== '/story/list' &&
+                             location.pathname !== '/story/replay/';
 
   useEffect(() => {
     if (isStoryReadingPage) {

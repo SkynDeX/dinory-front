@@ -7,7 +7,7 @@ import "../../components/home/BookOrbitCarousel.css";
 function HomePage() {
   return (
     <div className="homepage-fullscreen">
-      <BookOrbitCarousel />
+      메인페이지 생성중
     </div>
   );
 }

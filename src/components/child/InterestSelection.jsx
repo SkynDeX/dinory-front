@@ -85,7 +85,8 @@ function InterestSelection() {
         setContextInterests(interestLabels);
 
         // [2025-11-12 김광현] 메인 페이지로 이동하여 추천 동화 캐러셀 표시
-        navigate("/main");
+        // [2025-11-14 김광현] main -> /story/list
+        navigate("/story/list");
     }
 
     // 선택된 관심사인지 확인
