@@ -18,7 +18,10 @@ import iconDashboard from "../../assets/icons/dashboard.png";
 import iconGirl from "../../assets/icons/girl.png";
 import iconHome from "../../assets/icons/home.png";
 
-function DinoCharacter() {
+// ⭐ NEW: 파티클 이미지
+// import spark from "../../assets/icons/dino.png";
+
+function DinoCharacter({ isHome }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isJumping, setIsJumping] = useState(false);
   const [sessionId, setSessionId] = useState(null);
@@ -34,6 +37,36 @@ function DinoCharacter() {
   const { user, logout } = useAuth();
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
+  const [guideMessage, setGuideMessge] = useState("");
+
+  // 홈 첫 등장 애니메이션
+  const [showDino, setShowDino] = useState(!isHome);
+  const [showParticles, setShowParticles] = useState(false);
+
+  // 홈일 때만 2초 후 디노 등장
+  useEffect(() => {
+    if (isHome) {
+    // 2초 후 디노 나타남
+    setTimeout(() => {
+      setShowDino(true);
+
+      
+      setTimeout(() => {
+        setIsJumping(true);
+        setShowParticles(true);
+
+        setTimeout(() => {
+          setGuideMessge("안녕! 나는 디노야!\n나를 눌러봐!");
+        }, 600);
+
+        setTimeout(() => setIsJumping(false), 600);
+        setTimeout(() => setShowParticles(false), 1200);
+      }, 200); 
+
+    }, 2000);
+  }
+}, [isHome]);
+
 
   // 메시지 업데이트 시 스크롤 아래로
   useEffect(() => {
@@ -350,19 +383,49 @@ function DinoCharacter() {
   };
 
   return (
-    <div className="dino-wrapper">
-      <div
-        className={`dino-container ${isJumping ? "jump" : ""}`}
-        onClick={handleClick}
-      >
-        <Lottie
-          animationData={getDinoAnimation()}
-          loop
-          autoplay
-          className="dino-lottie"
-          key={dinoEmotion}
+    <div className={`dino-wrapper ${isHome ? "home-mode" : ""}`}>
+      
+    {/* NEW: 파티클 */}
+    {showParticles && isHome && (
+      <div className="dino-particle-wrapper dino-particle-active">
+        {[...Array(28)].map((_, idx) => {
+        const colors = ["#ffd166", "#ff9b7a", "#87ceeb", "#2fa36b"];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+      return (
+        <div
+          key={idx}
+          className="particle-item"
+          style={{
+            backgroundColor: color,
+            width: `${Math.random() * 12 + 8}px`,
+            height: `${Math.random() * 12 + 8}px`,
+            "--x": `${(Math.random() - 0.5) * 250}px`,
+            "--y": `${(Math.random() - 0.5) * 250}px`,
+            "--duration": `${Math.random() * 0.5 + 0.8}s`,
+          }}
         />
-      </div>
+      );
+    })}
+  </div>
+)}
+
+
+      {/* 등장 연출 */}
+      {showDino && (
+        <div
+          className={`dino-container ${isJumping ? "jump" : ""}`}
+          onClick={handleClick}
+        >
+          <Lottie
+            animationData={getDinoAnimation()}
+            loop
+            autoplay
+            className="dino-lottie"
+            key={dinoEmotion}
+          />
+        </div>
+      )}
 
       {isOpen && (
         <div className="speech-bubble chat-bubble">
@@ -514,11 +577,13 @@ function DinoCharacter() {
         </div>
       )}
 
-      {!isOpen && (
+      {/* 홈에서는 idle bubble 아예 제거 */}
+      {!isOpen && !isHome && (
         <div className="speech-bubble idle-bubble bouncey">
           <p>나 눌러봐! </p>
         </div>
       )}
+      
     </div>
   );
 }
