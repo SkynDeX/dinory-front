@@ -66,5 +66,13 @@ export const chatApi = {
     getOrCreateActiveSession: async (childId) => {
         const response = await axiosInstance.get(`/api/chat/child/${childId}/active-session`);
         return response.data;
+    },
+
+    // [2025-11-14 추가] 사용자 메시지에서 페이지 이동 의도 분석
+    analyzeNavigationIntent: async (message) => {
+        const response = await axiosInstance.post('/api/chat/analyze-navigation', {
+            message
+        });
+        return response.data;
     }
 };

@@ -234,6 +234,42 @@ function DinoCharacter() {
     setMessages((prev) => [...prev, userMessage]);
 
     try {
+      // [2025-11-14 추가] 페이지 이동 의도 분석
+      console.log('📡 [DinoCharacter] 페이지 이동 의도 분석 시작:', currentMessage);
+      const navIntent = await chatApi.analyzeNavigationIntent(currentMessage);
+      console.log('📊 [DinoCharacter] 분석 결과:', navIntent);
+
+      // 백엔드에서 스네이크 케이스로 반환하므로 언더스코어로 접근
+      const hasIntent = navIntent.has_navigation_intent || navIntent.hasNavigationIntent;
+      const targetPath = navIntent.target_path || navIntent.targetPath;
+      const confidence = navIntent.confidence || 0;
+
+      console.log('🔍 [DinoCharacter] 파싱된 값:', { hasIntent, targetPath, confidence });
+
+      if (hasIntent && confidence >= 0.7) {
+        console.log('🚀 [DinoCharacter] 페이지 이동 의도 감지! 이동 중...', navIntent);
+
+        // 페이지 이동 안내 메시지 표시
+        const navMsg = {
+          sender: "AI",
+          message: `알겠어요! ${getPageName(targetPath)} 페이지로 이동할게요.`,
+          createdAt: new Date(),
+        };
+        setMessages((prev) => [...prev, navMsg]);
+        setIsLoading(false);
+        setIsTextInputMode(false);
+
+        // 1초 후 페이지 이동
+        setTimeout(() => {
+          navigate(targetPath);
+          setIsOpen(false); // 디노 닫기
+        }, 1000);
+
+        return;
+      }
+
+      console.log('⚠️ [DinoCharacter] 페이지 이동 의도 없음 또는 신뢰도 낮음 (일반 대화 처리)');
+
       const response = await chatApi.sendMessage(sessionId, currentMessage);
       let aiResponseText = response.aiResponse;
 
@@ -271,6 +307,23 @@ function DinoCharacter() {
       setIsLoading(false);
       setIsTextInputMode(false);
     }
+  };
+
+  // [2025-11-14 추가] 경로를 한글 이름으로 변환
+  const getPageName = (path) => {
+    const pageNames = {
+      "/home": "홈",
+      "/story/list": "동화 목록",
+      "/parent/dashboard": "대시보드",
+      "/child/select": "자녀 선택",
+      "/child/registration": "자녀 등록",
+      "/child/emotion": "감정 선택",
+      "/child/interest": "관심사 선택",
+      "/my-dinos": "내 공룡",
+      "/profile": "프로필",
+      "/landing": "랜딩",
+    };
+    return pageNames[path] || path;
   };
 
   const generateChoices = async (lastMessage) => {

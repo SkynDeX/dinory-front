@@ -1,5 +1,6 @@
 // /src/components/ChatInterface/ChatInterface.jsx
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { chatApi } from '../../services/api/chatApi';
 import { getStoryCompletionSummary, getRecommendedStories } from '../../services/api/storyApi';
 import AbilitySummaryMessage from './AbilitySummaryMessage';
@@ -11,6 +12,7 @@ import micIcon from '../../assets/icons/mike.png';
 import sendIcon from '../../assets/icons/send.png';
 
 const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) => {  // [2025-10-29 김광현] initialSessionId, completionId 추가
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -186,6 +188,7 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
 
   // [2025-11-04 김민중 수정] 동화 추천 키워드 감지 및 자동 추천
   // [2025-11-11 수정] AI가 의도를 판별하도록 변경
+  // [2025-11-14 추가] 페이지 이동 의도 분석
   const handleSend = async () => {
     if (!input.trim() || !sessionId) return;
 
@@ -197,6 +200,42 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
     setIsTyping(true);
 
     try {
+      // [2025-11-14 추가] 페이지 이동 의도 분석
+      console.log('📡 페이지 이동 의도 분석 시작:', text);
+      const navIntent = await chatApi.analyzeNavigationIntent(text);
+      console.log('📊 분석 결과:', navIntent);
+
+      // 백엔드에서 스네이크 케이스로 반환하므로 언더스코어로 접근
+      const hasIntent = navIntent.has_navigation_intent || navIntent.hasNavigationIntent;
+      const targetPath = navIntent.target_path || navIntent.targetPath;
+      const confidence = navIntent.confidence || 0;
+
+      console.log('🔍 파싱된 값:', { hasIntent, targetPath, confidence });
+
+      if (hasIntent && confidence >= 0.7) {
+        console.log('🚀 페이지 이동 의도 감지! 이동 중...', navIntent);
+
+        // 페이지 이동 안내 메시지 표시
+        const navMsg = {
+          sender: 'assistant',
+          content: `알겠어요! ${targetPath} 페이지로 이동할게요.`,
+          createdAt: new Date().toISOString()
+        };
+        setMessages(prev => [...prev, navMsg]);
+        setIsTyping(false);
+
+        // 1초 후 페이지 이동
+        setTimeout(() => {
+          navigate(targetPath);
+        }, 1000);
+
+        return;
+      }
+
+      console.log('⚠️ 페이지 이동 의도 없음 또는 신뢰도 낮음 (일반 대화 처리)');
+      console.log(`   - hasIntent: ${hasIntent}, confidence: ${confidence}`);
+      console.log(`   - reason: ${navIntent.reason}`);
+
       // AI에게 메시지 전송
       const res = await chatApi.sendMessage(sessionId, text);
       const aiText = res?.aiResponse ?? res?.message ?? '답변을 생성하지 못했습니다.';
