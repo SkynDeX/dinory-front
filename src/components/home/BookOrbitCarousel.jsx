@@ -87,20 +87,33 @@ function BookOrbitCarousel() {
       // [2025-11-17 추가] 캐시 확인
       const cacheKey = getCacheKey();
 
+      // [2025-11-17 추가] 캐시 키 로그로 감정/관심사 변경 감지
+      console.log("🔑 현재 캐시 키:", cacheKey);
+      console.log("📊 현재 상태:", {
+        childId: selectedChild?.id,
+        emotion: selectedEmotion?.id,
+        interests: selectedInterests
+      });
+
       if (!forceRefresh) {
         try {
           const cachedData = sessionStorage.getItem(cacheKey);
           if (cachedData) {
             const cachedBooks = JSON.parse(cachedData);
             console.log("💾 캐시에서 동화 불러옴:", cachedBooks.length, "개");
+            console.log("ℹ️ 감정이나 관심사가 변경되면 자동으로 새 동화를 로드합니다.");
             setBooks(cachedBooks);
             setIsLoadingStories(false);
             setHasLoadedOnce(true);
             return; // 캐시가 있으면 API 요청 안 함
+          } else {
+            console.log("🆕 캐시 없음 - 새로운 동화 로드 시작");
           }
         } catch (e) {
           console.warn("캐시 로드 실패:", e);
         }
+      } else {
+        console.log("🔄 강제 새로고침 - 캐시 무시하고 새 동화 로드");
       }
 
       // 캐시가 없거나 강제 새로고침이면 API 요청
