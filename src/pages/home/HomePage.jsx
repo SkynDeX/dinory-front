@@ -72,7 +72,7 @@ function HomePage() {
                 })
               );
             }}
-            onClick={() => navigate("/story/list")}
+            onClick={() => navigate("/child/select")}
           >
             동화 읽기 시작하기
           </button>
