@@ -130,6 +130,19 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
 
       const messagesArray = [];
 
+      // [2025-11-17 수정] 기존 대화 내역도 포함 (DinoCharacter와 세션 공유)
+      if (res.messages && res.messages.length > 0) {
+        console.log("📚 기존 대화 내역:", res.messages.length, "개");
+        res.messages.forEach(msg => {
+          messagesArray.push({
+            sender: msg.sender === 'AI' ? 'assistant' : 'user',
+            content: msg.message || msg.content,
+            createdAt: msg.createdAt || new Date().toISOString(),
+          });
+        });
+      }
+
+      // 능력치 요약 추가
       messagesArray.push({
         sender: 'assistant',
         type: 'ability-summary',
@@ -138,16 +151,22 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
         createdAt: new Date().toISOString(),
       });
 
+      // AI 첫 메시지 추가 (이미 DB에 저장되어 res.messages에 포함되어 있을 수 있음)
       if (res.aiResponse && res.aiResponse.trim()) {
-        messagesArray.push({
-          sender: 'assistant',
-          content: res.aiResponse,
-          createdAt: new Date().toISOString(),
-        });
+        // 중복 확인: 마지막 메시지가 같은 내용이면 추가하지 않음
+        const lastMsg = messagesArray[messagesArray.length - 1];
+        if (!lastMsg || lastMsg.content !== res.aiResponse) {
+          messagesArray.push({
+            sender: 'assistant',
+            content: res.aiResponse,
+            createdAt: new Date().toISOString(),
+          });
+        }
       }
 
       setMessages(messagesArray);
       console.log("동화 기반 세션 생성 완료:", res);
+      console.log("✅ DinoCharacter와 같은 세션 공유:", res.sessionId);
     } catch (error) {
       console.error("동화 기반 세션 생성 실패:", error);
       setMessages([{

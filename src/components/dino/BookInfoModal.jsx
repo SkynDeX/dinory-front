@@ -63,24 +63,23 @@ export default function BookInfoModal({ book, onClose }) {
       return;
     }
     
-    // 감정 선택 체크
+    // [2025-11-17 수정] /story/list에서는 이미 추천받은 동화이므로 감정/관심사 체크 완화
+    // 감정이나 관심사가 없어도 동화 읽기 허용 (랜덤 동화일 수 있음)
     if (!selectedEmotion) {
-      console.log("감정 선택 필요!");
-      navigate('/child/emotion');
-      onClose();
-      return;
-    }
-    
-    // 관심사 선택 체크
-    if (!selectedInterests || selectedInterests.length === 0) {
-      console.log("관심사 선택 필요!");
-      navigate('/child/interest');
-      onClose();
-      return;
+      console.log("⚠️ 감정 미선택 - 랜덤 동화로 진행");
     }
 
-    // 모든 조건이 확인되면
-    console.log("모든 조건이 확인되었습니다.");
+    if (!selectedInterests || selectedInterests.length === 0) {
+      console.log("⚠️ 관심사 미선택 - 랜덤 동화로 진행");
+    }
+
+    // 동화 읽기 시작
+    console.log("✅ 동화 시작:", {
+      storyId: book.storyId,
+      title: book.title,
+      hasEmotion: !!selectedEmotion,
+      hasInterests: !!(selectedInterests && selectedInterests.length > 0)
+    });
     navigate(`/story/${book.storyId}`);
     onClose();
   };
