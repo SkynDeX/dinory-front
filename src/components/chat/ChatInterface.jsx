@@ -215,13 +215,23 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
       if (hasIntent && confidence >= 0.7) {
         console.log('🚀 페이지 이동 의도 감지! 이동 중...', navIntent);
 
-        // 페이지 이동 안내 메시지 표시
+        // [2025-11-14 수정] 페이지 이동 전에 백엔드에 메시지 저장
+        // 커스텀 응답 메시지 (AI 응답 대신 사용)
+        const pageName = targetPath.split('/').pop() || targetPath;
         const navMsg = {
           sender: 'assistant',
-          content: `알겠어요! ${targetPath} 페이지로 이동할게요.`,
+          content: `좋아! ${pageName} 페이지로 갈게! 기다려봐~`,
           createdAt: new Date().toISOString()
         };
         setMessages(prev => [...prev, navMsg]);
+
+        // 백그라운드에서 백엔드에 저장 (응답은 표시하지 않음)
+        try {
+          await chatApi.sendMessage(sessionId, text);
+        } catch (error) {
+          console.error('메시지 저장 실패:', error);
+        }
+
         setIsTyping(false);
 
         // 1초 후 페이지 이동

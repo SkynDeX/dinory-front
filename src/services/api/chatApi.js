@@ -74,5 +74,19 @@ export const chatApi = {
             message
         });
         return response.data;
+    },
+
+    // [2025-11-17 추가] 특정 패턴을 포함하는 메시지 삭제 (과거 잘못된 응답 정리용)
+    deleteMessagesWithPattern: async (sessionId, pattern) => {
+        const response = await axiosInstance.delete(`/api/chat/session/${sessionId}/messages/pattern`, {
+            params: { pattern }
+        });
+        return response.data;
+    },
+
+    // [2025-11-17 추가] 세션의 모든 메시지 삭제
+    clearSessionMessages: async (sessionId) => {
+        const response = await axiosInstance.delete(`/api/chat/session/${sessionId}/messages`);
+        return response.data;
     }
 };

@@ -59,81 +59,106 @@ function BookOrbitCarousel() {
   const [selectedBook, setSelectedBook] = useState(null);
 
   // [2025-11-12 김광현] 동화추천 state 추가
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // [2025-11-17 수정] 초기에 placeholder 책들을 바로 표시 (Progressive Loading)
+  const [books, setBooks] = useState([
+    { id: 1, title: "동화를 불러오는 중...", image: "/assets/intro/01.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
+    { id: 2, title: "동화를 불러오는 중...", image: "/assets/intro/02.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
+    { id: 3, title: "동화를 불러오는 중...", image: "/assets/intro/03.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
+    { id: 4, title: "동화를 불러오는 중...", image: "/assets/intro/04.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
+    { id: 5, title: "동화를 불러오는 중...", image: "/assets/intro/05.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
+  ]);
+  const [loading, setLoading] = useState(false); // [2025-11-17 수정] false로 변경 - 화면 즉시 표시
+  const [isLoadingStories, setIsLoadingStories] = useState(true); // 동화 로딩 상태
   // Context
   const {user} = useAuth();
 
-  // [2025-11-12 김광현] 동화 로드 - 로그인에 따라서 진행
+  // [2025-11-17 수정] 진짜 Progressive Loading - 동화를 하나씩 병렬로 로드
   useEffect(() => {
-    const fetchStories = async () => {
-      setLoading(true);
+    const fetchStoriesProgressively = async () => {
+      setIsLoadingStories(true);
 
       try {
-        let fetchedStories = [];
+        const totalBooks = 5;
+        const fetchPromises = [];
 
-        // 로그인 여부
-        if(user && selectedChild && selectedEmotion && selectedInterests?.length > 0) {
-          // 로그인 되면 자녀/감정/관심사 선택하고 추천동화 시작
-          console.log("추천동화 가져오기 :", {
-            emotion: selectedEmotion.id,
-            interests: selectedInterests,
-            childId: selectedChild.id
-          });
+        // 5개의 동화를 병렬로 개별 요청
+        for (let i = 0; i < totalBooks; i++) {
+          const fetchPromise = (async (index) => {
+            try {
+              let stories = [];
 
-          fetchedStories = await getRecommendedStories(
-            selectedEmotion.id,
-            selectedInterests,
-            selectedChild.id,
-            5
-          );
-        } else {
-          // 로그인이 안되거나 자녀/감정/관심사 선택이 안되면
-          console.log("랜덤동화 가져오기 (로그인 전 or 선택 전 입니다.");
+              // 로그인 여부에 따라 추천 또는 랜덤 동화 요청
+              if (user && selectedChild && selectedEmotion && selectedInterests?.length > 0) {
+                console.log(`📚 [${index + 1}/5] 추천동화 요청 중...`);
+                stories = await getRecommendedStories(
+                  selectedEmotion.id,
+                  selectedInterests,
+                  selectedChild.id,
+                  1 // ⭐ 1개씩만 요청
+                );
+              } else {
+                console.log(`📚 [${index + 1}/5] 랜덤동화 요청 중...`);
+                stories = await getRandomStories(1); // ⭐ 1개씩만 요청
+              }
 
-          fetchedStories = await getRandomStories(5);
+              if (stories && stories.length > 0) {
+                const story = stories[0];
+                const transformedBook = {
+                  id: index + 1,
+                  storyId: story.storyId,
+                  title: story.title,
+                  image: `/assets/intro/0${(index % 5) + 1}.png`,
+                  desc: story.description,
+                  themes: story.themes || [],
+                  matchingScore: story.matchingScore || 50,
+                  isLoading: false, // 로딩 완료
+                };
+
+                // ⭐ 받는 즉시 해당 인덱스의 책을 업데이트
+                setBooks(prevBooks => {
+                  const newBooks = [...prevBooks];
+                  newBooks[index] = transformedBook;
+                  return newBooks;
+                });
+
+                console.log(`✅ [${index + 1}/5] 동화 로드 완료: ${story.title}`);
+              }
+            } catch (error) {
+              console.error(`❌ [${index + 1}/5] 동화 로드 실패:`, error);
+
+              // 실패한 책은 기본값으로 대체
+              const defaultBook = {
+                id: index + 1,
+                title: ["달 위의 곰돌이", "바다의 인어", "숲 속 요정", "우주 탐험", "공룡 친구"][index],
+                image: `/assets/intro/0${(index % 5) + 1}.png`,
+                desc: "동화를 불러오는데 실패했습니다",
+                storyId: `default_${index + 1}`,
+                isLoading: false,
+              };
+
+              setBooks(prevBooks => {
+                const newBooks = [...prevBooks];
+                newBooks[index] = defaultBook;
+                return newBooks;
+              });
+            }
+          })(i);
+
+          fetchPromises.push(fetchPromise);
         }
 
-        // [2025-11-14 김광현] 동화 추천 다양성 개선
-        // Fisher-Yates Shuffle 알고리즘
-        const storiesArry = Array.isArray(fetchedStories) ? fetchedStories : [];
-        const suffled = [...storiesArry];
-        
-        for(let i = suffled.length -1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [suffled[i], suffled[j]] = [suffled[j], suffled[i]];
-        }
-
-        // 책 데이터 파이콘에서 가져오기
-        const transformedBooks = suffled.map((story, index) => ({
-          id: index + 1,
-          storyId: story.storyId,
-          title: story.title,
-          image: `/assets/intro/0${(index % 5) + 1}.png`,
-          desc: story.description,
-          themes: story.themes || [],
-          matchingScore: story.matchingScore || 50,
-        }));
-
-        setBooks(transformedBooks);
-        console.log("동화 완료 로드 :", transformedBooks.length, "개");
+        // 모든 요청이 완료될 때까지 대기 (병렬 처리)
+        await Promise.all(fetchPromises);
+        console.log("🎉 모든 동화 로드 완료!");
 
       } catch (error) {
-        console.error("동화 로드 실패: ", error);
-
-        // 실패하면 하드코딩 사용
-        setBooks([
-          { id: 1, title: "달 위의 곰돌이", image: "/assets/intro/01.png", desc: "달나라에서 펼쳐지는 따뜻한 모험", storyId: "default_1" },
-          { id: 2, title: "바다의 인어", image: "/assets/intro/02.png", desc: "바다 속 친구들과의 우정 이야기", storyId: "default_2" },
-          { id: 3, title: "숲 속 요정", image: "/assets/intro/03.png", desc: "마법의 숲에서 만난 친구들", storyId: "default_3" },
-          { id: 4, title: "우주 탐험", image: "/assets/intro/04.png", desc: "별들 사이를 여행하는 모험", storyId: "default_4" },
-          { id: 5, title: "공룡 친구", image: "/assets/intro/05.png", desc: "용감한 공룡들의 이야기", storyId: "default_5" },
-        ]);
+        console.error("❌ 전체 동화 로드 실패:", error);
       } finally {
-        setLoading(false);
+        setIsLoadingStories(false);
       }
     };
-    fetchStories();
+
+    fetchStoriesProgressively();
   }, [user, selectedChild, selectedEmotion, selectedInterests]);
 
 
@@ -211,7 +236,8 @@ function BookOrbitCarousel() {
       meshes.push(mesh);
     });
 
-    let rotation = 0;
+    // [2025-11-17 수정] 씬 재생성 시 현재 회전 위치 유지
+    let rotation = targetRotation.current;
     const step = (Math.PI * 2) / books.length;
     const offset = Math.PI / books.length / 2;
 
@@ -300,6 +326,12 @@ function BookOrbitCarousel() {
 
   // [2025-11-12 김광현] 책 읽기 핸들러 수정
   const handleReadBook = async () => {
+    // [2025-11-17 추가] 로딩 중인 책은 클릭 불가
+    if (books[selectedIndex].isLoading || !books[selectedIndex].storyId) {
+      console.log("⏳ 동화가 아직 로딩 중입니다. 잠시만 기다려주세요.");
+      return;
+    }
+
     try {
       // await addStar(); - 동화 완료 후에만 별 추가
       setSelectedBook(books[selectedIndex]);
@@ -322,9 +354,8 @@ function BookOrbitCarousel() {
     targetRotation.current = snapped;
   };
 
-  if (loading) {
-    return <LoadingScreen message="동화를 불러오는 중이에요..."/>;
-  }
+  // [2025-11-17 수정] loading 체크 제거 - 항상 화면 표시
+  // Progressive Loading으로 인해 LoadingScreen 불필요
 
   return (
     <div className="carousel-wrapper">
@@ -364,13 +395,28 @@ function BookOrbitCarousel() {
       </div>
 
       <div className="carousel-controls">
-        <div className="carousel-title">{books[selectedIndex].title}</div>
+        {/* [2025-11-17 추가] 로딩 상태 표시 */}
+        <div className="carousel-title">
+          {books[selectedIndex].title}
+          {isLoadingStories && books[selectedIndex].isLoading && (
+            <span style={{ fontSize: '0.8em', opacity: 0.7, marginLeft: '8px' }}>⏳</span>
+          )}
+        </div>
         <div className="carousel-index">
           {selectedIndex + 1} / {books.length}
         </div>
 
-        <button className="book-read-btn" onClick={handleReadBook}>
-          책 읽기
+        {/* [2025-11-17 수정] 로딩 중인 책은 버튼 비활성화 */}
+        <button
+          className="book-read-btn"
+          onClick={handleReadBook}
+          disabled={books[selectedIndex].isLoading || !books[selectedIndex].storyId}
+          style={{
+            opacity: books[selectedIndex].isLoading || !books[selectedIndex].storyId ? 0.5 : 1,
+            cursor: books[selectedIndex].isLoading || !books[selectedIndex].storyId ? 'not-allowed' : 'pointer'
+          }}
+        >
+          {books[selectedIndex].isLoading ? '로딩 중...' : '책 읽기'}
         </button>
       </div>
 

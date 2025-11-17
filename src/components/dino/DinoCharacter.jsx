@@ -283,26 +283,19 @@ function DinoCharacter({ isHome }) {
         console.log('🚀 [DinoCharacter] 페이지 이동 의도 감지! 이동 중...', navIntent);
 
         // [2025-11-14 수정] 페이지 이동 전에 백엔드에 메시지 저장
-        try {
-          const response = await chatApi.sendMessage(sessionId, currentMessage);
-          const aiResponseText = response.aiResponse;
+        // 커스텀 응답 메시지 (AI 응답 대신 사용)
+        const navMsg = {
+          sender: "AI",
+          message: `좋아! ${getPageName(targetPath)} 페이지로 갈게! 기다려봐~`,
+          createdAt: new Date(),
+        };
+        setMessages((prev) => [...prev, navMsg]);
 
-          // AI 응답 메시지 표시
-          const aiMsg = {
-            sender: "AI",
-            message: aiResponseText,
-            createdAt: new Date(),
-          };
-          setMessages((prev) => [...prev, aiMsg]);
+        // 백그라운드에서 백엔드에 저장 (응답은 표시하지 않음)
+        try {
+          await chatApi.sendMessage(sessionId, currentMessage);
         } catch (error) {
           console.error('메시지 저장 실패:', error);
-          // 실패해도 페이지는 이동
-          const navMsg = {
-            sender: "AI",
-            message: `알겠어요! ${getPageName(targetPath)} 페이지로 이동할게요.`,
-            createdAt: new Date(),
-          };
-          setMessages((prev) => [...prev, navMsg]);
         }
 
         setIsLoading(false);
