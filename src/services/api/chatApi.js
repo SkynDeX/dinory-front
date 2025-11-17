@@ -88,5 +88,15 @@ export const chatApi = {
     clearSessionMessages: async (sessionId) => {
         const response = await axiosInstance.delete(`/api/chat/session/${sessionId}/messages`);
         return response.data;
+    },
+
+    // [2025-11-17 추가] 네비게이션 메시지 저장 (AI 호출 없이)
+    saveNavigationMessage: async (sessionId, userMessage, systemResponse) => {
+        const response = await axiosInstance.post('/api/chat/message/navigation', {
+            sessionId,
+            userMessage,
+            systemResponse
+        });
+        return response.data;
     }
 };
