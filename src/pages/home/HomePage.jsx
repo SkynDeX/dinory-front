@@ -32,51 +32,53 @@ function HomePage() {
   }, []);
 
   return (
-    <div className="main-container">
+    <div className="home-page">
+      <div className="main-container">
 
-      {/* 로고 */}
-      <div className="logo-wrapper">
-        <h1 className="main-logo">
-          <span className="green">Din</span>
-          <span className="coral">o</span>
-          <span className="sky">r</span>
-          <span className="yellow">y</span>
-        </h1>
-      </div>
-
-      {/* 파티클 */}
-      {/* {triggerParticles && <div className="particle-wrapper"></div>} */}
-
-      {/* 디노 (2초 후 등장) */}
-      {showDino && (
-        <div className="hero-dino-wrapper">
-          {/* 버튼 강조 및 setter 전달 */}
-          <DinoCharacter 
-            isHome={true} 
-            highlightStartButton={highlightStartButton}
-            setHighlightStartButton={setHighlightStartButton}
-          />
+        {/* 로고 */}
+        <div className="logo-wrapper">
+          <h1 className="main-logo">
+            <span className="green">Din</span>
+            <span className="coral">o</span>
+            <span className="sky">r</span>
+            <span className="yellow">y</span>
+          </h1>
         </div>
-      )}
 
-      {/* CTA 버튼 */}
-      <div className="cta-wrapper">
-        <button
-          className={`btn-main ${highlightStartButton ? "shake-btn" : ""}`}
-          onMouseEnter={() => {
-            // 버튼 hover 시 디노에게 메시지 보내기
-            window.dispatchEvent(
-              new CustomEvent("dinoHoverMessage", {
-                detail: "이 버튼을 누르면 동화를 시작할 수 있어!"
-              })
-            );
-          }}
-          onClick={() => navigate("/story/list")}
-        >
-          동화 읽기 시작하기
-        </button>
+        {/* 파티클 */}
+        {/* {triggerParticles && <div className="particle-wrapper"></div>} */}
+
+        {/* 디노 (2초 후 등장) */}
+        {showDino && (
+          <div className="hero-dino-wrapper">
+            {/* 버튼 강조 및 setter 전달 */}
+            <DinoCharacter 
+              isHome={true} 
+              highlightStartButton={highlightStartButton}
+              setHighlightStartButton={setHighlightStartButton}
+            />
+          </div>
+        )}
+
+        {/* CTA 버튼 */}
+        <div className="cta-wrapper">
+          <button
+            className={`btn-main ${highlightStartButton ? "shake-btn" : ""}`}
+            onMouseEnter={() => {
+              // 버튼 hover 시 디노에게 메시지 보내기
+              window.dispatchEvent(
+                new CustomEvent("dinoHoverMessage", {
+                  detail: "이 버튼을 누르면 동화를 시작할 수 있어!"
+                })
+              );
+            }}
+            onClick={() => navigate("/story/list")}
+          >
+            동화 읽기 시작하기
+          </button>
+        </div>
+
       </div>
-
     </div>
   );
 }

@@ -1,4 +1,4 @@
-.main-container {
+.home-page .main-container {
   height: 100vh;                
   width: 100%;
   padding: 0;
@@ -18,28 +18,32 @@
 }
 
 /* 로고 */
-.logo-wrapper {
+.home-page .logo-wrapper {
   width: 100%;
   display: flex;
   align-items: center;
   padding: 20px 30px;
-  margin-right: 450px;
+  /* margin-right: 450px;  */
+  position: relative;
+  z-index: 30;                
 }
 
-.main-logo {
+
+.home-page .main-logo {
   font-size: 48px;
   font-weight: 900;
   margin: 0;
   margin-left: 50px;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
 }
 
-.green  { color: #2fa36b; }
-.coral  { color: #ff9b7a; }
-.sky    { color: #87ceeb; }
-.yellow { color: #ffd166; }
+.home-page .green  { color: #2fa36b; }
+.home-page .coral  { color: #ff9b7a; }
+.home-page .sky    { color: #87ceeb; }
+.home-page .yellow { color: #ffd166; }
 
 /* 중앙 부근 디노 */
-.hero-dino-wrapper {
+.home-page .hero-dino-wrapper {
   position: absolute;
   top: 50%;
   left: 60%;
@@ -48,7 +52,7 @@
   pointer-events: none;
 }
 
-.dino-guide-text {
+.home-page .dino-guide-text {
   margin-top: 6px;
   font-size: 16px;
   font-weight: 700;
@@ -56,25 +60,25 @@
 }
 
 /* 디노 크게 */
-.dino-wrapper.large {
+.home-page .dino-wrapper.large {
   width: 230px !important;
   height: 230px !important;
 }
 
-.dino-wrapper.home-position {
+.home-page .dino-wrapper.home-position {
   position: static !important;
 }
 
-.dino-wrapper.home-mode .dino-container {
+.home-page .dino-wrapper.home-mode .dino-container {
   pointer-events: auto !important;
 }
 
 /* CTA 버튼 */
-.cta-wrapper {
+.home-page .cta-wrapper {
   margin-bottom: 150px;
 }
 
-.btn-main {
+.home-page .btn-main {
   background: linear-gradient(135deg, #2fa36b 0%, #87ceeb 100%);
   border: none;
   padding: 16px 26px;
@@ -87,7 +91,7 @@
   transition: 0.25s;
 }
 
-.shake-btn {
+.home-page .shake-btn {
   animation: shake 0.5s ease-in-out infinite;
 }
 
@@ -97,15 +101,13 @@
   75% { transform: translateX(4px); }
 }
 
-
-.btn-main:hover {
+.home-page .btn-main:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(135, 206, 235, 0.3);
 }
 
 /* 1회 실행 파티클 효과 */
-
-.particle-wrapper {
+.home-page .particle-wrapper {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -113,8 +115,8 @@
 }
 
 /* 30개 파티클 생성 */
-.particle-wrapper::before,
-.particle-wrapper::after {
+.home-page .particle-wrapper::before,
+.home-page .particle-wrapper::after {
   content: "";
   position: absolute;
   width: 4px;
@@ -123,7 +125,7 @@
   animation: particleBurst 1s ease-out forwards;
 }
 
-.particle-wrapper::before {
+.home-page .particle-wrapper::before {
   box-shadow:
     0 0 #ffd166,
     20px -10px #ff9b7a,
@@ -135,7 +137,7 @@
     -15px -15px #2fa36b;
 }
 
-.particle-wrapper::after {
+.home-page .particle-wrapper::after {
   box-shadow:
     5px -5px #ff9b7a,
     -5px 5px #ffd166,
