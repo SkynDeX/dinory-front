@@ -249,13 +249,29 @@ function DinoCharacter() {
       if (hasIntent && confidence >= 0.7) {
         console.log('🚀 [DinoCharacter] 페이지 이동 의도 감지! 이동 중...', navIntent);
 
-        // 페이지 이동 안내 메시지 표시
-        const navMsg = {
-          sender: "AI",
-          message: `알겠어요! ${getPageName(targetPath)} 페이지로 이동할게요.`,
-          createdAt: new Date(),
-        };
-        setMessages((prev) => [...prev, navMsg]);
+        // [2025-11-14 수정] 페이지 이동 전에 백엔드에 메시지 저장
+        try {
+          const response = await chatApi.sendMessage(sessionId, currentMessage);
+          const aiResponseText = response.aiResponse;
+
+          // AI 응답 메시지 표시
+          const aiMsg = {
+            sender: "AI",
+            message: aiResponseText,
+            createdAt: new Date(),
+          };
+          setMessages((prev) => [...prev, aiMsg]);
+        } catch (error) {
+          console.error('메시지 저장 실패:', error);
+          // 실패해도 페이지는 이동
+          const navMsg = {
+            sender: "AI",
+            message: `알겠어요! ${getPageName(targetPath)} 페이지로 이동할게요.`,
+            createdAt: new Date(),
+          };
+          setMessages((prev) => [...prev, navMsg]);
+        }
+
         setIsLoading(false);
         setIsTextInputMode(false);
 
