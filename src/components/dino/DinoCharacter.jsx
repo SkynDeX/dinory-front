@@ -329,18 +329,19 @@ useEffect(() => {
       if (hasIntent && confidence >= 0.7) {
         console.log('🚀 [DinoCharacter] 페이지 이동 의도 감지! 이동 중...', navIntent);
 
-        // [2025-11-14 수정] 페이지 이동 전에 백엔드에 메시지 저장
-        // 커스텀 응답 메시지 (AI 응답 대신 사용)
+        // [2025-11-17 수정] 커스텀 응답 메시지 (AI 응답 대신 사용)
+        const customResponse = `좋아! ${getPageName(targetPath)} 페이지로 갈게! 기다려봐~`;
         const navMsg = {
           sender: "AI",
-          message: `좋아! ${getPageName(targetPath)} 페이지로 갈게! 기다려봐~`,
+          message: customResponse,
           createdAt: new Date(),
         };
         setMessages((prev) => [...prev, navMsg]);
 
-        // 백그라운드에서 백엔드에 저장 (응답은 표시하지 않음)
+        // [2025-11-17 수정] AI 서버 호출 없이 DB에만 저장
         try {
-          await chatApi.sendMessage(sessionId, currentMessage);
+          await chatApi.saveNavigationMessage(sessionId, currentMessage, customResponse);
+          console.log('✅ 네비게이션 메시지 저장 완료 (AI 호출 없음)');
         } catch (error) {
           console.error('메시지 저장 실패:', error);
         }
