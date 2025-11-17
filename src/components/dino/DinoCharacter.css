@@ -415,3 +415,208 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+/* HOME MODE */
+.dino-wrapper.home-mode {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 5000 !important;
+  pointer-events: none !important;
+}
+
+/* 홈 모드에서 디노 크게 */
+.dino-wrapper.home-mode .dino-container,
+.dino-wrapper.home-mode .dino-lottie {
+  width: 500px !important;
+  height: 500px !important;
+}
+
+/* HOME MODE  */
+.dino-wrapper.home-mode .speech-bubble {
+  position: absolute !important;
+  width: 300px !important;
+  height: 100px !important;
+  max-width: 500px !important;
+  min-width: 350px !important;
+  font-size: 35px !important;
+  line-height: 1.5 !important;
+
+  bottom: -150px !important;
+  left: 50% !important;
+  transform: translateX(-140%) !important;
+
+  pointer-events: auto !important;
+  z-index: 99999 !important;
+
+  animation: none !important;
+  opacity: 1 !important;
+  transition: none !important;
+}
+
+/* HOME MODE  */
+.dino-wrapper.home-mode .chat-bubble {
+  width: 350px !important;
+  height: 500px !important;
+  max-width: 500px !important;
+  min-width: 400px !important;
+}
+
+/* 홈에서는 idle-bubble도 홈 스타일 유지 */
+.dino-wrapper.home-mode .idle-bubble {
+  position: absolute !important;
+  width: 300px !important;
+  height: 100px !important;
+  max-width: 500px !important;
+  min-width: 350px !important;
+
+  font-size: 35px !important;
+  font-weight: 800 !important;
+  line-height: 1.4 !important;
+
+  bottom: -150px !important;
+  left: 50% !important;
+  transform: translateX(-140%) !important;
+
+  background: white !important;
+  border: 3px solid #ffd166 !important;
+  border-radius: 25px !important;
+
+  opacity: 1 !important;
+  animation: none !important;
+  transition: none !important;
+
+  pointer-events: auto !important;
+  z-index: 99999 !important;
+}
+
+/* 말풍선 꼬리 위치 보정 */
+.dino-wrapper.home-mode .speech-bubble::after,
+.dino-wrapper.home-mode .idle-bubble::after {
+  right: -20px !important;
+  bottom: 35px !important;
+  border-width: 12px !important;
+}
+
+/* 홈 모드에서는 말풍선 흔들림 제거 */
+.dino-wrapper.home-mode .bouncey {
+  animation: none !important;
+}
+
+/* 홈 모드에서 hover 시 애니메이션 제거 */
+.dino-wrapper.home-mode .dino-container:hover {
+  transform: none !important;
+}
+
+/* 홈 모드에서는 전체 wrapper 클릭 가능 */
+.dino-wrapper.home-mode {
+  pointer-events: none !important;
+}
+
+.dino-wrapper.home-mode .dino-container {
+  pointer-events: auto !important;
+}
+
+/* 홈에서는 기본 bubble 숨기기 */
+.dino-wrapper.home-mode .idle-bubble {
+  display: block !important;
+}
+
+
+
+/* 파티클 전용 */
+.dino-particle-wrapper {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99999;
+  opacity: 0;
+}
+
+.dino-particle-active {
+  opacity: 1;
+  animation: dinoParticleHide 1.2s ease forwards;
+}
+
+@keyframes dinoParticleHide {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* 랜덤 컬러 파티클 */
+.particle-item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  animation: particleBoom var(--duration) ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes particleBoom {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    transform: translate(
+      calc(-50% + var(--x)),
+      calc(-50% + var(--y))
+    )
+    scale(0.2);
+    opacity: 0;
+  }
+}
+
+
+
+
+
+/* 홈 전용 가이드 말풍선 */
+.home-guide-bubble {
+  position: absolute !important;
+  width: 350px !important;
+  min-width: 350px !important;
+  height: auto !important;
+
+  font-size: 32px !important;
+  line-height: 1.4 !important;
+  font-weight: 700 !important;
+
+  bottom: -150px !important;
+  left: 50% !important;
+  transform: translateX(-140%) !important;
+
+  background: white !important;
+  border: 3px solid #ffd166 !important;
+  border-radius: 25px !important;
+
+  padding: 18px 24px !important;
+  z-index: 99999 !important;
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* 꼬리 */
+.home-guide-bubble::after {
+  content: "";
+  position: absolute;
+  right: -20px;
+  bottom: 35px;
+  border-width: 12px;
+  border-style: solid;
+  border-color: transparent transparent transparent white;
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.15));
+}
+
+
+
+
+
+
+
+
+
+

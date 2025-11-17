@@ -1,85 +1,148 @@
-.homepage-wrapper {
+.main-container {
+  height: 100vh;                
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;               
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background: linear-gradient(180deg, #fefeff 0%, #f8fbff 100%);
-  font-family: "Noto Sans KR", sans-serif;
-  overflow-x: hidden;
-}
-
-/* 헤더 */
-.homepage-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 14px 30px;
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(14px);
-  border-bottom: 2px solid #ffd166;
-  box-shadow: 0 4px 12px rgba(255, 209, 102, 0.25);
-  animation: fadeDown 0.8s ease;
-}
+  justify-content: space-between;
 
-@keyframes fadeDown {
-  from { transform: translateY(-30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  background-image: url("../../assets/backgrounds/jungle.png");
+  background-size: cover;           
+  background-position: center;
+  background-repeat: no-repeat;
+
+  background-blend-mode: overlay;
 }
 
 /* 로고 */
-.logo {
-  font-size: 38px;
-  font-weight: 800;
-  font-family: "Poppins", "Noto Sans KR", sans-serif;
+.logo-wrapper {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 2px;
-  letter-spacing: 1px;
-  cursor: default;
-  transition: transform 0.3s ease;
-}
-.logo:hover {
-  transform: scale(1.05);
-}
-.logo span {
-  display: inline-block;
-  transition: transform 0.3s ease;
+  padding: 20px 30px;
+  margin-right: 450px;
 }
 
-.logo .green { color: #2fa36b; }
-.logo .coral { color: #ff9b7a; }
-.logo .sky { color: #87ceeb; }
-.logo .yellow { color: #ffd166; }
-
-.logo:hover span {
-  transform: translateY(-4px);
+.main-logo {
+  font-size: 48px;
+  font-weight: 900;
+  margin: 0;
+  margin-left: 50px;
 }
 
-/* 네비게이션 */
-.nav-menu button {
-  background: none;
-  border: none;
+.green  { color: #2fa36b; }
+.coral  { color: #ff9b7a; }
+.sky    { color: #87ceeb; }
+.yellow { color: #ffd166; }
+
+/* 중앙 부근 디노 */
+.hero-dino-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  pointer-events: none;
+}
+
+.dino-guide-text {
+  margin-top: 6px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   color: #2fa36b;
-  margin: 0 16px;
-  cursor: pointer;
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-.nav-menu button:hover {
-  color: #ff9b7a;
-  transform: translateY(-2px);
 }
 
-/* 메인 섹션 */
-.hero-section {
-  position: relative;
-  height: 85vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  background: linear-gradient(180deg, #f8faff 0%, #fff5f1 100%);
+/* 디노 크게 */
+.dino-wrapper.large {
+  width: 230px !important;
+  height: 230px !important;
+}
+
+.dino-wrapper.home-position {
+  position: static !important;
+}
+
+.dino-wrapper.home-mode .dino-container {
+  pointer-events: auto !important;
+}
+
+/* CTA 버튼 */
+.cta-wrapper {
+  margin-bottom: 20px;
+}
+
+.btn-main {
+  background: linear-gradient(135deg, #2fa36b 0%, #87ceeb 100%);
+  border: none;
+  padding: 16px 26px;
+  border-radius: 18px;
+  font-size: 18px;
+  font-weight: 800;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(255,155,122,0.25);
+  transition: 0.25s;
+}
+
+.btn-main:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(135, 206, 235, 0.3);
+}
+
+/* 1회 실행 파티클 효과 */
+
+.particle-wrapper {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* 30개 파티클 생성 */
+.particle-wrapper::before,
+.particle-wrapper::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: transparent;
+  animation: particleBurst 1s ease-out forwards;
+}
+
+.particle-wrapper::before {
+  box-shadow:
+    0 0 #ffd166,
+    20px -10px #ff9b7a,
+    -25px -5px #87ceeb,
+    15px 15px #2fa36b,
+    -20px 10px #ffd166,
+    -10px -20px #ff9b7a,
+    10px 20px #87ceeb,
+    -15px -15px #2fa36b;
+}
+
+.particle-wrapper::after {
+  box-shadow:
+    5px -5px #ff9b7a,
+    -5px 5px #ffd166,
+    8px 18px #87ceeb,
+    -18px -8px #2fa36b,
+    22px 8px #ffd166,
+    -8px -22px #ff9b7a,
+    12px -18px #2fa36b,
+    -22px 12px #87ceeb;
+}
+
+@keyframes particleBurst {
+  0% {
+    opacity: 1;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.5);
+  }
 }
