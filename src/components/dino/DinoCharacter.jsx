@@ -18,9 +18,6 @@ import iconDashboard from "../../assets/icons/dashboard.png";
 import iconGirl from "../../assets/icons/girl.png";
 import iconHome from "../../assets/icons/home.png";
 
-// ⭐ NEW: 파티클 이미지
-// import spark from "../../assets/icons/dino.png";
-
 function DinoCharacter({ isHome }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isJumping, setIsJumping] = useState(false);
@@ -43,6 +40,22 @@ function DinoCharacter({ isHome }) {
   const [showDino, setShowDino] = useState(!isHome);
   const [showParticles, setShowParticles] = useState(false);
 
+  // 마지막 멘트에 버튼 애니메이션
+  const [highlightStartButton, setHighlightStartButton] = useState(false);
+
+
+  // 버튼 hover 시 디노가 말함.
+  useEffect(() => {
+    window.addEventListener("dinoHoverMessage", (e) => {
+      if (isHome && showDino && !isOpen) {
+        setGuideMessge(e.detail);
+      }
+    });
+
+    return () => window.removeEventListener("dinoHoverMessage", () => {});
+  }, [isHome, showDino, isOpen]);
+
+
   // 홈일 때만 2초 후 디노 등장
   useEffect(() => {
     if (isHome) {
@@ -63,10 +76,44 @@ function DinoCharacter({ isHome }) {
         setTimeout(() => setShowParticles(false), 1200);
       }, 200); 
 
-    }, 2000);
+    }, 1500);
   }
 }, [isHome]);
 
+// 홈 가이드 멘트 순차 재생
+useEffect(() => {
+  if (!isHome || !showDino || isOpen) return;
+
+  const guideSteps = [
+    "내가 널 도와줄게!",
+    "아래 동화 시작 버튼을 눌러봐!",
+  ];
+
+  let index = 0;
+
+  // 2초 후 자동 가이드 시작
+  const startDelay = setTimeout(() => {
+    const playGuide = () => {
+      if (!isHome || isOpen) return;
+
+      setGuideMessge(guideSteps[index]);
+
+      // 마지막 멘트면 버튼 강조 활성화
+      if (index === guideSteps.length - 1) {
+      setHighlightStartButton(true);
+      }
+
+      index++;
+      if (index < guideSteps.length) {
+        setTimeout(playGuide, 2500); 
+      }
+    };
+
+    playGuide();
+  }, 2200);
+
+  return () => clearTimeout(startDelay);
+}, [isHome, showDino, isOpen]);
 
   // 메시지 업데이트 시 스크롤 아래로
   useEffect(() => {
@@ -440,6 +487,15 @@ function DinoCharacter({ isHome }) {
             className="dino-lottie"
             key={dinoEmotion}
           />
+        </div>
+      )}
+
+      {/* 홈에서만 적용되는 가이드 말풍선! */}
+      {isHome && showDino && !isOpen && guideMessage && (
+        <div className="home-guide-bubble">
+          {guideMessage.split("\n").map((line, i) => (
+            <p key={i}>{line}</p>
+          ))}
         </div>
       )}
 
