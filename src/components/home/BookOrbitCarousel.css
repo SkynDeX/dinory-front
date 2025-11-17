@@ -296,4 +296,36 @@
   object-fit: cover;
 }
 
+/* [2025-11-17 추가] 동화 다시 추천받기 버튼 */
+.refresh-stories-btn {
+  margin-top: 12px;
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #2fa36b;
+  border: 2px solid rgba(47, 163, 107, 0.3);
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: "Noto Sans KR", sans-serif;
+}
 
+.refresh-stories-btn:hover {
+  background: #2fa36b;
+  color: white;
+  border-color: #2fa36b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(47, 163, 107, 0.4);
+}
+
+.refresh-stories-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(47, 163, 107, 0.3);
+}

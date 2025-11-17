@@ -69,12 +69,42 @@ function BookOrbitCarousel() {
   ]);
   const [loading, setLoading] = useState(false); // [2025-11-17 수정] false로 변경 - 화면 즉시 표시
   const [isLoadingStories, setIsLoadingStories] = useState(true); // 동화 로딩 상태
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false); // [2025-11-17 추가] 한 번이라도 로드했는지
   // Context
   const {user} = useAuth();
 
-  // [2025-11-17 수정] 진짜 Progressive Loading - 동화를 하나씩 병렬로 로드
+  // [2025-11-17 추가] 캐시 키 생성 함수
+  const getCacheKey = () => {
+    if (user && selectedChild && selectedEmotion && selectedInterests?.length > 0) {
+      return `stories_${selectedChild.id}_${selectedEmotion.id}_${selectedInterests.join('_')}`;
+    }
+    return 'stories_random';
+  };
+
+  // [2025-11-17 수정] 캐시 확인 후 Progressive Loading
   useEffect(() => {
-    const fetchStoriesProgressively = async () => {
+    const fetchStoriesProgressively = async (forceRefresh = false) => {
+      // [2025-11-17 추가] 캐시 확인
+      const cacheKey = getCacheKey();
+
+      if (!forceRefresh) {
+        try {
+          const cachedData = sessionStorage.getItem(cacheKey);
+          if (cachedData) {
+            const cachedBooks = JSON.parse(cachedData);
+            console.log("💾 캐시에서 동화 불러옴:", cachedBooks.length, "개");
+            setBooks(cachedBooks);
+            setIsLoadingStories(false);
+            setHasLoadedOnce(true);
+            return; // 캐시가 있으면 API 요청 안 함
+          }
+        } catch (e) {
+          console.warn("캐시 로드 실패:", e);
+        }
+      }
+
+      // 캐시가 없거나 강제 새로고침이면 API 요청
+      console.log(forceRefresh ? "🔄 동화 다시 추천받기..." : "📡 새로운 동화 불러오기...");
       setIsLoadingStories(true);
 
       try {
@@ -151,19 +181,54 @@ function BookOrbitCarousel() {
         await Promise.all(fetchPromises);
         console.log("🎉 모든 동화 로드 완료!");
 
+        // [2025-11-17 추가] 로드 완료 후 캐시에 저장
+        setBooks(prevBooks => {
+          const completedBooks = prevBooks.filter(b => !b.isLoading);
+          if (completedBooks.length === totalBooks) {
+            sessionStorage.setItem(cacheKey, JSON.stringify(completedBooks));
+            console.log("💾 동화 데이터 캐시에 저장 완료");
+          }
+          return prevBooks;
+        });
+
       } catch (error) {
         console.error("❌ 전체 동화 로드 실패:", error);
       } finally {
         setIsLoadingStories(false);
+        setHasLoadedOnce(true);
       }
     };
 
     fetchStoriesProgressively();
+
+    // [2025-11-17 추가] 다시 추천받기 함수를 window에 노출
+    window.refreshStories = () => {
+      // placeholder로 초기화
+      setBooks([
+        { id: 1, title: "동화를 불러오는 중...", image: "/assets/intro/01.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
+        { id: 2, title: "동화를 불러오는 중...", image: "/assets/intro/02.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
+        { id: 3, title: "동화를 불러오는 중...", image: "/assets/intro/03.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
+        { id: 4, title: "동화를 불러오는 중...", image: "/assets/intro/04.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
+        { id: 5, title: "동화를 불러오는 중...", image: "/assets/intro/05.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
+      ]);
+      fetchStoriesProgressively(true);
+    };
+
+    return () => {
+      delete window.refreshStories;
+    };
   }, [user, selectedChild, selectedEmotion, selectedInterests]);
 
 
   const handleChangeChild = () => {
     navigate("/child/select");
+  };
+
+  // [2025-11-17 추가] 동화 다시 추천받기
+  const handleRefreshStories = () => {
+    if (window.refreshStories) {
+      window.refreshStories();
+    }
   };
 
   const textures = useMemo(() => {
@@ -392,6 +457,17 @@ function BookOrbitCarousel() {
         <div className="reward-progress-wrapper">
           <RewardProgress />
         </div>
+
+        {/* [2025-11-17 추가] 동화 다시 추천받기 버튼 */}
+        {hasLoadedOnce && !isLoadingStories && (
+          <button
+            className="refresh-stories-btn"
+            onClick={handleRefreshStories}
+            title="새로운 동화 추천받기"
+          >
+            🔄 다시 추천받기
+          </button>
+        )}
       </div>
 
       <div className="carousel-controls">
