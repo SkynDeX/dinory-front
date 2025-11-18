@@ -43,9 +43,11 @@ export const chatApi = {
     },
 
     // 동화 완료 후 챗봇 세션 초기화
-    initChatSessionFromStory: async (completionId) => {
+    // [2025-11-17 수정] childId 추가 - 보안 검증용
+    initChatSessionFromStory: async (completionId, childId) => {
         const response = await axiosInstance.post('/api/chat/init-from-story', {
-            completionId
+            completionId,
+            childId  // 보안 검증용
         });
         return response.data;
     },
