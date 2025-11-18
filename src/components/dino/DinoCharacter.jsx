@@ -490,7 +490,7 @@ useEffect(() => {
           {guideMessage.split("\n").map((line, i) => (
             <p key={i}>{line}</p>
           ))}
-        </div>
+1        </div>
       )}
 
       {isOpen && (

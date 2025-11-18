@@ -125,12 +125,15 @@ const ChatInterface = ({ childId, initialSessionId, completionId, onComplete }) 
       const summary = await getStoryCompletionSummary(completionIdToUse);
       console.log("동화 요약 데이터:", summary);
 
-      const res = await chatApi.initChatSessionFromStory(completionIdToUse);
+      // [2025-11-17 수정] childId 추가 - 보안 검증용
+      const res = await chatApi.initChatSessionFromStory(completionIdToUse, childId);
       setSessionId(res.sessionId);
 
       const messagesArray = [];
 
-      // [2025-11-17 수정] 기존 대화 내역도 포함 (DinoCharacter와 세션 공유)
+      // [2025-11-17 수정] 동화 완료 시에는 과거 메시지를 표시하지 않음
+      // - Backend에서 빈 배열을 반환 (세션은 재사용하지만 화면에는 숨김)
+      // - 능력치 요약 + AI 첫 메시지만 표시
       if (res.messages && res.messages.length > 0) {
         console.log("📚 기존 대화 내역:", res.messages.length, "개");
         res.messages.forEach(msg => {

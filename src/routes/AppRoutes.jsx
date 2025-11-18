@@ -21,6 +21,7 @@ import StoryReplay from "../components/story/StoryReplay.jsx";
 import LandingPage from "../pages/landing/LandingPage"; // ✅ [추가]
 import TestRewardPage from "../pages/TestRewardPage.jsx";
 import BookOrbitCarousel from "../components/home/BookOrbitCarousel.jsx";
+import { useChild } from "../context/ChildContext";
 
 const MyDinos = lazy(() => import("../components/dino/MyDinos.jsx"));
 
@@ -29,12 +30,13 @@ function ChatPage() {
   const {sessionId} = useParams();
   const location = useLocation();
   const {fromStroy, completionId} = location.state || {};
+  const { selectedChild } = useChild(); // [2025-11-17 보안 수정] 현재 선택된 자녀 정보 가져오기
 
   return (
     <div className="chat-page">
       <ChatInterface
         initialSessionId={sessionId ? parseInt(sessionId) : null}
-        childId={null}
+        childId={selectedChild?.id} // [2025-11-17 보안 수정] null 대신 selectedChild.id 전달
       />
     </div>
   )
@@ -43,12 +45,13 @@ function ChatPage() {
 // 동화 완료 후 채팅 페이지 컴포넌트 (능력치 요약이 채팅 안에 포함됨)
 function ChatPageFromStory() {
   const { completionId } = useParams();
+  const { selectedChild } = useChild(); // [2025-11-17 보안 수정] 현재 선택된 자녀 정보 가져오기
 
   return (
     <div className="chat-page">
       <ChatInterface
         completionId={completionId ? parseInt(completionId) : null}
-        childId={null}
+        childId={selectedChild?.id} // [2025-11-17 보안 수정] null 대신 selectedChild.id 전달
       />
     </div>
   );
