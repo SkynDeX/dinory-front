@@ -89,6 +89,7 @@
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(255,155,122,0.25);
   transition: 0.25s;
+  margin-right: 300px;
 }
 
 .home-page .shake-btn {

@@ -76,7 +76,7 @@ function DinoCharacter({ isHome }) {
         setTimeout(() => setShowParticles(false), 1200);
       }, 200); 
 
-    }, 1500);
+    }, 1000);
   }
 }, [isHome]);
 
