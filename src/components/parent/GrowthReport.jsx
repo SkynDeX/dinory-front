@@ -79,11 +79,11 @@ function GrowthReport({ childId, childName }) {
             const filename = `성장리포트_${name}_${today}.pdf`;
 
             const opt = {
-                margin: [5, 5, 5, 5],
+                margin: [8, 10, 8, 10],
                 filename: filename,
-                image: { type: 'jpeg', quality: 0.98 },
+                image: { type: 'jpeg', quality: 0.95 },
                 html2canvas: {
-                    scale: 1.5,
+                    scale: 1.2,
                     useCORS: true,
                     scrollY: 0,
                     scrollX: 0,
@@ -98,7 +98,8 @@ function GrowthReport({ childId, childName }) {
                 },
                 pagebreak: {
                     mode: ['css', 'legacy'],
-                    before: '.pdf_page_break'
+                    before: '.pdf_page_break',
+                    avoid: '.pdf_no_break'
                 }
             };
 
@@ -137,44 +138,44 @@ function GrowthReport({ childId, childName }) {
 
     return (
         <div className="growth_report_wrapper">
-            {/* 헤더 */}
-            <div className="report_header_container">
-                <div className="report_header_top">
-                    <h1 className="report_title">성장 리포트</h1>
-                    <button
-                        className="download_btn"
-                        onClick={handleDownloadPDF}
-                        disabled={loading || aiLoading}
-                        style={{
-                            opacity: loading || aiLoading ? 0.5 : 1,
-                            cursor: loading || aiLoading ? 'not-allowed' : 'pointer'
-                        }}
-                    >
-                        <FaDownload /> {loading || aiLoading ? 'AI 분석 중' : 'PDF 다운로드'}
-                    </button>
+            {/* 페이지 1: 제목 + 날짜 + AI 종합 평가 */}
+            <div className="pdf_no_break">
+                {/* 헤더 */}
+                <div className="report_header_container">
+                    <div className="report_header_top">
+                        <h1 className="report_title">성장 리포트</h1>
+                        <button
+                            className="download_btn"
+                            onClick={handleDownloadPDF}
+                            disabled={loading || aiLoading}
+                            style={{
+                                opacity: loading || aiLoading ? 0.5 : 1,
+                                cursor: loading || aiLoading ? 'not-allowed' : 'pointer'
+                            }}
+                        >
+                            <FaDownload /> {loading || aiLoading ? 'AI 분석 중' : 'PDF 다운로드'}
+                        </button>
+                    </div>
+                    <div className="report_header_bottom">
+                        <DateRangePicker
+                            mode="report"
+                            period={period}
+                            initialStart={savedCustomDates.start}
+                            initialEnd={savedCustomDates.end}
+                            onPeriodChange={(newPeriod) => {
+                                setPeriod(newPeriod);
+                                setCustomDateRange(null);
+                                setSavedCustomDates({ start: '', end: '' }); // 사용자 지정 날짜 초기화
+                            }}
+                            onDateRangeChange={(start, end) => {
+                                setSavedCustomDates({ start, end });
+                                setCustomDateRange({ start, end });
+                            }}
+                        />
+                    </div>
                 </div>
-                <div className="report_header_bottom">
-                    <DateRangePicker
-                        mode="report"
-                        period={period}
-                        initialStart={savedCustomDates.start}
-                        initialEnd={savedCustomDates.end}
-                        onPeriodChange={(newPeriod) => {
-                            setPeriod(newPeriod);
-                            setCustomDateRange(null);
-                            setSavedCustomDates({ start: '', end: '' }); // 사용자 지정 날짜 초기화
-                        }}
-                        onDateRangeChange={(start, end) => {
-                            setSavedCustomDates({ start, end });
-                            setCustomDateRange({ start, end });
-                        }}
-                    />
-                </div>
-            </div>
 
-
-            {/* 페이지 1: AI 종합 평가 */}
-            <div className="pdf_page_break">
+                {/* AI 종합 평가 */}
                 <div className="report_section">
                     <h2 className="section_title">AI 종합 평가</h2>
                     <div className="ai_evaluation_card">
@@ -201,17 +202,18 @@ function GrowthReport({ childId, childName }) {
                 </div>
             </div>
 
-            {/* 페이지 2: 차트 & 강점 영역 */}
+            {/* 페이지 2: 차트 */}
             <div className="pdf_page_break">
-                {/* Before/After 비교 차트 */}
-                <div className="report_section">
+                <div className="report_section pdf_no_break">
                     <h2 className="section_title">성장 비교</h2>
                     <div className="chart_card">
                         <BeforeAfterRadar data={reportData.comparison} />
                     </div>
                 </div>
+            </div>
 
-                {/* 강점 영역 */}
+            {/* 페이지 3: 강점 영역 */}
+            <div className="pdf_page_break">
                 <div className="report_section">
                 <h2 className="section_title">강점 영역</h2>
                 <div className="areas_grid">
@@ -219,7 +221,7 @@ function GrowthReport({ childId, childName }) {
                         const aiStrength = aiAnalysis?.strengthDescriptions?.find(s => s.area === strength.area);
                         const areaName = strength.area ? strength.area.replace(/\s*\(.*?\)\s*/g, '').trim() : '';
                         return (
-                            <div key={idx} className="area_card strength_card">
+                            <div key={idx} className="area_card strength_card pdf_no_break">
                                 <div className="area_header">
                                     <h3 className="area_name">{areaName}</h3>
                                     <span className="area_score">{strength.score}점</span>
@@ -272,6 +274,16 @@ function GrowthReport({ childId, childName }) {
                                 ) : (
                                     <>
                                         <p className="area_description">{aiGrowth?.description || area.description || "분석 중..."}</p>
+                                        {(aiGrowth?.examples || area.examples) && (
+                                            <div className="area_example">
+                                                <strong>예시:</strong>
+                                                <ul>
+                                                    {(aiGrowth?.examples || area.examples).map((example, i) => (
+                                                        <li key={i}>{example}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
                                         <div className="area_recommendation">
                                             <strong>추천:</strong> {aiGrowth?.recommendation || area.recommendation || "분석 중..."}
                                         </div>
