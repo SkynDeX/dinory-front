@@ -395,15 +395,40 @@
 }
 
 .dino-wrapper .voice-button {
-  background: linear-gradient(135deg, #ff9b7a, #ff7a5a);
-  color: white;
-  border: none;
-  border-radius: 50%;
   width: 44px;
   height: 44px;
-  font-size: 20px;
+  border: none;
+  border-radius: 50%;
+  background: #f9fffc;
+  border: 2px solid #b8f2e6;
+  box-shadow: 0 3px 10px rgba(135, 206, 235, 0.28);
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
 }
+
+.dino-wrapper .voice-button:hover {
+  background: #eafff7;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(47, 163, 107, 0.3);
+}
+
+.dino-wrapper .voice-button.listening {
+  background: #87ceeb;
+  border-color: #2fa36b;
+  filter: brightness(1.1);
+}
+
+/* 아이콘 크기 */
+.dino-mic-icon {
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+}
+
 
 .dino-wrapper .send-button {
   background: linear-gradient(135deg, #2fa36b, #3bb87a);

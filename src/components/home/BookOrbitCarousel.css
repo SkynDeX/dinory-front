@@ -95,11 +95,52 @@
 }
 
 .carousel-title {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: white;
+  font-size: 26px;
+  font-weight: 900;
+  margin-bottom: 10px;
+  padding: 14px 32px;
+
+  /* Glass White */
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border-radius: 20px;
+  display: inline-block;
+
+  /* Dinory 파스텔 */
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.20),
+    0 0 20px rgba(255, 255, 255, 0.35),
+    inset 0 0 12px rgba(255, 255, 255, 0.4);
+
+  /* 텍스트 */
+  color: #2a2a2a;
+  text-shadow:
+    0 2px 4px rgba(255, 255, 255, 0.7),
+    0 0 6px rgba(255, 255, 255, 0.6);
+
+  letter-spacing: 0.5px;
+
+  /* 등장 애니메이션 */
+  animation: fadeUp 0.6s ease;
+
+  /* 살짝 부유감 */
+  transform: translateY(0);
+  transition: transform 0.28s ease, background 0.28s ease, box-shadow 0.28s ease;
 }
+
+/* Hover */
+.carousel-title:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 6px 26px rgba(0, 0, 0, 0.22),
+    0 0 24px rgba(255, 255, 255, 0.45),
+    inset 0 0 14px rgba(255, 255, 255, 0.45);
+}
+
 
 .carousel-index {
   font-size: 15px;

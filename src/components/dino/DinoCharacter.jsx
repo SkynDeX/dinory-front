@@ -18,6 +18,10 @@ import iconDashboard from "../../assets/icons/dashboard.png";
 import iconGirl from "../../assets/icons/girl.png";
 import iconHome from "../../assets/icons/home.png";
 
+// 마이크 이미지 추가
+import micIcon from "../../assets/icons/mike.png";
+
+
 function DinoCharacter({ isHome }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isJumping, setIsJumping] = useState(false);
@@ -537,9 +541,11 @@ useEffect(() => {
                 className={`voice-button ${isListening ? "listening" : ""}`}
                 onClick={handleVoiceInput}
                 title="음성 입력"
+                type="button"
               >
-                🎤
+                <img src={micIcon} alt="mic icon" className="dino-mic-icon" />
               </button>
+
               <input
                 type="text"
                 className="chat-input"
