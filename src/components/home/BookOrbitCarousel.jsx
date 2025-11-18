@@ -302,12 +302,16 @@ function BookOrbitCarousel() {
     const geom = new THREE.BoxGeometry(2.0, 2.6, 0.25);
     const meshes = [];
     books.forEach((book, i) => {
-      const mat = new THREE.MeshStandardMaterial({
-        map: textures[i],
-        emissive: new THREE.Color(THEME_COLORS[i % 4]),
-        emissiveIntensity: 0.25,
-      });
-      const mesh = new THREE.Mesh(geom, mat);
+      const materials = [
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }), 
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }),
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }), 
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }), 
+        new THREE.MeshBasicMaterial({ map: textures[i], transparent: true }), 
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }), 
+      ];
+
+      const mesh = new THREE.Mesh(geom, materials);
       mesh.userData = { index: i, title: book.title };
       mesh.position.y = 0.2;
       scene.add(mesh);
