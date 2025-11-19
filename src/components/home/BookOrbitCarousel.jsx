@@ -15,6 +15,7 @@ import bkid from "../../assets/icons/bkid.png";
 import gkid from "../../assets/icons/gkid.png";
 import { getRecommendedStories, getRandomStories } from '../../services/api/storyApi.js';
 import { useAuth } from "../../context/AuthContext.js";
+import reloadIcon from "../../assets/icons/reload.png";
 import LoadingScreen from '../common/LoadingScreen';
 
 const books = [
@@ -68,8 +69,6 @@ function BookOrbitCarousel() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBook, setSelectedBook] = useState(null);
 
-    // [2025-11-12 김광현] 동화추천 state 추가
-    // [2025-11-17 수정] 초기에 placeholder 책들을 바로 표시 (Progressive Loading)
     const [books, setBooks] = useState([
         { id: 1, title: "동화를 불러오는 중...", image: "/assets/intro/01.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
         { id: 2, title: "동화를 불러오는 중...", image: "/assets/intro/02.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
@@ -77,14 +76,13 @@ function BookOrbitCarousel() {
         { id: 4, title: "동화를 불러오는 중...", image: "/assets/intro/04.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
         { id: 5, title: "동화를 불러오는 중...", image: "/assets/intro/05.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
     ]);
-    const [loading, setLoading] = useState(false); // [2025-11-17 수정] false로 변경 - 화면 즉시 표시
-    const [isLoadingStories, setIsLoadingStories] = useState(true); // 동화 로딩 상태
-    const [hasLoadedOnce, setHasLoadedOnce] = useState(false); // [2025-11-17 추가] 한 번이라도 로드했는지
-    const [isRefreshing, setIsRefreshing] = useState(false); // [2025-11-18 추가] 중복 클릭 방지
-    // Context
+    const [loading, setLoading] = useState(false);
+    const [isLoadingStories, setIsLoadingStories] = useState(true);
+    const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
     const { user } = useAuth();
 
-    // [2025-11-17 추가] 캐시 키 생성 함수
     const getCacheKey = () => {
         if (user && selectedChild && selectedEmotion && selectedInterests?.length > 0) {
             return `stories_${selectedChild.id}_${selectedEmotion.id}_${selectedInterests.join('_')}`;
@@ -92,14 +90,10 @@ function BookOrbitCarousel() {
         return 'stories_random';
     };
 
-    // [2025-11-17 수정] 캐시 확인 후 Progressive Loading
-    // [2025-11-18 추가] debounce로 불필요한 재호출 방지 (300ms)
     useEffect(() => {
         const fetchStoriesProgressively = async (forceRefresh = false) => {
-            // [2025-11-17 추가] 캐시 확인
             const cacheKey = getCacheKey();
 
-            // [2025-11-17 추가] 캐시 키 로그로 감정/관심사 변경 감지
             console.log("🔑 현재 캐시 키:", cacheKey);
             console.log("📊 현재 상태:", {
                 childId: selectedChild?.id,
@@ -113,13 +107,10 @@ function BookOrbitCarousel() {
                     if (cachedData) {
                         const cachedBooks = JSON.parse(cachedData);
                         console.log("💾 캐시에서 동화 불러옴:", cachedBooks.length, "개");
-                        console.log("ℹ️ 감정이나 관심사가 변경되면 자동으로 새 동화를 로드합니다.");
                         setBooks(cachedBooks);
                         setIsLoadingStories(false);
                         setHasLoadedOnce(true);
-                        return; // 캐시가 있으면 API 요청 안 함
-                    } else {
-                        console.log("🆕 캐시 없음 - 새로운 동화 로드 시작");
+                        return;
                     }
                 } catch (e) {
                     console.warn("캐시 로드 실패:", e);
@@ -128,7 +119,6 @@ function BookOrbitCarousel() {
                 console.log("🔄 강제 새로고침 - 캐시 무시하고 새 동화 로드");
             }
 
-            // 캐시가 없거나 강제 새로고침이면 API 요청
             console.log(forceRefresh ? "🔄 동화 다시 추천받기..." : "📡 새로운 동화 불러오기...");
             setIsLoadingStories(true);
 
@@ -136,23 +126,19 @@ function BookOrbitCarousel() {
                 const totalBooks = 5;
                 let stories = [];
 
-                // [2025-11-18 최적화] 5회 개별 호출 → 1회 통합 호출로 변경
-                // 기존: 5번 병렬 호출 → 같은 동화 중복 추천 문제
-                // 개선: 1번 호출로 5개 받기 → 서버가 다양한 동화 추천
                 if (user && selectedChild && selectedEmotion && selectedInterests?.length > 0) {
                     console.log(`📚 추천동화 ${totalBooks}개 요청 중...`);
                     stories = await getRecommendedStories(
                         selectedEmotion.id,
                         selectedInterests,
                         selectedChild.id,
-                        totalBooks // ⭐ 한 번에 5개 요청
+                        totalBooks
                     );
                 } else {
                     console.log(`📚 랜덤동화 ${totalBooks}개 요청 중...`);
-                    stories = await getRandomStories(totalBooks); // ⭐ 한 번에 5개 요청
+                    stories = await getRandomStories(totalBooks);
                 }
 
-                // 받은 동화를 변환하여 상태 업데이트
                 if (stories && stories.length > 0) {
                     const transformedBooks = stories.map((story, index) => ({
                         id: index + 1,
@@ -165,7 +151,6 @@ function BookOrbitCarousel() {
                         isLoading: false,
                     }));
 
-                    // 5개 미만으로 받았을 경우 기본값으로 채우기
                     while (transformedBooks.length < totalBooks) {
                         const index = transformedBooks.length;
                         transformedBooks.push({
@@ -181,7 +166,6 @@ function BookOrbitCarousel() {
                     setBooks(transformedBooks);
                     console.log(`✅ 동화 ${transformedBooks.length}개 로드 완료`);
                 } else {
-                    // 동화를 받지 못한 경우 기본값 사용
                     console.warn("⚠️ 동화를 받지 못함 - 기본값 사용");
                     const defaultBooks = [
                         { id: 1, title: "달 위의 곰돌이", image: "/assets/intro/01.png", desc: "기본 동화", storyId: "default_1", isLoading: false },
@@ -195,10 +179,9 @@ function BookOrbitCarousel() {
 
                 console.log("🎉 모든 동화 로드 완료!");
 
-                // [2025-11-17 추가] 로드 완료 후 캐시에 저장
                 setBooks(prevBooks => {
                     const completedBooks = prevBooks.filter(b => !b.isLoading);
-                    if (completedBooks.length === totalBooks) {
+                    if (completedBooks.length === 5) {
                         sessionStorage.setItem(cacheKey, JSON.stringify(completedBooks));
                         console.log("💾 동화 데이터 캐시에 저장 완료");
                     }
@@ -210,18 +193,15 @@ function BookOrbitCarousel() {
             } finally {
                 setIsLoadingStories(false);
                 setHasLoadedOnce(true);
-                setIsRefreshing(false); // [2025-11-18 추가] 중복 클릭 방지 해제
+                setIsRefreshing(false);
             }
         };
 
-        // [2025-11-18 추가] 감정/관심사 빠른 변경 시 debounce (300ms)
         const debounceTimer = setTimeout(() => {
             fetchStoriesProgressively();
         }, 300);
 
-        // [2025-11-17 추가] 다시 추천받기 함수를 window에 노출
         window.refreshStories = () => {
-            // placeholder로 초기화
             setBooks([
                 { id: 1, title: "동화를 불러오는 중...", image: "/assets/intro/01.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
                 { id: 2, title: "동화를 불러오는 중...", image: "/assets/intro/02.png", desc: "잠시만 기다려주세요", storyId: null, isLoading: true },
@@ -233,19 +213,15 @@ function BookOrbitCarousel() {
         };
 
         return () => {
-            clearTimeout(debounceTimer); // [2025-11-18 추가] debounce 타이머 정리
+            clearTimeout(debounceTimer);
             delete window.refreshStories;
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, selectedChild, selectedEmotion, selectedInterests]);
-
 
     const handleChangeChild = () => {
         navigate("/child/select");
     };
 
-    // [2025-11-17 추가] 동화 다시 추천받기
-    // [2025-11-18 수정] 중복 클릭 방지 로직 추가
     const handleRefreshStories = () => {
         if (isRefreshing) {
             console.log("⚠️ 이미 동화를 불러오는 중입니다.");
@@ -316,23 +292,22 @@ function BookOrbitCarousel() {
         const geom = new THREE.BoxGeometry(2.0, 2.6, 0.25);
         const meshes = [];
         books.forEach((book, i) => {
-      const materials = [
-        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }), 
-        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }),
-        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }), 
-        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }), 
-        new THREE.MeshBasicMaterial({ map: textures[i], transparent: true }), 
-        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }), 
-      ];
+            const materials = [
+                new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }),
+                new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }),
+                new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }),
+                new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }),
+                new THREE.MeshBasicMaterial({ map: textures[i], transparent: true }),
+                new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }),
+            ];
 
-      const mesh = new THREE.Mesh(geom, materials);
+            const mesh = new THREE.Mesh(geom, materials);
             mesh.userData = { index: i, title: book.title };
             mesh.position.y = 0.2;
             scene.add(mesh);
             meshes.push(mesh);
         });
 
-        // [2025-11-17 수정] 씬 재생성 시 현재 회전 위치 유지
         let rotation = targetRotation.current;
         const step = (Math.PI * 2) / books.length;
         const offset = Math.PI / books.length / 2;
@@ -407,51 +382,46 @@ function BookOrbitCarousel() {
             renderer.setSize(container.clientWidth, container.clientHeight);
             composer.setSize(container.clientWidth, container.clientHeight);
         };
-        window.addEventListener("resize", onResize);
+        
+window.addEventListener("resize", onResize);
 
-        return () => {
-            container.removeEventListener("wheel", onWheel);
-            window.removeEventListener("resize", onResize);
-            window.removeEventListener("mousemove", onMouseMove);
-            window.removeEventListener("mouseup", onMouseUp);
-            container.removeEventListener("mousedown", onMouseDown);
-            while (container.firstChild) container.removeChild(container.firstChild);
-            renderer.dispose();
-        };
-    }, [textures, books]);
+return () => {
+    container.removeEventListener("wheel", onWheel);
+    window.removeEventListener("resize", onResize);
+    window.removeEventListener("mousemove", onMouseMove);
+    window.removeEventListener("mouseup", onMouseUp);
+    container.removeEventListener("mousedown", onMouseDown);
+    while (container.firstChild) container.removeChild(container.firstChild);
+    renderer.dispose();
+};
+}, [textures, books]);
 
-    // [2025-11-12 김광현] 책 읽기 핸들러 수정
-    const handleReadBook = async () => {
-        // [2025-11-17 추가] 로딩 중인 책은 클릭 불가
-        if (books[selectedIndex].isLoading || !books[selectedIndex].storyId) {
-            console.log("⏳ 동화가 아직 로딩 중입니다. 잠시만 기다려주세요.");
-            return;
-        }
+const handleReadBook = async () => {
+if (books[selectedIndex].isLoading || !books[selectedIndex].storyId) {
+    console.log("⏳ 동화가 아직 로딩 중입니다. 잠시만 기다려주세요.");
+    return;
+}
 
-        try {
-            // await addStar(); - 동화 완료 후에만 별 추가
-            setSelectedBook(books[selectedIndex]);
-            setIsModalOpen(true);
-        } catch (err) {
-            console.error("별 추가 실패:", err);
-        }
-    };
+try {
+    setSelectedBook(books[selectedIndex]);
+    setIsModalOpen(true);
+} catch (err) {
+    console.error("별 추가 실패:", err);
+}
+};
 
-    const handlePrev = () => {
-        targetRotation.current += (Math.PI * 2) / books.length;
-        const step = (Math.PI * 2) / books.length;
-        const snapped = Math.round(targetRotation.current / step) * step;
-        targetRotation.current = snapped;
-    };
-    const handleNext = () => {
-        targetRotation.current -= (Math.PI * 2) / books.length;
-        const step = (Math.PI * 2) / books.length;
-        const snapped = Math.round(targetRotation.current / step) * step;
-        targetRotation.current = snapped;
-    };
-
-    // [2025-11-17 수정] loading 체크 제거 - 항상 화면 표시
-    // Progressive Loading으로 인해 LoadingScreen 불필요
+const handlePrev = () => {
+targetRotation.current += (Math.PI * 2) / books.length;
+const step = (Math.PI * 2) / books.length;
+const snapped = Math.round(targetRotation.current / step) * step;
+targetRotation.current = snapped;
+};
+const handleNext = () => {
+targetRotation.current -= (Math.PI * 2) / books.length;
+const step = (Math.PI * 2) / books.length;
+const snapped = Math.round(targetRotation.current / step) * step;
+targetRotation.current = snapped;
+};
 
     return (
         <div className="carousel-wrapper">
@@ -488,17 +458,6 @@ function BookOrbitCarousel() {
                 <div className="reward-progress-wrapper">
                     <RewardProgress />
                 </div>
-
-                {/* [2025-11-17 추가] 동화 다시 추천받기 버튼 */}
-                {hasLoadedOnce && !isLoadingStories && (
-                    <button
-                        className="refresh-stories-btn"
-                        onClick={handleRefreshStories}
-                        title="새로운 동화 추천받기"
-                    >
-                        🔄 다시 추천받기
-                    </button>
-                )}
             </div>
 
             <div className="carousel-controls">
@@ -509,22 +468,38 @@ function BookOrbitCarousel() {
                         <span style={{ fontSize: '0.8em', opacity: 0.7, marginLeft: '8px' }}>⏳</span>
                     )}
                 </div>
+
                 <div className="carousel-index">
                     {selectedIndex + 1} / {books.length}
                 </div>
 
-                {/* [2025-11-17 수정] 로딩 중인 책은 버튼 비활성화 */}
-                <button
-                    className="book-read-btn"
-                    onClick={handleReadBook}
-                    disabled={books[selectedIndex].isLoading || !books[selectedIndex].storyId}
-                    style={{
-                        opacity: books[selectedIndex].isLoading || !books[selectedIndex].storyId ? 0.5 : 1,
-                        cursor: books[selectedIndex].isLoading || !books[selectedIndex].storyId ? 'not-allowed' : 'pointer'
-                    }}
-                >
-                    {books[selectedIndex].isLoading ? '로딩 중...' : '책 읽기'}
-                </button>
+                {/* 책 읽기랑 다시 추천 버튼 한 줄 배치함 */}
+                <div className="carousel-action-row">
+
+                    {/* 책 읽기 버튼 */}
+                    <button
+                        className="book-read-btn"
+                        onClick={handleReadBook}
+                        disabled={books[selectedIndex].isLoading || !books[selectedIndex].storyId}
+                        style={{
+                            opacity: books[selectedIndex].isLoading || !books[selectedIndex].storyId ? 0.5 : 1,
+                            cursor: books[selectedIndex].isLoading || !books[selectedIndex].storyId ? 'not-allowed' : 'pointer'
+                        }}
+                    >
+                        {books[selectedIndex].isLoading ? '로딩 중...' : '책 읽기'}
+                    </button>
+
+                    {/* 동화 다시 추천 버튼 */}
+                    {hasLoadedOnce && !isLoadingStories && (
+                        <button
+                            className="refresh-stories-inline-btn"
+                            onClick={handleRefreshStories}
+                            disabled={isRefreshing}
+                        >
+                            <img src={reloadIcon} alt="다시 추천받기" className="refresh-inline-icon" />
+                        </button>
+                    )}
+                </div>
             </div>
 
             <button className="nav-btn prev-btn" onClick={handlePrev}>

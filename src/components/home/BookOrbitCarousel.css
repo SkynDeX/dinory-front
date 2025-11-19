@@ -370,3 +370,138 @@
   transform: translateY(0);
   box-shadow: 0 3px 10px rgba(47, 163, 107, 0.3);
 }
+
+/* [2025-11-18 추가] 다시 추천받기 버튼 + 라벨 */
+.refresh-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 동그란 이미지 버튼 */
+.refresh-stories-btn {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  border: 2px solid rgba(47, 163, 107, 0.35);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 0 12px rgba(255, 255, 255, 0.45),
+    inset 0 0 6px rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: all 0.25s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+
+/* 버튼 안 아이콘 */
+.reload-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  opacity: 0.9;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Hover 효과 */
+.refresh-stories-btn:hover {
+  transform: translateY(-2px) scale(1.07);
+  background: rgba(255, 255, 255, 1);
+  box-shadow:
+    0 6px 20px rgba(47, 163, 107, 0.35),
+    0 0 16px rgba(255, 255, 255, 0.6),
+    inset 0 0 8px rgba(255, 255, 255, 0.55);
+}
+
+.refresh-stories-btn:hover .reload-icon {
+  transform: rotate(25deg) scale(1.12);
+  opacity: 1;
+}
+
+/* 로딩 중에는 회전 */
+.refresh-stories-btn:disabled .reload-icon {
+  animation: spinRefresh 0.9s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes spinRefresh {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 버튼 아래 설명 라벨 */
+.refresh-label {
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.9;
+  color: white;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  font-family: "Noto Sans KR", sans-serif;
+  animation: fadeIn 0.6s ease;
+}
+
+/* 책 읽기 옆에 다시 추천 버튼 */
+.refresh-stories-inline-btn {
+  margin-top: 10px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 2px solid rgba(47, 163, 107, 0.35);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 0 12px rgba(255, 255, 255, 0.45),
+    inset 0 0 6px rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.25s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 인라인 아이콘 */
+.refresh-inline-icon {
+  width: 26px;
+  height: 26px;
+  opacity: 0.9;
+  object-fit: contain;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* hover 효과 */
+.refresh-stories-inline-btn:hover {
+  transform: translateY(-2px) scale(1.07);
+  background: rgba(255, 255, 255, 1);
+  box-shadow:
+    0 6px 20px rgba(47, 163, 107, 0.35),
+    0 0 16px rgba(255, 255, 255, 0.6),
+    inset 0 0 8px rgba(255, 255, 255, 0.55);
+}
+
+.refresh-stories-inline-btn:hover .refresh-inline-icon {
+  transform: rotate(25deg) scale(1.1);
+  opacity: 1;
+}
+
+/* 로딩 시 자동 회전 */
+.refresh-stories-inline-btn:disabled .refresh-inline-icon {
+  animation: spinRefresh 0.9s linear infinite;
+  opacity: 0.7;
+}
+
+/* 책 읽기 다시 추천 버튼 한줄 배치 */
+.carousel-action-row {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+}
