@@ -1,0 +1,31 @@
+.video-section {
+  text-align: center;
+  padding: 160px 0;
+  background: linear-gradient(180deg, #fff7f0 0%, #fefaf6 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.video-title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #2fa36b;
+  margin-bottom: 60px;
+  letter-spacing: -0.3px;
+}
+
+.video-wrapper {
+  width: 82%;
+  max-width: 1000px;
+  margin: 0 auto;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
+  background: #000;
+}
+
+.promo-video {
+  width: 100%;
+  display: block;
+  border-radius: 30px;
+}

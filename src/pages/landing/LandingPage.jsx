@@ -1,6 +1,7 @@
 import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import HeroSection from "./HeroSection";
+import VideoSection from "./VideoSection";
 import FeatureSection from "./FeatureSection";
 import ParentSection from "./ParentSection";
 import HowItWorks from "./HowItWorks";
@@ -22,6 +23,7 @@ function LandingPage() {
   return (
     <motion.main className="landing-container" style={{ background }}>
       <HeroSection />
+      <VideoSection />
       <FeatureSection />
       <ParentSection />
       <HowItWorks />
