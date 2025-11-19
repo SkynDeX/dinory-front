@@ -793,3 +793,26 @@
     border-radius: 6px;
     padding: 0 2px;
 }
+
+.dino-wrapper .chat-back-btn:hover {
+    opacity: 0.7;
+}
+
+/* 닫기 버튼 */
+.dino-wrapper .chat-close-btn {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    padding: 2px 6px;
+    line-height: 1;
+    transition: opacity 0.2s ease;
+}
+
+.dino-wrapper .chat-close-btn:hover {
+    opacity: 0.7;
+}

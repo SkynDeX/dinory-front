@@ -724,6 +724,19 @@ function DinoCharacter({
                 <div className="speech-bubble chat-bubble">
                     <div className="chat-header">
                         <p className="chat-title">디노와 대화</p>
+
+                        {/* 닫기 버튼 */}
+                        <button
+                            className="chat-close-btn"
+                            onClick={() => {
+                                setIsOpen(false);
+                                setIsMenuOpen(false);
+                                setInputMessage("");
+                                setIsTextInputMode(false);
+                            }}
+                        >
+                            ✕
+                        </button>
                     </div>
 
                     <div className="chat-messages">
