@@ -195,7 +195,7 @@ function DinoCharacter({
                     setTimeout(() => setShowParticles(false), 1200);
                 }, 200);
 
-            }, 1000);
+            }, 500);
         }
     }, [isHome]);
 

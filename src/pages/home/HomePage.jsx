@@ -26,7 +26,7 @@ function HomePage() {
 
             // // 1초 뒤 파티클 자동 종료
             // setTimeout(() => setTriggerParticles(false), 1000);
-        }, 2000);
+        }, 500);
 
         return () => clearTimeout(timer);
     }, []);
