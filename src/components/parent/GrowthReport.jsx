@@ -79,16 +79,16 @@ function GrowthReport({ childId, childName }) {
             const filename = `성장리포트_${name}_${today}.pdf`;
 
             const opt = {
-                margin: [8, 10, 8, 10],
+                margin: [20, 20, 20, 20],
                 filename: filename,
                 image: { type: 'jpeg', quality: 0.95 },
                 html2canvas: {
-                    scale: 1.2,
+                    scale: 2,
                     useCORS: true,
                     scrollY: 0,
                     scrollX: 0,
-                    windowWidth: element.scrollWidth,
-                    windowHeight: element.scrollHeight
+                    // windowWidth: element.scrollWidth,
+                    // windowHeight: element.scrollHeight
                 },
                 jsPDF: {
                     unit: 'mm',

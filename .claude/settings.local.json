@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Class02/Desktop/psh/3차 프로젝트/dinory_backend/dinory-backend/**)",
+      "Read(//c/Users/Class02/Desktop/psh/3차 프로젝트/dinory_ai/dinory-ai/**)",
+      "Read(//c/Users/Class02/Desktop/psh/3차 프로젝트/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
